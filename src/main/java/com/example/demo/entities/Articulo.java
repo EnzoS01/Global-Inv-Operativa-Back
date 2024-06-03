@@ -18,16 +18,12 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-@Audited
-public class Articulo implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idArticulo;
+public class Articulo extends Base {
 
     @Column(name = "nombreArticulo")
     private String nombreArticulo;
 
-    @Column(name = "detalle")
+    @Column(name = "detalle", length = 1500)
     private String detalle;
 
     @Column(name = "fechaAlta")
