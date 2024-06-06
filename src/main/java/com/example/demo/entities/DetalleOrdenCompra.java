@@ -1,12 +1,13 @@
 package com.example.demo.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "detalleOrdenCompra")
@@ -24,4 +25,16 @@ public class DetalleOrdenCompra extends Base{
 
     @Column(name = "linea")
     private int linea;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_proveedor")
+    private Proveedor proveedor;
+
+    @OneToMany
+    @JoinTable(
+            name = "",
+            joinColumns = @JoinColumn(name = "articulo_id"),
+            inverseJoinColumns = @JoinColumn(name = "detalleOrdenCompra_id")
+    )
+    private List<Articulo> articulos= new ArrayList<>();
 }

@@ -1,8 +1,6 @@
 package com.example.demo.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,5 +34,11 @@ public class ProveedorArticulo extends Base{
     @Column(name = "costoProducto")
     private Double costoProducto;
 
+    @ManyToOne
+    @JoinColumn(name = "fk_proveedor")
+    private Proveedor proveedor;
 
+    @ManyToOne
+    @JoinColumn(name = "fk_articulo")
+    private Articulo articulo;
 }

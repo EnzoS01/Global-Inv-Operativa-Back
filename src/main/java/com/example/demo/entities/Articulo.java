@@ -47,4 +47,12 @@ public class Articulo extends Base {
     @Column(name = "CantActual")
     private int CantActual;
 
+    @ManyToOne
+    @JoinColumn(name = "fk_modelo")
+    private Modelo modelo;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_proveedorPredeterminado")
+    private Proveedor proveedorPredeterminado;
+
 }

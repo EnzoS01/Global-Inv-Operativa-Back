@@ -1,8 +1,6 @@
 package com.example.demo.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +22,8 @@ public class DetalleVenta extends Base {
 
     @Column(name = "linea")
     private int linea;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_articulo")
+    private Articulo articulo;
 }

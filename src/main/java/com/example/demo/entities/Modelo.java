@@ -1,5 +1,6 @@
 package com.example.demo.entities;
 
+import com.example.demo.enums.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -18,7 +19,7 @@ import java.util.Date;
 @Getter
 public class Modelo extends Base{
     @Column(name = "nombreModelo")
-    private String nombreModelo;
+    private Model nombreModelo;
 
     @Column(name = "fechaBaja")
     private Date fechaBaja;

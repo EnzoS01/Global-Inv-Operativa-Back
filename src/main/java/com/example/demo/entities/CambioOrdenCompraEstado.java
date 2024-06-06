@@ -1,8 +1,6 @@
 package com.example.demo.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +18,13 @@ public class CambioOrdenCompraEstado extends Base{
 
     @Column(name = "fechaCambio")
     private Date fechaCambio;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_OrdenCompra")
+    private OrdenCompra ordenCompra;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_EstadoOrdenCompra")
+    private EstadoOrdenCompra estadoOrdenCompra;
 
 }
