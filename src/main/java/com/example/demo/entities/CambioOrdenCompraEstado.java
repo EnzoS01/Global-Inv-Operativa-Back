@@ -8,20 +8,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
-@Table(name = "detalleVenta")
-@Getter
-@Setter
+@Table(name = "cambioOrdenCompraEstado")
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetalleVenta extends Base {
+@Getter
+@Setter
+public class CambioOrdenCompraEstado extends Base{
 
-    @Column(name = "cantidad")
-    private int cantidad;
+    @Column(name = "fechaCambio")
+    private Date fechaCambio;
 
-    @Column(name = "subtotal")
-    private double subtotal;
-
-    @Column(name = "linea")
-    private int linea;
 }

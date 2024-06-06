@@ -9,18 +9,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "detalleVenta")
-@Getter
-@Setter
+@Table(name = "detalleOrdenCompra")
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetalleVenta extends Base {
+@Getter
+@Setter
+public class DetalleOrdenCompra extends Base{
 
     @Column(name = "cantidad")
     private int cantidad;
 
     @Column(name = "subtotal")
-    private double subtotal;
+    private float subtotal;
 
     @Column(name = "linea")
     private int linea;

@@ -23,18 +23,12 @@ public class Pronostico extends Base{
     @Column(name = "nombrePronostico")
     private String nombrePronostico;
 
-    @Column(name = "fechaInicioPronostico")
-    private Date fechaInicioPronostico;
-
-    @Column(name = "fechaFinPronostico")
-    private Date fechaFinPronostico;
-
     @Column(name = "errorAceptablePronostico")
     private double errorAceptablePronostico;
 
-    @Column(name = "periodoPronostico")
-    private int periodoPronostico;
+    @Column(name = "cantidadPeriodosAPredecir")
+    private int cantidadPeriodosAPredecir;
 
-    @Column(name = "errorDiferenciaDemandaRealPronosticada")
-    private float errorDiferenciaDemandaRealPronosticada;
+    @Column(name = "cantidadPeriodosHistoricos")
+    private int cantidadPeriodosHistoricos;
 }

@@ -9,19 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "detalleVenta")
-@Getter
-@Setter
+@Table(name = "pronosticoDemanda")
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetalleVenta extends Base {
+@Getter
+@Setter
+public class PronosticoDemanda extends Base{
 
-    @Column(name = "cantidad")
-    private int cantidad;
-
-    @Column(name = "subtotal")
-    private double subtotal;
-
-    @Column(name = "linea")
-    private int linea;
+    @Column(name = "numeroiPronosticoDemanda")
+    private int numeroiPronosticoDemanda;
 }

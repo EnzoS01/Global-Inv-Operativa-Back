@@ -9,19 +9,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "detalleVenta")
-@Getter
-@Setter
+@Table(name = "cliente")
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetalleVenta extends Base {
+@Getter
+@Setter
+public class Cliente extends Base{
+    @Column(name = "nombre")
+    private String nombre;
 
-    @Column(name = "cantidad")
-    private int cantidad;
-
-    @Column(name = "subtotal")
-    private double subtotal;
-
-    @Column(name = "linea")
-    private int linea;
+    @Column(name = "DNI")
+    private Long DNI;
 }
