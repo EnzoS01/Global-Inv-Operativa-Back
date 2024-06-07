@@ -30,11 +30,8 @@ public class DetalleOrdenCompra extends Base{
     @JoinColumn(name = "fk_proveedor")
     private Proveedor proveedor;
 
-    @OneToMany
-    @JoinTable(
-            name = "",
-            joinColumns = @JoinColumn(name = "articulo_id"),
-            inverseJoinColumns = @JoinColumn(name = "detalleOrdenCompra_id")
-    )
-    private List<Articulo> articulos= new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "fk_articulo")
+    private Articulo articulo;
+
 }
