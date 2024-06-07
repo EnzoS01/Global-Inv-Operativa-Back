@@ -55,4 +55,6 @@ public class Articulo extends Base {
     @JoinColumn(name = "fk_proveedorPredeterminado")
     private Proveedor proveedorPredeterminado;
 
+    //hola
+
 }
