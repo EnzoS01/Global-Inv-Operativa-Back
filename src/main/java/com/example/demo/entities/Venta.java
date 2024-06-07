@@ -24,7 +24,7 @@ public class Venta extends Base{
     @Column(name = "total")
     private double total;
 
-    @Column(name = "nroFactura")
+    @Column(unique=true, name = "nroFactura")
     private int nroFactura;
 
     @OneToMany

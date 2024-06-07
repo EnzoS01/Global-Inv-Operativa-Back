@@ -7,6 +7,8 @@ import com.example.demo.repositories.VentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class VentaServiceImpl extends BaseServiceImpl<Venta,Long> implements VentaService {
     @Autowired
@@ -16,4 +18,13 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta,Long> implements Ven
         super(baseRepository);
         this.ventaRepository = ventaRepository;
     }
+
+
+    public List<Venta> ObtenerTodas(){
+        List<Venta> ventas = ventaRepository.findAll();
+        return ventas;
+    }
+
+
+
 }
