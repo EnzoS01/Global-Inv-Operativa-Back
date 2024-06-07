@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Venta extends Base{
+public class Venta extends Base {
 
     @Column(name = "fechaRealizacion")
     private Date fechaRealizacion;
@@ -24,7 +24,7 @@ public class Venta extends Base{
     @Column(name = "total")
     private double total;
 
-    @Column(unique=true, name = "nroFactura")
+    @Column(unique = true, name = "nroFactura")
     private int nroFactura;
 
     @OneToMany
@@ -33,10 +33,14 @@ public class Venta extends Base{
             joinColumns = @JoinColumn(name = "Venta_id"),
             inverseJoinColumns = @JoinColumn(name = "DetalleVenta_id")
     )
-    private List<DetalleVenta> DetallesVenta= new ArrayList<>();
+    private List<DetalleVenta> DetallesVenta = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name="fk_cliente")
+    @JoinColumn(name = "fk_cliente")
     private Cliente cliente;
 
+    public void addDetallesVenta(DetalleVenta detalleVenta) {
+        DetallesVenta.add(detalleVenta);
+    }
 }
+

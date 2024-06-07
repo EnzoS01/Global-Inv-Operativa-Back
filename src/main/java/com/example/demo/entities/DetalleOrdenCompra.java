@@ -33,5 +33,4 @@ public class DetalleOrdenCompra extends Base{
     @ManyToOne
     @JoinColumn(name = "fk_articulo")
     private Articulo articulo;
-
 }

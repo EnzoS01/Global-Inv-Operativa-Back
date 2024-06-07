@@ -32,14 +32,14 @@ public class Articulo extends Base {
     @Column(name = "fechaBaja")
     private Date fechaBaja;
 
-    @Column(name = "LoteOptimo")
-    private int LoteOptimo;
+    @Column(name = "loteOptimo")
+    private int loteOptimo;
 
-    @Column(name = "PuntoPedido")
-    private int PuntoPedido;
+    @Column(name = "puntoPedido")
+    private int puntoPedido;
 
-    @Column(name = "StockSeguridad")
-    private int StockSeguridad;
+    @Column(name = "stockSeguridad")
+    private int stockSeguridad;
 
     @Column(name = "CGI")
     private float CGI;
