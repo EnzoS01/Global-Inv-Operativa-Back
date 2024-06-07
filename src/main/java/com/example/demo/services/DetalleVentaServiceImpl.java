@@ -22,12 +22,12 @@ public class DetalleVentaServiceImpl extends BaseServiceImpl<DetalleVenta,Long> 
     }
 
     @Transactional
-    private void agregarArticulo(Long detalleVentaId, Articulo articulo){
+    public DetalleVenta agregarArticulo(Long detalleVentaId, Articulo articulo){
         DetalleVenta detalleVenta = detalleVentaRepository.findById(detalleVentaId).orElseThrow(() -> new RuntimeException("Detalle de Venta no encontrado"));
         detalleVenta.setArticulo(articulo);
         int cantidad=detalleVenta.getCantidad();
         articulo.setCantActual(articulo.getCantActual()-cantidad);
-        detalleVentaRepository.save(detalleVenta);
         articuloRepository.save(articulo);
+        return detalleVentaRepository.save(detalleVenta);
     }
 }
