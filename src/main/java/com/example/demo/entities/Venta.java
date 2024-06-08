@@ -23,7 +23,7 @@ public class Venta extends Base {
 
     @Column(name = "total")
     private double total;
-    
+
 
     @OneToMany
     @JoinTable(
