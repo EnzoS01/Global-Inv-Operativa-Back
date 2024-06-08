@@ -137,6 +137,396 @@
 			]
 		},
 		{
+			"name": "Proveedores",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"nombre\":\"ale\",\r\n    \"telefono\":2613004548,\r\n    \"direccion\":\"Castelar 825\",\r\n    \"mail\":\"alear12373@gmail.com\",\r\n    \"fechaAlta\":\"2021-10-12T00:00:00\",\r\n    \"fechaBaja\":null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ProveedorArticulos",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fechaHoraBaja\":\"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaHoraAlta\":null,\r\n    \"tiempoPedido\":2,\r\n    \"costoPedido\":2.3,\r\n    \"costoAlmacenamiento\":null,\r\n    \"costoProducto\":33.2,\r\n    \"proveedor\":{\r\n    \"id\": 3,\r\n    \"nombre\": \"ale\",\r\n    \"telefono\": 2.613004548E9,\r\n    \"direccion\": \"Castelar 825\",\r\n    \"mail\": \"alear12373@gmail.com\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null\r\n},\r\n    \"articulo\":{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": \"MODELO_LOTE_FIJO\",\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/proveedorArticulos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedorArticulos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/proveedores/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"proveedores",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Demanda",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/demandas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/demandas/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"nombre\":\"ale\",\r\n    \"telefono\":2613004548,\r\n    \"direccion\":\"Castelar 825\",\r\n    \"mail\":\"alear12373@gmail.com\",\r\n    \"fechaAlta\":\"2021-10-12T00:00:00\",\r\n    \"fechaBaja\":null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/demandas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/demandas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/demandas/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Ventas",
 			"item": [
 				{
