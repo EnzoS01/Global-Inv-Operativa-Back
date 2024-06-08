@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class DetalleVentaServiceImpl extends BaseServiceImpl<DetalleVenta,Long> implements DetalleVentaService {
     @Autowired
     private DetalleVentaRepository detalleVentaRepository;
-
+    @Autowired
     private ArticuloRepository articuloRepository;
 
     public DetalleVentaServiceImpl(BaseRepository<DetalleVenta, Long> baseRepository, DetalleVentaRepository detalleVentaRepository) {
@@ -24,10 +24,10 @@ public class DetalleVentaServiceImpl extends BaseServiceImpl<DetalleVenta,Long> 
     @Transactional
     public DetalleVenta agregarArticulo(Long detalleVentaId, Articulo articulo){
         DetalleVenta detalleVenta = detalleVentaRepository.findById(detalleVentaId).orElseThrow(() -> new RuntimeException("Detalle de Venta no encontrado"));
-        detalleVenta.setArticulo(articulo);
-        int cantidad=detalleVenta.getCantidad();
-        articulo.setCantActual(articulo.getCantActual()-cantidad);
+        articulo.setCantActual(articulo.getCantActual()-detalleVenta.getCantidad());
         articuloRepository.save(articulo);
-        return detalleVentaRepository.save(detalleVenta);
+        detalleVenta.setArticulo(articulo);
+        detalleVentaRepository.save(detalleVenta);
+        return detalleVenta;
     }
 }

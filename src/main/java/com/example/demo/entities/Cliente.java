@@ -18,6 +18,6 @@ public class Cliente extends Base{
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "DNI")
-    private Long DNI;
+    @Column(name = "dni")
+    private Long dni;
 }

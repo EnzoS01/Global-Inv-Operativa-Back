@@ -17,6 +17,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta,Long> implements Ven
     @Autowired
     private VentaRepository ventaRepository;
 
+    @Autowired
     private DetalleVentaRepository detalleVentaRepository;
 
     public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, VentaRepository ventaRepository) {
@@ -36,7 +37,8 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta,Long> implements Ven
         Venta venta= ventaRepository.findById(ventaid).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
         venta.addDetallesVenta(detalleVenta);
         detalleVentaRepository.save(detalleVenta);
-        return ventaRepository.save(venta);
+        ventaRepository.save(venta);
+        return venta;
     }
 
 }

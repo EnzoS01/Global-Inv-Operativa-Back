@@ -58,7 +58,7 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
         return "redirect:/api/ventas/disponibles";
     }
 
-    @PostMapping("/agregarDetalle") //Con este metodo se agrega un detalleVenta a una venta existente, revisar VentaServiceImpl
+    @PostMapping("/agregarDetalle/{ventaId}") //Con este metodo se agrega un detalleVenta a una venta existente, revisar VentaServiceImpl
     public ResponseEntity<?> agregarDetalleVenta(@PathVariable Long ventaId, @RequestBody DetalleVenta detalleVenta){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ventaService.agregarDetalleVenta(ventaId,detalleVenta));
