@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "27a75383-30f2-4f0e-8b04-9468e4bc6f0e",
+		"_postman_id": "26d66a37-e068-4532-9b9f-a615b9956d0f",
 		"name": "GlobalInvOperativa",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30258870"
+		"_exporter_id": "30289981"
 	},
 	"item": [
 		{
@@ -54,7 +54,12 @@
 					"name": "Create",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{   \r\n    \"id\":1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": null,\r\n    \"puntoPedido\":null,\r\n    \"stockSeguridad\": null,\r\n    \"CGI\":null,\r\n    \"cantActual\": 12,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null\r\n    \r\n}",
@@ -261,8 +266,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"value": "application/json"
 							}
 						],
 						"body": {
