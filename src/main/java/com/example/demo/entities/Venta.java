@@ -23,9 +23,7 @@ public class Venta extends Base {
 
     @Column(name = "total")
     private double total;
-
-    @Column(unique = true, name = "nroFactura")
-    private int nroFactura;
+    
 
     @OneToMany
     @JoinTable(
