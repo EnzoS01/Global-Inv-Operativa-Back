@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
+import com.example.demo.enums.Model;
+
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.util.Date;
@@ -47,9 +49,8 @@ public class Articulo extends Base {
     @Column(name = "CantActual")
     private int CantActual;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_modelo")
-    private Modelo modelo;
+    @Enumerated(EnumType.STRING)
+    private Model modelo;
 
     @ManyToOne
     @JoinColumn(name = "fk_proveedorPredeterminado")
