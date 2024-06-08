@@ -31,4 +31,8 @@ public class OrdenCompra extends Base{
             inverseJoinColumns = @JoinColumn(name = "detalleOrdenCompra_id")
     )
     private List<DetalleOrdenCompra> detallesOrdenCompra= new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "fk_estadoOrdenCompra")
+    private EstadoOrdenCompra estadoOrdenCompra;
 }
