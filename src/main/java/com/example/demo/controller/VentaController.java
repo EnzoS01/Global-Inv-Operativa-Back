@@ -28,34 +28,37 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
     @Autowired
     ArticuloRepository ArticuloRepo;
 
-   /* //este metodo listaria todas las ventas que estan cargadas
+    //este metodo listaria todas las ventas que estan cargadas
     @GetMapping("/disponibles")
-    public String VerVentas(Model model){
-        List<Venta> ventas = service.ObtenerTodas();
+    public ResponseEntity<?> VerVentas(){
+        try{
+            List<Venta> ventas = ventaService.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(ventas);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    } //YA SE HACE ESTO CON EL METODO GENERICO getAll()*/
 
-        model.addAttribute("ventas",ventas);
-    return "nombrevistaHTML"; //CAMBIAR ESTO
-    } YA SE HACE ESTO CON EL METODO GENERICO getAll()*/
 
     @GetMapping("/nueva")
-    public String CargarNueva(Model model){
-
-        List<Cliente> clientes = ClienteRepo.findAll();
-        List<Articulo> articulos = ArticuloRepo.findAllDisponibles();
-
-        //te dejaria buscar el cliente al cual hacerle la venta con los productos
-        model.addAttribute("clientes",clientes);
-        model.addAttribute("articulos",articulos);
-
-        return "vistaedicion"; //falta esto
+    public ResponseEntity<?> ObtenerDatosNueva(){
+        try{
+            List<Cliente> clientes = ClienteRepo.findAll();
+            List<Articulo> articulos = ArticuloRepo.findAllDisponibles();
+            return ResponseEntity.status(HttpStatus.OK).body(new Object[]{clientes, articulos});
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
     }
 
-    @PostMapping("/nueva/guardar")
-    public String CargarNueva(@RequestParam Date fecha){ //faltan parametros
-
-        //pensando en los detalle venta
-
-        return "redirect:/api/ventas/disponibles";
+    @PostMapping("")
+    public ResponseEntity<?> CrearNueva(@RequestBody Venta venta){ //faltan parametros
+        try{
+            Venta nuevaVenta = ventaService.save(venta);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaVenta);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
     }
 
     @PostMapping("/agregarDetalle/{ventaId}") //Con este metodo se agrega un detalleVenta a una venta existente, revisar VentaServiceImpl
@@ -66,6 +69,41 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
+    }
+
+    //recupero una venta existente para modificarla
+    @GetMapping("/{id}")
+    public ResponseEntity<?> RecuperarVenta(@PathVariable Long id){
+        try{
+            Venta venta = ventaService.findById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(venta);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+    //guardo los cambios realizados sobre la venta
+    @PutMapping("/{id]")
+    public ResponseEntity<?> ActualizarVenta(@PathVariable Long id, @RequestBody Venta venta){
+        try{
+            Venta ventaExistente = ventaService.findById(id);
+            venta.setId(id);
+            Venta ventaActualizada = ventaService.save(venta);
+            return ResponseEntity.status(HttpStatus.OK).body(ventaActualizada);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
+    //eliminar una venta
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> BorrarVenta(@PathVariable Long id){
+        try{
+            ventaService.delete(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("La venta se elimino");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+
     }
 
 }
