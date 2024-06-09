@@ -12,7 +12,7 @@ public interface ArticuloRepository extends BaseRepository<Articulo,Long> {
 
 
     @Query(value = "select * from articulo A where A.StockSeguridad>0 and A.CantActual>0 and A.fechaBaja is null", nativeQuery = true)
-    List<Articulo> findAllDisponibles();                    //como se haria el manejo de cantActual y stock de seguridad??
+    List<Articulo> findAllDisponibles();                    //REDUNDANTE,HACE LO MIMSO QUE findAll es un metodo de JPARepository
 
     @Query(value = "select * from articulo A where A.CantActual<A.stockSeguridad", nativeQuery = true)
     List<Articulo> ListadoProductosFaltantes();

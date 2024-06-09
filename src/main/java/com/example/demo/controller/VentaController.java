@@ -44,7 +44,7 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
     public ResponseEntity<?> ObtenerDatosNueva(){
         try{
             List<Cliente> clientes = ClienteRepo.findAll();
-            List<Articulo> articulos = ArticuloRepo.findAllDisponibles();
+            List<Articulo> articulos = ArticuloRepo.findAllDisponibles(); //TAMBIEN SE PUEDE HACER CON EL findAll que provee JPARepository
             return ResponseEntity.status(HttpStatus.OK).body(new Object[]{clientes, articulos});
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
@@ -73,7 +73,7 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
 
     //recupero una venta existente para modificarla
     @GetMapping("/{id}")
-    public ResponseEntity<?> RecuperarVenta(@PathVariable Long id){
+    public ResponseEntity<?> RecuperarVenta(@PathVariable Long id){  /////HACE LO MISMO QUE getOne GENERICO
         try{
             Venta venta = ventaService.findById(id);
             return ResponseEntity.status(HttpStatus.OK).body(venta);
@@ -83,7 +83,7 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
     }
     //guardo los cambios realizados sobre la venta
     @PutMapping("/{id]")
-    public ResponseEntity<?> ActualizarVenta(@PathVariable Long id, @RequestBody Venta venta){
+    public ResponseEntity<?> ActualizarVenta(@PathVariable Long id, @RequestBody Venta venta){//HACE LO MISMO QUE update GENERICO
         try{
             Venta ventaExistente = ventaService.findById(id);
             venta.setId(id);
@@ -96,7 +96,7 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
 
     //eliminar una venta
     @DeleteMapping("{id}")
-    public ResponseEntity<?> BorrarVenta(@PathVariable Long id){
+    public ResponseEntity<?> BorrarVenta(@PathVariable Long id){  //HACE LO MISMO QUE delete GENERICO
         try{
             ventaService.delete(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("La venta se elimino");
