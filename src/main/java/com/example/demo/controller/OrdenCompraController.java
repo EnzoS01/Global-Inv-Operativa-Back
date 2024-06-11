@@ -17,7 +17,7 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
 
     @Autowired
     OrdenCompraServiceImpl ServicioOrdenCompra;
-
+    
     @GetMapping("/VerTodas")//los metodos
     public ResponseEntity<?> VerTodas(){
         try{
