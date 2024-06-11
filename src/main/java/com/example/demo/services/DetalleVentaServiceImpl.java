@@ -22,12 +22,26 @@ public class DetalleVentaServiceImpl extends BaseServiceImpl<DetalleVenta,Long> 
     }
 
     @Transactional
-    public DetalleVenta agregarArticulo(Long detalleVentaId, Articulo articulo){
-        DetalleVenta detalleVenta = detalleVentaRepository.findById(detalleVentaId).orElseThrow(() -> new RuntimeException("Detalle de Venta no encontrado"));
-        articulo.setCantActual(articulo.getCantActual()-detalleVenta.getCantidad());
+    public DetalleVenta agregarArticulo(Long detalleVentaId, Long articuloId){
+        Articulo articulo = articuloRepository.findById(articuloId)
+                .orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+
+        DetalleVenta detalleVenta = detalleVentaRepository.findById(detalleVentaId)
+                .orElseThrow(() -> new RuntimeException("DetalleVenta no encontrado"));
+
+        // Validar que la cantidad actual del artículo sea suficiente
+        if (articulo.getCantActual() < detalleVenta.getCantidad()) {
+            throw new RuntimeException("Cantidad insuficiente del artículo");
+        }
+
+        articulo.setCantActual(articulo.getCantActual() - detalleVenta.getCantidad());
+        detalleVenta.setSubtotal(articulo.getPrecioVenta() * detalleVenta.getCantidad());
+
+        // Guardar los cambios en el artículo y el detalle de venta
         articuloRepository.save(articulo);
         detalleVenta.setArticulo(articulo);
         detalleVentaRepository.save(detalleVenta);
+
         return detalleVenta;
     }
 }

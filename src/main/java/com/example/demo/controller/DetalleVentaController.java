@@ -16,10 +16,10 @@ public class DetalleVentaController extends BaseControllerImpl<DetalleVenta, Det
     @Autowired
     private DetalleVentaServiceImpl detalleVentaService;
 
-    @PostMapping("/agregarArticulo/{detalleVentaId}") //Con este metodo se agrega un articulo a una venta existente, revisar VentaServiceImpl
-    public ResponseEntity<?> agregarDetalleVenta(@PathVariable Long detalleVentaId,@RequestBody Articulo articulo){
+    @PostMapping("/agregarArticulo/{detalleVentaId}/{articuloId}") //Con este metodo se agrega un articulo a una venta existente, revisar VentaServiceImpl
+    public ResponseEntity<?> agregarDetalleVenta(@PathVariable Long detalleVentaId,@PathVariable Long articuloId){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(detalleVentaService.agregarArticulo(detalleVentaId,articulo));
+            return ResponseEntity.status(HttpStatus.OK).body(detalleVentaService.agregarArticulo(detalleVentaId,articuloId));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");

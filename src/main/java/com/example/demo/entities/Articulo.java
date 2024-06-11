@@ -49,6 +49,9 @@ public class Articulo extends Base {
     @Column(name = "CantActual")
     private int CantActual;
 
+    @Column(name = "preciaVenta")
+    private double precioVenta;
+
     @Enumerated(EnumType.STRING)
     private Model modelo;
 

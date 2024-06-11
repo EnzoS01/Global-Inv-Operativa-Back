@@ -5,7 +5,7 @@ import com.example.demo.entities.DetalleVenta;
 
 public interface DetalleVentaService extends BaseService<DetalleVenta,Long>{
 
-    public DetalleVenta agregarArticulo(Long detalleVentaId, Articulo articulo) throws Exception;
+    public DetalleVenta agregarArticulo(Long detalleVentaId, Long articuloId) throws Exception;
 
 
 }

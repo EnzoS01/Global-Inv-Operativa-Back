@@ -1,11 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.entities.Cliente;
 import com.example.demo.entities.DetalleVenta;
 import com.example.demo.entities.Venta;
-import com.example.demo.repositories.ArticuloRepository;
-import com.example.demo.repositories.BaseRepository;
-import com.example.demo.repositories.DetalleVentaRepository;
-import com.example.demo.repositories.VentaRepository;
+import com.example.demo.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +14,9 @@ import java.util.List;
 public class VentaServiceImpl extends BaseServiceImpl<Venta,Long> implements VentaService {
     @Autowired
     private VentaRepository ventaRepository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Autowired
     private DetalleVentaRepository detalleVentaRepository;
@@ -41,4 +42,29 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta,Long> implements Ven
         return venta;
     }
 
+    @Transactional
+    public Venta calcularTotal(Long ventaId){
+        Venta venta= ventaRepository.findById(ventaId)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        List<DetalleVenta> detalleVentas= venta.getDetallesVenta();
+        double total= 0;
+        for (DetalleVenta detalleVenta: detalleVentas){
+            total= total + detalleVenta.getSubtotal();
+        }
+        venta.setTotal(total);
+        ventaRepository.save(venta);
+        return venta;
+    }
+
+    @Transactional
+    public Venta agregarCliente(Long ventaId, Long clienteId){
+        Venta venta= ventaRepository.findById(ventaId)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        Cliente cliente= clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        venta.setCliente(cliente);
+        ventaRepository.save(venta);
+        return venta;
+    }
 }
