@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArticulo,Long>  {
 
-    @Query(value="select * from ProveedorArticulo p where p.fk_proveedor = :idProveedor and p.fk_articulo = :idArticulo", nativeQuery = true)
+    @Query(value="select * from ProveedorArticulo p where p.fk_proveedor = :idProveedor and p.fk_articulo = :idArticulo and p.fechaHoraBaja is null", nativeQuery = true)
     ProveedorArticulo findByArticuloandProveedor(Long idProveedor, Long idArticulo);
 }

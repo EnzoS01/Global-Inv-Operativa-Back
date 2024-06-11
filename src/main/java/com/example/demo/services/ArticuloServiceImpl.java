@@ -1,11 +1,16 @@
 package com.example.demo.services;
 
 import com.example.demo.entities.Articulo;
+import com.example.demo.entities.Demanda;
+import com.example.demo.entities.DetalleVenta;
 import com.example.demo.entities.Modelo;
 import com.example.demo.entities.Proveedor;
+import com.example.demo.entities.ProveedorArticulo;
 import com.example.demo.repositories.ArticuloRepository;
 import com.example.demo.repositories.BaseRepository;
+import com.example.demo.repositories.DemandaRepository;
 import com.example.demo.repositories.ModeloRepository;
+import com.example.demo.repositories.ProveedorArticuloRepository;
 import com.example.demo.repositories.ProveedorRepository;
 
 import jakarta.transaction.Transactional;
@@ -23,6 +28,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     private ProveedorRepository proveedorRepository;
     @Autowired
     private ModeloRepository modeloRepository;
+    @Autowired
+    private DemandaRepository demandaRepository;
+    @Autowired
+    private ProveedorArticuloRepository proveedorArticuloRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
@@ -82,5 +91,29 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     }
 
+    @Override
+    public Articulo calcularCGIConProvPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception{
+        //BUSQUEDA DE DATOS
+        Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        List<Demanda> demandas = demandaRepository.findByDesdeHasta(periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor proveedorPredeterminado= articulo.getProveedorPredeterminado();
+        ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(proveedorPredeterminado.getId(),idArticulo);
+        int D = 0;
+        float CGI= 0 ;
+        for (Demanda demanda: demandas){
+            D= D + demanda.getCantTotalDemanda();
+        }
+        double P=proveedorArticulo.getCostoProducto();
+        double Ca=proveedorArticulo.getCostoAlmacenamiento();
+        int Q=articulo.getLoteOptimo();
+        double Cp=proveedorArticulo.getCostoPedido();
+        //CALCULO CGI
+        CGI= (float) ((P*D) + (Ca*(Q/2)) + (Cp*(D/Q)));
+        articulo.setCGI(CGI);
+        articuloRepository.save(articulo);
+        return articulo;
+    }
+
+    
     
 }

@@ -17,9 +17,6 @@ import java.util.List;
 @Setter
 public class Demanda extends Base{
 
-    @Column(name = "numDemanda")
-    private int numDemanda;
-
     @Column(name = "numPeriodo")
     private int numPeriodo;
 

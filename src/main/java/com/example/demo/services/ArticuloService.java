@@ -9,5 +9,6 @@ public interface ArticuloService extends BaseService<Articulo,Long>{
     List<Articulo> findProductosFaltantes() throws Exception;*/
     Articulo agregarProveedorPredeterminado(Long idArticulo, Long idProveedor) throws Exception;
     Articulo agregarModelo(Long idArticulo, Long idModelo) throws Exception;
+    Articulo calcularCGIConProvPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception;
 
 }

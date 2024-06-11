@@ -13,6 +13,6 @@ public interface ClienteRepository extends BaseRepository<Cliente,Long> {
 
 
     @Query(value = "select * from cliente C where C.id = :id", nativeQuery = true)
-    List<Cliente> findByID(@Param("id") Long id);
+    List<Cliente> findByID(@Param("id") Long id);  // es REDUNDANTE YA HAY UNA FUNCION GENERICA QUE LO HACE
 
 }
