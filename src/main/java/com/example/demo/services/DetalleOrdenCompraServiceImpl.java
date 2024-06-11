@@ -9,9 +9,15 @@ import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.DetalleOrdenCompraRepository;
 import com.example.demo.repositories.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+@Service
 public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenCompra,Long> implements DetalleOrdenCompraService {
+
+    public DetalleOrdenCompraServiceImpl(BaseRepository<DetalleOrdenCompra, Long> baseRepository, DetalleOrdenCompraRepository DetalleRepo) {
+        super(baseRepository);
+        this.DetalleRepo=DetalleRepo;
+    }
 
     @Autowired
     private DetalleOrdenCompraRepository DetalleRepo;
@@ -22,9 +28,7 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
     @Autowired
     private ArticuloRepository ArticuloRepo;
 
-    public DetalleOrdenCompraServiceImpl(BaseRepository<DetalleOrdenCompra, Long> baseRepository) {
-        super(baseRepository);
-    }
+    
 
     @Transactional
     public DetalleOrdenCompra setearArticulo(Long idDetalle, Long idArticulo){
@@ -32,7 +36,8 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
         DetalleOrdenCompra d = DetalleRepo.findById(idDetalle).orElseThrow(() -> new RuntimeException("No se encontro el detalle"));
 
         d.setArticulo(a);
-        return DetalleRepo.save(d);
+        DetalleRepo.save(d);
+        return d;
     }
 
     @Transactional
@@ -41,7 +46,8 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
         DetalleOrdenCompra d = DetalleRepo.findById(idDetalle).orElseThrow(() -> new RuntimeException("No se encontro el detalle"));
 
         d.setProveedor(p);
-        return DetalleRepo.save(d);
+        DetalleRepo.save(d);
+        return d;
     }
 
     //standby el metodo para recuperar la cantidad optima a pedir

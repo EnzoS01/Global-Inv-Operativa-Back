@@ -5,5 +5,9 @@ import java.util.List;
 import com.example.demo.entities.Articulo;
 
 public interface ArticuloService extends BaseService<Articulo,Long>{
-    List<Articulo> findProductosAReponer() throws Exception;
+    /*List<Articulo> findProductosAReponer() throws Exception;
+    List<Articulo> findProductosFaltantes() throws Exception;*/
+    Articulo agregarProveedorPredeterminado() throws Exception;
+    
+
 }

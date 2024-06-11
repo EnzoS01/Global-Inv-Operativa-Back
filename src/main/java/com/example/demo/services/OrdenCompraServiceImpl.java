@@ -39,7 +39,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         this.ordenCompraRepository = ordenCompraRepository;
     }
 
-    public List<OrdenCompra> ListaOrdenes(){ //este metodo se encarga de recuperar las ordenes de compra pendientes o enviadas
+    /*public List<OrdenCompra> ListaOrdenes(){ //este metodo se encarga de recuperar las ordenes de compra pendientes o enviadas
         //busco los estados que necesito    //serian las ordenes de compra que se listarian al ingresar a la seccion correspondiente
         EstadoOrdenCompra estadoPendiente = EstadoOrdenRepository.findByName("Pendiente");
         EstadoOrdenCompra estadoEnviada = EstadoOrdenRepository.findByName("Enviada");
@@ -112,5 +112,5 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             ArticuloRepo.save(a);
         }
         return OC;
-    }
+    }*/
 }

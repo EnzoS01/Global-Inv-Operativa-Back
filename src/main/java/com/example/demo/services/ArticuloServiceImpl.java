@@ -21,14 +21,32 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         this.articuloRepository = articuloRepository;
     }
 
-    @Override
+    /*@Override
     @Transactional
     public List<Articulo> findProductosAReponer() throws Exception {
         try{
-            List<Articulo> articulosFaltantes= articuloRepository.ListadoProductosAReponer();
-            return articulosFaltantes;
+            List<Articulo> articulosAReponer= articuloRepository.ListadoProductosAReponer();
+            return articulosAReponer;
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
+
+
+    @Override
+    @Transactional
+    public List<Articulo> findProductosFaltantes() throws Exception {
+        try{
+            List<Articulo> articulosFaltantes= articuloRepository.ListadoProductosFaltantes();
+            return articulosFaltantes;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+
+    }
+    public Articulo agregarProveedorPredeterminado(Long idProveedor, Long idArticulo) throws Exception{
+        Articulo articulo = articuloRepository.getById(idArticulo)
+    };*/
+
 }

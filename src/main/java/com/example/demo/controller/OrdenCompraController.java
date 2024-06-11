@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/ordenesCompra")
 public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, OrdenCompraServiceImpl>{
-
+/* 
     @Autowired
     OrdenCompraServiceImpl ServicioOrdenCompra;
     
@@ -59,5 +59,5 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
 
     }
 
-
+*/
 }
