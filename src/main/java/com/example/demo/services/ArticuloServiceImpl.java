@@ -114,6 +114,41 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return articulo;
     }
 
+    /*@Override                                        TERMINARRRRRR
+    public Articulo calcularModeloconProvPredeterminado(Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception{
+        //BUSQUEDA DE DATOS
+        Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        List<Demanda> demandas = demandaRepository.findByDesdeHasta(periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor proveedorPredeterminado= articulo.getProveedorPredeterminado();
+        ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(proveedorPredeterminado.getId(),idArticulo);
+        int D = 0;
+        for (Demanda demanda: demandas){
+            D= D + demanda.getCantTotalDemanda();
+        }
+        double P=proveedorArticulo.getCostoProducto();
+        double Ca=proveedorArticulo.getCostoAlmacenamiento();
+        int Q=articulo.getLoteOptimo();
+        double Cp=proveedorArticulo.getCostoPedido();
+        Modelo modelo = articulo.getModelo();
+        if(modelo.getNombreModelo() == "intervaloFijo"){
+            LoteFijo();
+        }else{
+            IntervaloFijo();
+        }
+        articuloRepository.save(articulo);
+        return articulo;
+    }
+
+    private void IntervaloFijo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'IntervaloFijo'");
+    }
+
+    private void LoteFijo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'LoteFijo'");
+    }
+ */                 
     
     
 }
