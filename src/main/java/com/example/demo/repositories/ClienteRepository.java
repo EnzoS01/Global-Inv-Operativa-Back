@@ -11,11 +11,8 @@ import java.util.List;
 
 public interface ClienteRepository extends BaseRepository<Cliente,Long> {
 
-    @Override
-    List<Cliente> findAll();
 
     @Query(value = "select * from cliente C where C.id = :id", nativeQuery = true)
     List<Cliente> findByID(@Param("id") Long id);
-
 
 }

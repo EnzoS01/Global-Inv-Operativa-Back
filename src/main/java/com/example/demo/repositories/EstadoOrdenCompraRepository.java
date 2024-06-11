@@ -12,4 +12,6 @@ public interface EstadoOrdenCompraRepository extends BaseRepository<EstadoOrdenC
 
     @Query(value="select * from estadoOrdenCompra E where E.fechaBaja is null", nativeQuery=true)
     List<EstadoOrdenCompra> findDisponibles();
+
+
 }

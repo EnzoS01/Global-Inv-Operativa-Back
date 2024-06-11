@@ -19,7 +19,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     private ProveedorRepository proveedorRepository;
 
     @Autowired
-    private EstadoOrdenCompraRepository EstadoOrdenRepository;
+    private EstadoOrdenCompraRepository estadoOrdenRepository;
 
     @Autowired
     private ProveedorArticuloRepository ProveedorArticuloRepo;
@@ -39,10 +39,10 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         this.ordenCompraRepository = ordenCompraRepository;
     }
 
-    /*public List<OrdenCompra> ListaOrdenes(){ //este metodo se encarga de recuperar las ordenes de compra pendientes o enviadas
+    public List<OrdenCompra> ListaOrdenes(){ //este metodo se encarga de recuperar las ordenes de compra pendientes o enviadas
         //busco los estados que necesito    //serian las ordenes de compra que se listarian al ingresar a la seccion correspondiente
-        EstadoOrdenCompra estadoPendiente = EstadoOrdenRepository.findByName("Pendiente");
-        EstadoOrdenCompra estadoEnviada = EstadoOrdenRepository.findByName("Enviada");
+        EstadoOrdenCompra estadoPendiente = estadoOrdenRepository.findByName("Pendiente");
+        EstadoOrdenCompra estadoEnviada = estadoOrdenRepository.findByName("Enviada");
 
         //busco las ordenes de compra que esten en standBy
         List<OrdenCompra> ordenes = ordenCompraRepository.findByState(estadoPendiente.getId(),estadoEnviada.getId());
@@ -52,10 +52,16 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
     @Transactional
     public OrdenCompra agregarDetalleOrdenCompra(Long ordenCompraId, DetalleOrdenCompra detalleOrdenCompra) {
-        OrdenCompra ordenCompra = ordenCompraRepository.findById(ordenCompraId).orElseThrow(() -> new RuntimeException("Orden de compra no encontrada"));
+        OrdenCompra ordenCompra = ordenCompraRepository.findById(ordenCompraId)
+                .orElseThrow(() -> new RuntimeException("Orden de compra no encontrada"));
+
+        EstadoOrdenCompra estadoOrdenCompraPen = estadoOrdenRepository.findByName("Pendiente");
+        // .orElseThrow(() -> new RuntimeException("Estado Orden de compra no encontrada"));
+
+        EstadoOrdenCompra estadoOrdenCompraEnv = estadoOrdenRepository.findByName("Enviada");
 
         // Verifico si existe una orden para el artículo
-        List<OrdenCompra> ordenesActivas = ordenCompraRepository.findByArticuloAndEstado(detalleOrdenCompra.getArticulo().getId(), "Pendiente", "Enviada");
+        List<OrdenCompra> ordenesActivas = ordenCompraRepository.findByArticuloAndEstado(detalleOrdenCompra.getArticulo().getId(), estadoOrdenCompraPen.getId(), estadoOrdenCompraEnv.getId());
 
         if (!ordenesActivas.isEmpty()) {
             throw new RuntimeException("Ya existe/n"+ ordenesActivas.toArray().length + " orden/es de compra activa/s para el artículo " + detalleOrdenCompra.getArticulo().getNombreArticulo());
@@ -93,7 +99,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         OrdenCompra OC = ordenCompraRepository.getReferenceById(ordenCompraId);
 
         //busco el estado "Recibida"
-        EstadoOrdenCompra estadoRecibida = EstadoOrdenRepository.findByName("Recibida");
+        EstadoOrdenCompra estadoRecibida = estadoOrdenRepository.findByName("Recibida");
 
         //seteo nuevo estado a OC
         OC.setEstadoOrdenCompra(estadoRecibida);
@@ -105,12 +111,12 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         CambioEstado.setEstadoOrdenCompra(estadoRecibida);
         CambioOrdenCompraEstadoRepo.save(CambioEstado);
 
-        //incremento el inventario de cada producto en la oc (suponiendo q llega todo ok)
+        /*incremento el inventario de cada producto en la oc (suponiendo q llega todo ok)*/
         for (DetalleOrdenCompra detalle : OC.getDetallesOrdenCompra()) {
             Articulo a = detalle.getArticulo();
             a.setCantActual(a.getCantActual() + detalle.getCantidad() + a.getStockSeguridad());
             ArticuloRepo.save(a);
         }
         return OC;
-    }*/
+    }
 }
