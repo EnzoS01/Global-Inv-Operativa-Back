@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 public class VentaServiceImpl extends BaseServiceImpl<Venta,Long> implements VentaService {
     @Autowired
