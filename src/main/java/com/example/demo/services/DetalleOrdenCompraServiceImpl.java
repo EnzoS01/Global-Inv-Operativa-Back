@@ -33,13 +33,12 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
         Proveedor predeterminado = proveedorRepository.findById(a.getProveedorPredeterminado().getId()).orElseThrow(() -> new RuntimeException("No se encontro el proveedor"));
         DetalleOrdenCompra d = DetalleRepo.findById(idDetalle).orElseThrow(() -> new RuntimeException("No se encontro el detalle"));
 
-        //metodo de inventario para calcular el lote optimo
-        int loteoptimo = 4; /*Aca iria la llamada con ArticuloServiceImpl.CalcularModelo(a.getId());*/
+
 
         ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloandProveedor(predeterminado.getId(), a.getId());
 
-        d.setCantidad(loteoptimo);
-        d.setSubtotal(loteoptimo * PA.getCostoPedido());
+        d.setCantidad(a.getLoteOptimo());
+        d.setSubtotal(a.getLoteOptimo() * PA.getCostoPedido());
         d.setArticulo(a);
         d.setProveedor(predeterminado);
 
@@ -48,7 +47,7 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
     }
 
 
-    //este metodo esta medio decorativo
+    //este metodo esta medio decorativo, ignorarlo
     @Transactional
     public DetalleOrdenCompra setearArticulo(Long idDetalle, Long idArticulo){
         Articulo a = ArticuloRepo.findById(idArticulo).orElseThrow(() -> new RuntimeException("No se encontro el articulo"));

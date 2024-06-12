@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/ordenesCompra")
 public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, OrdenCompraServiceImpl>{
-/* 
+
     @Autowired
     OrdenCompraServiceImpl ServicioOrdenCompra;
     
@@ -56,8 +56,5 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
-
     }
-
-*/
 }
