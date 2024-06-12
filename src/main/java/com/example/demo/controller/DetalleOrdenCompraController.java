@@ -16,20 +16,22 @@ public class DetalleOrdenCompraController extends BaseControllerImpl<DetalleOrde
     @Autowired
     private DetalleOrdenCompraServiceImpl DetalleService;
 
+    //te devuelve el detalle por defecto con el proveedor predeterminado para el articulo
     @PostMapping("/agregarAr/{detalleId}/{idArticulo}")
     public ResponseEntity<?> agregaArticuloDetalle(@PathVariable Long detalleId, @PathVariable Long idArticulo) {
         try {
-            DetalleOrdenCompra detalleActualizado = DetalleService.setearArticulo(detalleId, idArticulo);
+            DetalleOrdenCompra detalleActualizado = DetalleService.DetallePorDefecto(detalleId, idArticulo);
             return ResponseEntity.status(HttpStatus.OK).body(detalleActualizado);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
 
+    //te actualiza el detalle creado anteriormente con la info que vos elegis
     @PostMapping("/agregarPr/{detalleId}/{idProveedor}")
-    public ResponseEntity<?> agregaProveedorDetalle(@PathVariable Long detalleId, @PathVariable Long idProveedor) {
+    public ResponseEntity<?> agregaProveedorDetalle(@PathVariable Long detalleId, @PathVariable Long idProveedor, @RequestParam int cantidad) {
         try {
-            DetalleOrdenCompra detalleActualizado = DetalleService.setearArticulo(detalleId, idProveedor);
+            DetalleOrdenCompra detalleActualizado = DetalleService.setearProveedor(detalleId, idProveedor, cantidad);
             return ResponseEntity.status(HttpStatus.OK).body(detalleActualizado);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");

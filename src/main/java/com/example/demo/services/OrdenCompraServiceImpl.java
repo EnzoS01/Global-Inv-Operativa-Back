@@ -95,28 +95,47 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     }
 
     @Transactional
-    public OrdenCompra ActualizarEstado(Long ordenCompraId){
+    public OrdenCompra ActualizarEstado(Long ordenCompraId) {
         OrdenCompra OC = ordenCompraRepository.getReferenceById(ordenCompraId);
 
-        //busco el estado "Recibida"
-        EstadoOrdenCompra estadoRecibida = estadoOrdenRepository.findByName("Recibida");
+        if (OC.getEstadoOrdenCompra().getNombreEstado().equals("Enviada")) {
+            // busco el estado "Recibida"
+            EstadoOrdenCompra estadoRecibida = estadoOrdenRepository.findByName("Recibida");
 
-        //seteo nuevo estado a OC
-        OC.setEstadoOrdenCompra(estadoRecibida);
+            // seteo nuevo estado a OC
+            OC.setEstadoOrdenCompra(estadoRecibida);
+            ordenCompraRepository.save(OC);
 
-        //documento el cambio de estado
-        CambioOrdenCompraEstado CambioEstado = new CambioOrdenCompraEstado();
-        CambioEstado.setFechaCambio(Date.from(Instant.now()));
-        CambioEstado.setOrdenCompra(OC);
-        CambioEstado.setEstadoOrdenCompra(estadoRecibida);
-        CambioOrdenCompraEstadoRepo.save(CambioEstado);
+            // documento el cambio de estado
+            CambioOrdenCompraEstado CambioEstado = new CambioOrdenCompraEstado();
+            CambioEstado.setFechaCambio(Date.from(Instant.now()));
+            CambioEstado.setOrdenCompra(OC);
+            CambioEstado.setEstadoOrdenCompra(estadoRecibida);
+            CambioOrdenCompraEstadoRepo.save(CambioEstado);
 
-        /*incremento el inventario de cada producto en la oc (suponiendo q llega todo ok)*/
-        for (DetalleOrdenCompra detalle : OC.getDetallesOrdenCompra()) {
-            Articulo a = detalle.getArticulo();
-            a.setCantActual(a.getCantActual() + detalle.getCantidad() + a.getStockSeguridad());
-            ArticuloRepo.save(a);
+            /* incremento el inventario de cada producto en la oc (suponiendo que llega todo ok) */
+            for (DetalleOrdenCompra detalle : OC.getDetallesOrdenCompra()) {
+                Articulo a = detalle.getArticulo();
+                a.setCantActual(a.getCantActual() + detalle.getCantidad() + a.getStockSeguridad());
+                ArticuloRepo.save(a);
+            }
+        } else if (OC.getEstadoOrdenCompra().getNombreEstado().equals("Pendiente")) {
+            // busco el estado "Enviada"
+            EstadoOrdenCompra estadoEnviada = estadoOrdenRepository.findByName("Enviada");
+
+            // seteo nuevo estado a OC
+            OC.setEstadoOrdenCompra(estadoEnviada);
+            ordenCompraRepository.save(OC);
+
+            // documento el cambio de estado
+            CambioOrdenCompraEstado EstadoNuevo = new CambioOrdenCompraEstado();
+            EstadoNuevo.setFechaCambio(Date.from(Instant.now()));
+            EstadoNuevo.setOrdenCompra(OC);
+            EstadoNuevo.setEstadoOrdenCompra(estadoEnviada);
+            CambioOrdenCompraEstadoRepo.save(EstadoNuevo);
         }
+
         return OC;
     }
+
 }
