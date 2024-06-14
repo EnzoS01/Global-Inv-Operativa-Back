@@ -37,4 +37,10 @@ public class Demanda extends Base{
             inverseJoinColumns = @JoinColumn(name = "DetalleVenta_id")
     )
     private List<DetalleVenta> detallesVenta= new ArrayList<>();
+
+    public void addDetallesVenta(DetalleVenta detalleVenta) {
+        detallesVenta.add(detalleVenta);
+    }
+
+
 }

@@ -17,4 +17,6 @@ public interface VentaRepository extends BaseRepository<Venta,Long> {
 
 
 
+
+
 }
