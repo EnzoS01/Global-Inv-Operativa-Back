@@ -45,7 +45,7 @@ protected ArticuloService articuloservice;
     }
     
     @PostMapping("/agregarModelo/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}")
-    public ResponseEntity<?> setCGI(@PathVariable Long idArticulo,@PathVariable int añoDesde ,@PathVariable int añoHasta ,@PathVariable int periodoDesde ,@PathVariable int periodoHasta){
+    public ResponseEntity<?> setCGIConProveedorPredeterminado(@PathVariable Long idArticulo,@PathVariable int añoDesde ,@PathVariable int añoHasta ,@PathVariable int periodoDesde ,@PathVariable int periodoHasta){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularCGIConProvPredeterminado(idArticulo, añoDesde, añoHasta, periodoDesde, periodoHasta));
 
@@ -56,29 +56,15 @@ protected ArticuloService articuloservice;
         }
     }
 
-/* 
-    @GetMapping("")
-    public ResponseEntity<?> getFaltantes(){
+    @PostMapping("/agregarModelo/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}")
+    public ResponseEntity<?> setCGI(@PathVariable Long idArticulo,@PathVariable int añoDesde ,@PathVariable int añoHasta ,@PathVariable int periodoDesde ,@PathVariable int periodoHasta, @PathVariable Long idProveedor){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.findProductosFaltantes());
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularCGI(idArticulo, añoDesde, añoHasta, periodoDesde, periodoHasta,idProveedor));
 
-
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
-
-
-    @GetMapping("")
-    public ResponseEntity<?> getAReponer(){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.findProductosAReponer());
-
-
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-*/
-
 }

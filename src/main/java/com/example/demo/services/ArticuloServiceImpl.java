@@ -38,30 +38,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         this.articuloRepository = articuloRepository;
     }
 
-    /*@Override
-    @Transactional
-    public List<Articulo> findProductosAReponer() throws Exception {
-        try{
-            List<Articulo> articulosAReponer= articuloRepository.ListadoProductosAReponer();
-            return articulosAReponer;
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-    }
-
-
-    @Override
-    @Transactional
-    public List<Articulo> findProductosFaltantes() throws Exception {
-        try{
-            List<Articulo> articulosFaltantes= articuloRepository.ListadoProductosFaltantes();
-            return articulosFaltantes;
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-
-
-    }*/
 
 
     @Override
@@ -114,14 +90,15 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return articulo;
     }
 
-    /*@Override                                        TERMINARRRRRR
-    public Articulo calcularModeloconProvPredeterminado(Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception{
+    @Override
+    public Articulo calcularCGI (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
         List<Demanda> demandas = demandaRepository.findByDesdeHasta(periodoDesde, añoDesde, periodoHasta, añoHasta);
-        Proveedor proveedorPredeterminado= articulo.getProveedorPredeterminado();
-        ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(proveedorPredeterminado.getId(),idArticulo);
+        Proveedor proveedor= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(idProveedor,idArticulo);
         int D = 0;
+        float CGI= 0 ;
         for (Demanda demanda: demandas){
             D= D + demanda.getCantTotalDemanda();
         }
@@ -129,26 +106,20 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         double Ca=proveedorArticulo.getCostoAlmacenamiento();
         int Q=articulo.getLoteOptimo();
         double Cp=proveedorArticulo.getCostoPedido();
-        Modelo modelo = articulo.getModelo();
-        if(modelo.getNombreModelo() == "intervaloFijo"){
-            LoteFijo();
-        }else{
-            IntervaloFijo();
-        }
+        //CALCULO CGI
+        CGI= (float) ((P*D) + (Ca*(Q/2)) + (Cp*(D/Q)));
+        articulo.setCGI(CGI);
         articuloRepository.save(articulo);
         return articulo;
     }
 
-    private void IntervaloFijo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'IntervaloFijo'");
-    }
-
-    private void LoteFijo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'LoteFijo'");
-    }
- */                 
+    /*@Override
+    public Articulo ModeloIntervaloFijo (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception{
+        Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        List<Demanda> demandas = demandaRepository.findByDesdeHasta(periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor proveedor= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        return articulo;
+    }*/
     
     
 }
