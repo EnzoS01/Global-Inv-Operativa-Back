@@ -10,6 +10,7 @@ import org.hibernate.envers.Audited;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.util.Date;
 
 @Entity
@@ -47,8 +48,11 @@ public class Articulo extends Base {
     @Column(name = "CantActual")
     private int CantActual;
 
-    @Column(name = "preciaVenta")
+    @Column(name = "precioVenta")
     private double precioVenta;
+
+    @Column(name = "periodo")
+    private Duration periodo;
 
     @OneToOne
     @JoinColumn(name = "fk_modelo")
@@ -57,7 +61,5 @@ public class Articulo extends Base {
     @ManyToOne
     @JoinColumn(name = "fk_proveedorPredeterminado")
     private Proveedor proveedorPredeterminado;
-
-    //hola
 
 }
