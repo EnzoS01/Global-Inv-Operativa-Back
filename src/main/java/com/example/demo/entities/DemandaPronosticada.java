@@ -35,5 +35,5 @@ public class DemandaPronosticada extends Base {
 
     @ManyToOne
     @JoinColumn(name = "pronostico_id", nullable = false)
-    private Pronostico pronostico;
+    private Pronostico pronostico; 
 }

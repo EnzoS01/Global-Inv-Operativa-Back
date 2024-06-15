@@ -13,4 +13,10 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
 
     @Query(value="select * from ProveedorArticulo p where p.fk_proveedor = :idProveedor and p.fk_articulo = :idArticulo and p.fechaHoraBaja is null", nativeQuery = true)
     ProveedorArticulo findByArticuloandProveedor(Long idProveedor, Long idArticulo);
+
+    @Query(value="select * from ProveedorArticulo p where p.fk_articulo = :idArticulo and p.fechaHoraBaja is null", nativeQuery = true)
+    ProveedorArticulo findByArticuloConFechaBajaNula( Long idArticulo);
+
+    @Query(value="select * from ProveedorArticulo p where p.fk_proveedor = :idProveedor and p.fechaHoraBaja is null", nativeQuery = true)
+    ProveedorArticulo findByProveedorConFechaBajaNula( Long idProveedor);
 }

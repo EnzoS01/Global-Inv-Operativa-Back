@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public interface DemandaPronosticadaRepository extends JpaRepository<DemandaPronosticada, Long> {
-    List<DemandaPronosticada> findByAnioDemandaPronosticadaAndMesDemandaPronosticada(int anio, int mes);
+    /*List<DemandaPronosticada> findByanioDemandaPronosticadaAndnroPeriodoDemandaPronosticada(int anioDemandaPronostica, int nroPeriodoDemandaPronostica);
 
-    List<DemandaPronosticada> findByAnioDemandaPronosticada(int anio);
+    List<DemandaPronosticada> findByanioDemandaPronosticada(int anioDemandaPronosticada);*/
 
     // Otros métodos de consulta personalizados según tus necesidades
 }

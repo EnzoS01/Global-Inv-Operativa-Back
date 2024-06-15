@@ -49,8 +49,8 @@ public class DemandaServiceImpl extends BaseServiceImpl<Demanda,Long> implements
                 .orElseThrow(() -> new RuntimeException("Demanda no encontrada"));
 
         //Genero al fecha de inicio y fin con el año y numPeriodo de la demanda, para encontrar todas las ventas que se encuentren en ese rango de fechas;
-        Date fechaInicio= new Date(demanda.getAño(),demanda.getNumPeriodo(),1 );
-        Date fechaFin=new Date(demanda.getAño(),demanda.getNumPeriodo(),31 );
+        Date fechaInicio= new Date(demanda.getAnio(),demanda.getNumPeriodo(),1 );
+        Date fechaFin=new Date(demanda.getAnio(),demanda.getNumPeriodo(),31 );
 
         List<Venta> ventas= ventaRepository.findByFecha(fechaInicio,fechaFin);
 

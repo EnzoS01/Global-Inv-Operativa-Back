@@ -113,13 +113,23 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return articulo;
     }
 
-    /*@Override
-    public Articulo ModeloIntervaloFijo (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception{
-        Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-        List<Demanda> demandas = demandaRepository.findByDesdeHasta(periodoDesde, añoDesde, periodoHasta, añoHasta);
-        Proveedor proveedor= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
-        return articulo;
-    }*/
+
+    @Override
+    public Articulo AsignarUnProveedorAUnArticulo(Long idArticulo, Long idProveedor) throws Exception {
+        try{
+            Articulo articulo= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+            ProveedorArticulo pa = proveedorArticuloRepository.findByArticuloConFechaBajaNula(idArticulo);
+            Proveedor proveedor = proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+            pa.setProveedor(proveedor);
+            proveedorArticuloRepository.save(pa);
+            return articulo;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+    }
+    
+
     
     
 }

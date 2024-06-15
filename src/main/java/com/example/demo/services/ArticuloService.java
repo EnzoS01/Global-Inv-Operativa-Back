@@ -11,5 +11,5 @@ public interface ArticuloService extends BaseService<Articulo,Long>{
     Articulo agregarModelo(Long idArticulo, Long idModelo) throws Exception;
     Articulo calcularCGIConProvPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception;
     Articulo calcularCGI (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception;
-    /*Articulo ModeloIntervaloFijo (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception;*/
+    Articulo AsignarUnProveedorAUnArticulo(Long idArticulo, Long idProveedor) throws Exception;
 }
