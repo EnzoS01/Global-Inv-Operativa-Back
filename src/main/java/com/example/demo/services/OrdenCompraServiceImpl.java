@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -136,6 +137,39 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         }
 
         return OC;
+    }
+
+    @Transactional
+    //metodo para el pronostico de demanda probabilistica (genera orden de compra al final de la prediccion si falta stock para satisfacer la demanda
+    public OrdenCompra OrdenStockFaltante(Long idArticulo, int cantidadFaltante){
+        OrdenCompra nueva = new OrdenCompra();
+        nueva.setFechaRealizacion(Date.from(Instant.now()));
+
+        //creo la orden el detalle ode la orden con 1 producto en base al proveedor predeterminado
+        Articulo a = ArticuloRepo.findById(idArticulo).orElseThrow(() -> new RuntimeException("No se encontro el articulo"));
+        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloandProveedor(a.getProveedorPredeterminado().getId(),idArticulo);
+
+        DetalleOrdenCompra detalle = new DetalleOrdenCompra();
+        detalle.setArticulo(a);
+        detalle.setProveedor(a.getProveedorPredeterminado());
+        detalle.setCantidad(cantidadFaltante);
+        detalle.setSubtotal(cantidadFaltante * PA.getCostoPedido());
+        detalleOrdenCompraRepository.save(detalle);
+        List<DetalleOrdenCompra> lista = new ArrayList<DetalleOrdenCompra>();
+        lista.add(detalle);
+
+        //busco el estado para la OC
+        EstadoOrdenCompra estadoOrdenCompraPen = estadoOrdenRepository.findByName("Pendiente");
+        CambioOrdenCompraEstado CambioEstado = new CambioOrdenCompraEstado();
+        CambioEstado.setFechaCambio(Date.from(Instant.now()));
+        CambioEstado.setOrdenCompra(nueva);
+        CambioOrdenCompraEstadoRepo.save(CambioEstado);
+
+        nueva.setEstadoOrdenCompra(estadoOrdenCompraPen);
+        nueva.setDetallesOrdenCompra(lista);
+        nueva.setTotal(detalle.getSubtotal());
+        ordenCompraRepository.save(nueva);
+        return nueva;
     }
 
 }
