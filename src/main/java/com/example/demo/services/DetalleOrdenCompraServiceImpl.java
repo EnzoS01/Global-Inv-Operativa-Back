@@ -47,20 +47,17 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
     }
 
 
-    //este metodo esta medio decorativo, ignorarlo
+    /*//este metodo esta medio decorativo, ignorarlo
     @Transactional
     public DetalleOrdenCompra setearArticulo(Long idDetalle, Long idArticulo){
         Articulo a = ArticuloRepo.findById(idArticulo).orElseThrow(() -> new RuntimeException("No se encontro el articulo"));
         DetalleOrdenCompra d = DetalleRepo.findById(idDetalle).orElseThrow(() -> new RuntimeException("No se encontro el detalle"));
 
-        //metodo de inventario para calcular el lote optimo
-        int loteoptimo = 4; /*Aca iria la llamada con ArticuloServiceImpl.CalcularModelo(a.getId());*/
-
-        d.setCantidad(loteoptimo);
+        d.setCantidad(a.getLoteOptimo());
         d.setArticulo(a);
         DetalleRepo.save(d);
         return d;
-    }
+    }*/
 
     //actualizo el detalle con el proveedor q eligio y la cantidad que ingreso
     @Transactional
