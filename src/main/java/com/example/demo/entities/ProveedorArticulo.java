@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,14 +18,14 @@ import java.util.Date;
 @Getter
 @Setter
 public class ProveedorArticulo extends Base{
-    @Column(name = "fechaHoraBaja")
-    private Date fechaHoraBaja;
+    @Column(name = "fechaBaja")
+    private Date fechaBaja;
 
-    @Column(name = "fechaHoraAlta")
-    private Date fechaHoraAlta;
+    @Column(name = "fechaAlta")
+    private LocalDate fechaAlta;
 
     @Column(name = "tiempoPedido")
-    private Duration tiempoPedido;    // le puse Duration por chat, pero a chequear
+    private Duration tiempoPedido;
 
     @Column(name = "costoPedido")
     private float costoPedido;
@@ -32,7 +34,7 @@ public class ProveedorArticulo extends Base{
     private float costoAlmacenamiento;
 
     @Column(name = "costoProducto")
-    private Double costoProducto;
+    private float costoProducto;
 
     @ManyToOne
     @JoinColumn(name = "fk_proveedor")
@@ -41,4 +43,15 @@ public class ProveedorArticulo extends Base{
     @ManyToOne
     @JoinColumn(name = "fk_articulo")
     private Articulo articulo;
+
+    public ProveedorArticulo(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
+        this.fechaBaja=null;
+        this.fechaAlta=LocalDate.now();
+        this.tiempoPedido=tiempoPedido;
+        this.costoPedido=costoPedido;
+        this.costoAlmacenamiento=costoAlmacenamiento;
+        this.costoProducto=costoProducto;
+        this.proveedor=proveedor;
+        this.articulo=articulo;
+    }
 }

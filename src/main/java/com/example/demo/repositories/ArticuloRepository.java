@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ArticuloRepository extends BaseRepository<Articulo,Long> {
-
     
 }

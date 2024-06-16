@@ -15,6 +15,7 @@ import com.example.demo.repositories.ProveedorRepository;
 
 import jakarta.transaction.Transactional;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,14 +116,13 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
 
     @Override
-    public Articulo AsignarUnProveedorAUnArticulo(Long idArticulo, Long idProveedor) throws Exception {
+    public Articulo AsignarUnProveedorAUnArticulo(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto, Long idArticulo, Long idProveedor) throws Exception {
         try{
-            Articulo articulo= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-            ProveedorArticulo pa = proveedorArticuloRepository.findByArticuloConFechaBajaNula(idArticulo);
-            Proveedor proveedor = proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
-            pa.setProveedor(proveedor);
+            Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+            Proveedor p = proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+            ProveedorArticulo pa=a.agregarUnProveedor(tiempoPedido,costoPedido,costoAlmacenamiento,costoProducto,p,a);
             proveedorArticuloRepository.save(pa);
-            return articulo;
+            return a;
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }

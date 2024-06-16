@@ -11,6 +11,7 @@ import org.hibernate.envers.Audited;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -61,5 +62,10 @@ public class Articulo extends Base {
     @ManyToOne
     @JoinColumn(name = "fk_proveedorPredeterminado")
     private Proveedor proveedorPredeterminado;
+
+    public ProveedorArticulo agregarUnProveedor(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
+        ProveedorArticulo pa = new ProveedorArticulo(tiempoPedido, costoPedido, costoAlmacenamiento, costoProducto, proveedor, articulo);
+        return pa;
+    }
 
 }

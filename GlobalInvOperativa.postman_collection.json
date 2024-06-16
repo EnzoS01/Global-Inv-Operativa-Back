@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "15995396-b510-471d-a810-29c59f6c6938",
+		"_postman_id": "c1a8cc47-c6f2-4472-9141-48b30b4aa485",
 		"name": "GlobalInvOperativa",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30289981"
@@ -63,7 +63,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"id\":1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": null,\r\n    \"puntoPedido\":null,\r\n    \"stockSeguridad\": null,\r\n    \"CGI\":null,\r\n    \"cantActual\": 12,\r\n    \"precioVenta\": 300,\r\n    \"modelo\":null,\r\n    \"proveedorPredeterminado\": null\r\n}",
+							"raw": "{   \r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": null,\r\n    \"puntoPedido\":null,\r\n    \"stockSeguridad\": null,\r\n    \"CGI\":null,\r\n    \"cantActual\": 12,\r\n    \"precioVenta\": 300,\r\n    \"modelo\":null,\r\n    \"proveedorPredeterminado\": null\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -129,6 +129,33 @@
 							"path": [
 								"api",
 								"articulos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setProveedor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/agregarProveedor/60/23,3/2,0/20,0/2/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"agregarProveedor",
+								"60",
+								"23,3",
+								"2,0",
+								"20,0",
+								"2",
 								"1"
 							]
 						}

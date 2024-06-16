@@ -4,6 +4,8 @@ import com.example.demo.entities.Articulo;
 import com.example.demo.services.ArticuloService;
 import com.example.demo.services.ArticuloServiceImpl;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "api/articulos")
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
     @Autowired
-protected ArticuloService articuloservice;
-
-@PostMapping("/agregarProveedorPredeterminado/{idArticulo}/{idProveedor}")
+    protected ArticuloService articuloservice;
+    @PostMapping("/agregarProveedorPredeterminado/{idArticulo}/{idProveedor}")
     public ResponseEntity<?> setProveedorPredeterminado(@PathVariable Long idArticulo,@PathVariable Long idProveedor){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(idArticulo,idProveedor));
@@ -61,6 +62,18 @@ protected ArticuloService articuloservice;
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularCGI(idArticulo, añoDesde, añoHasta, periodoDesde, periodoHasta,idProveedor));
 
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
+    @PostMapping("/agregarProveedor/{tiempoPedidoMinutos}/{costoPedido}/{costoAlmacenamiento}/{cotoProducto}/{idArticulo}/{idProveedor}")
+    public ResponseEntity<?> setProveedor(@PathVariable long tiempoPedidoMinutos,@PathVariable float costoPedido,@PathVariable float costoAlmacenamiento,@PathVariable float costoProducto,@PathVariable Long idArticulo,@PathVariable Long idProveedor){
+        try {
+            Duration duracionMinutos = Duration.ofMinutes(tiempoPedidoMinutos);
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(duracionMinutos, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         } catch (Exception e) {
