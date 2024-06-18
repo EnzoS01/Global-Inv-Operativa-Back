@@ -15,7 +15,21 @@ public interface PronosticoService extends BaseService<Pronostico, Long> {
 
     List<DemandaPronosticada> suavizacionExponencial(List<Demanda> demandasHistoricasSeleccionadas);
 
+    List<DemandaPronosticada> promedioMovil(List<Demanda> demandasHistoricasSeleccionadas, int n, int cantidadPeriodosAPredecir);
+
+    List<DemandaPronosticada> promedioPonderado(List<Demanda> demandasHistoricasSeleccionadas, int n, int cantidadPeriodosAPredecir);
+
+    List<DemandaPronosticada> suavizacionExponencial(List<Demanda> demandasHistoricasSeleccionadas, double alpha, int mesDemandaAnterior, int cantidadRealDemandadaAnterior, int cantidadDemandadaPronosticadaAnterior);
+
     List<DemandaPronosticada> pronosticoEstacional(List<Demanda> demandasHistoricas);
 
     List<DemandaPronosticada> predecirDemanda(List<Demanda> demandas);
+
+    DemandaPronosticada getPronostico(Long id);
+
+    DemandaPronosticada updatePronostico(Long id, DemandaPronosticada pronosticoActualizado);
+
+    void deletePronostico(Long id);
+
+    List<DemandaPronosticada> getAllPronosticos();
 }

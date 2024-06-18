@@ -1,6 +1,8 @@
 package com.example.demo.services;
 
 import com.example.demo.entities.Base;
+import com.example.demo.entities.Demanda;
+import com.example.demo.entities.DemandaPronosticada;
 import com.example.demo.repositories.BaseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,4 +79,6 @@ public abstract class BaseServiceImpl<E extends Base, ID extends Serializable> i
             throw new Exception(e.getMessage());
         }
     }
+
+    public abstract List<DemandaPronosticada> promedioMovil(List<Demanda> demandasHistoricasSeleccionadas, int n, int cantidadPeriodosAPredecir);
 }

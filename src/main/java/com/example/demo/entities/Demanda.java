@@ -43,13 +43,6 @@ public class Demanda extends Base {
         detallesVenta.add(detalleVenta);
     }
 
-    /*NO HACE FALTA EL CONSTRUCTOR, SE GENERA CON @AllArgsConstructo                  public Demanda(int numPeriodo, int anio, int cantTotalDemanda, Articulo articulo) {
-        this.numPeriodo = numPeriodo;
-        this.año = anio;
-        this.cantTotalDemanda = cantTotalDemanda;
-        this.articulo = articulo;
-    }*/   
-
     public Demanda(int numPeriodo, int anio, Articulo articulo, List<Venta> ventas) {
         this.numPeriodo = numPeriodo;
         this.anio = anio;
