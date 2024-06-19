@@ -23,7 +23,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     @Autowired
     protected ArticuloService articuloservice;
     @PostMapping("/agregarProveedorPredeterminado/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable Long idArticulo,@PathVariable Long idProveedor){
+    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(idArticulo,idProveedor));
 
@@ -34,7 +34,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
     @PostMapping("/agregarModelo/{idArticulo}/{idModelo}")
-    public ResponseEntity<?> setModelo(@PathVariable Long idArticulo,@PathVariable Long idModelo){
+    public ResponseEntity<?> setModelo(@PathVariable("idArticulo") Long idArticulo,@PathVariable("idModelo") Long idModelo){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(idArticulo,idModelo));
 
@@ -46,7 +46,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     }
     
     @PostMapping("/agregarCGIConProveedorPredeterminado/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}")
-    public ResponseEntity<?> setCGIConProveedorPredeterminado(@PathVariable Long idArticulo,@PathVariable int añoDesde ,@PathVariable int añoHasta ,@PathVariable int periodoDesde ,@PathVariable int periodoHasta){
+    public ResponseEntity<?> setCGIConProveedorPredeterminado(@PathVariable("idArticulo") Long idArticulo,@PathVariable("añoDesde") int añoDesde ,@PathVariable("añoHasta") int añoHasta ,@PathVariable("periodoDesde") int periodoDesde ,@PathVariable("periodoHasta") int periodoHasta){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularCGIConProvPredeterminado(idArticulo, añoDesde, añoHasta, periodoDesde, periodoHasta));
 
@@ -70,7 +70,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     }
 
     @PostMapping("/agregarProveedor/{tiempoPedidoMinutos}/{costoPedido}/{costoAlmacenamiento}/{cotoProducto}/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedor(@PathVariable long tiempoPedidoMinutos,@PathVariable float costoPedido,@PathVariable float costoAlmacenamiento,@PathVariable float costoProducto,@PathVariable Long idArticulo,@PathVariable Long idProveedor){
+    public ResponseEntity<?> setProveedor(@PathVariable("tiempoPedidoMinutos") long tiempoPedidoMinutos,@PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("cotoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {
             Duration duracionMinutos = Duration.ofMinutes(tiempoPedidoMinutos);
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(duracionMinutos, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));

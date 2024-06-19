@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Demanda;
+import com.example.demo.entities.DemandaPronosticada;
 import com.example.demo.entities.DetalleVenta;
 import com.example.demo.entities.Modelo;
 import com.example.demo.entities.Proveedor;
@@ -126,9 +127,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
-
     }
-    
+
 
     
     

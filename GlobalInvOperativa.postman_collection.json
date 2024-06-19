@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c1a8cc47-c6f2-4472-9141-48b30b4aa485",
+		"_postman_id": "acebcd1e-6f2a-4f2d-9c8b-1d2b85ad06da",
 		"name": "GlobalInvOperativa",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30289981"
@@ -141,7 +141,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarProveedor/60/23,3/2,0/20,0/2/1",
+							"raw": "http://localhost:8080/api/articulos/agregarProveedor/60/23.3/2.0/20.0/1/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -152,11 +152,83 @@
 								"articulos",
 								"agregarProveedor",
 								"60",
-								"23,3",
-								"2,0",
-								"20,0",
-								"2",
+								"23.3",
+								"2.0",
+								"20.0",
+								"1",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setModelo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/agregarModelo/1/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"agregarModelo",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SetProveedorPredeterminado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/agregarProveedorPredeterminado/1/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"agregarProveedorPredeterminado",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setCGIConProveedorPredeterminado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/agregarCGIConProveedorPredeterminado/1/2022/2022/7/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"agregarCGIConProveedorPredeterminado",
+								"1",
+								"2022",
+								"2022",
+								"7",
+								"8"
 							]
 						}
 					},
@@ -173,7 +245,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos",
+							"raw": "http://localhost:8080/api/modelos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -181,7 +253,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"articulos"
+								"modelos"
 							]
 						}
 					},
@@ -193,7 +265,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/1",
+							"raw": "http://localhost:8080/api/modelos/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -201,7 +273,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"articulos",
+								"modelos",
 								"1"
 							]
 						}
@@ -215,7 +287,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"id\":1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": null,\r\n    \"puntoPedido\":null,\r\n    \"stockSeguridad\": null,\r\n    \"CGI\":null,\r\n    \"cantActual\": 12,\r\n    \"precioVenta\": 300,\r\n    \"modelo\": \"MODELO_INTERVALO_FIJO\",\r\n    \"proveedorPredeterminado\": null\r\n    \r\n}",
+							"raw": "{   \r\n    \"nombreModelo\":\"LoteFijo\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -223,7 +295,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/articulos",
+							"raw": "http://localhost:8080/api/modelos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -231,7 +303,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"articulos"
+								"modelos"
 							]
 						}
 					},
@@ -252,7 +324,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/articulos",
+							"raw": "http://localhost:8080/api/modelos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -260,7 +332,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"articulos"
+								"modelos"
 							]
 						}
 					},
@@ -272,7 +344,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/1",
+							"raw": "http://localhost:8080/api/modelos/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -280,7 +352,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"articulos",
+								"modelos",
 								"1"
 							]
 						}
@@ -424,7 +496,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \"id\":3,\r\n    \"cantidad\": 6,\r\n    \"subtotal\": null,\r\n    \"linea\": 3,\r\n    \"articulo\": null\r\n}"
+							"raw": "{\r\n    \"id\": 1,\r\n    \"cantidad\": 1,\r\n    \"subtotal\": 420.0,\r\n    \"linea\": 2,\r\n    \"articulo\": null\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/api/ventas/agregarDetalle/1",
