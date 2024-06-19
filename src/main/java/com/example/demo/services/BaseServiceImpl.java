@@ -80,5 +80,11 @@ public abstract class BaseServiceImpl<E extends Base, ID extends Serializable> i
         }
     }
 
+<<<<<<< HEAD
    
+=======
+    public abstract List<DemandaPronosticada> promedioPonderado(List<Demanda> demandasHistoricasSeleccionadas);
+
+    public abstract List<DemandaPronosticada> promedioMovil(List<Demanda> demandasHistoricasSeleccionadas, int n, int cantidadPeriodosAPredecir);
+>>>>>>> 29693d50911bad01ae7006100d23e9aac180dc1e
 }
