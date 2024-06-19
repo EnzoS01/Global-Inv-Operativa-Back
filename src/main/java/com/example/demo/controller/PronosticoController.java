@@ -1,19 +1,19 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
 import com.example.demo.entities.Demanda;
 import com.example.demo.entities.DemandaPronosticada;
-
+import com.example.demo.entities.Pronostico;
 import com.example.demo.services.PronosticoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/pronostico")
-public class PronosticoController {
+public class PronosticoController extends BaseControllerImpl<Pronostico, PronosticoServiceImpl> {
 
     @Autowired
     private PronosticoServiceImpl pronosticoService;
@@ -29,23 +29,19 @@ public class PronosticoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DemandaPronosticada> getPronostico(@PathVariable Long id) {
+    public ResponseEntity<Pronostico> getPronostico(@PathVariable Long id) {
         try {
-            DemandaPronosticada pronostico = pronosticoService.getPronostico(id);
-            if (pronostico != null) {
-                return new ResponseEntity<>(pronostico, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+            Pronostico pronostico = pronosticoService.findById(id);
+            return new ResponseEntity<>(pronostico, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DemandaPronosticada> updatePronostico(@PathVariable Long id, @RequestBody DemandaPronosticada pronosticoActualizado) {
+    public ResponseEntity<Pronostico> updatePronostico(@PathVariable Long id, @RequestBody Pronostico pronosticoActualizado) {
         try {
-            DemandaPronosticada pronostico = pronosticoService.updatePronostico(id, pronosticoActualizado);
+            Pronostico pronostico = pronosticoService.update(id, pronosticoActualizado);
             return new ResponseEntity<>(pronostico, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,7 +51,7 @@ public class PronosticoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deletePronostico(@PathVariable Long id) {
         try {
-            pronosticoService.deletePronostico(id);
+            pronosticoService.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,9 +59,9 @@ public class PronosticoController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<DemandaPronosticada>> getAllPronosticos() {
+    public ResponseEntity<List<Pronostico>> getAllPronosticos() {
         try {
-            List<DemandaPronosticada> pronosticos = pronosticoService.getAllPronosticos();
+            List<Pronostico> pronosticos = pronosticoService.findAll();
             return new ResponseEntity<>(pronosticos, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
