@@ -26,4 +26,9 @@ public interface PronosticoService extends BaseService<Pronostico, Long> {
     void deletePronostico(Long id);
 
     List<DemandaPronosticada> getAllPronosticos();
+
+    List<DemandaPronosticada> getDemandasPronosticadasByPronosticoId(Long id);
+
+
+
 }

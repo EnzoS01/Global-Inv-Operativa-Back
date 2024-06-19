@@ -26,15 +26,15 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     }
 
     @Override
+    public List<DemandaPronosticada> getDemandasPronosticadasByPronosticoId(Long id) {
+        return demandaPronosticadaRepository.findAllByPronosticoId(id);
+    }
+
+    @Override
     public List<Demanda> seleccionarDemandaHistoricas(List<Demanda> listaDemandasHistoricas, int nroAnio) {
         return listaDemandasHistoricas.stream()
                 .filter(demanda -> demanda.getAnio() == nroAnio)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<DemandaPronosticada> promedioPonderado(List<Demanda> demandasHistoricasSeleccionadas) {
-        return List.of();
     }
 
     @Override
