@@ -5,12 +5,12 @@ import com.example.demo.entities.DemandaPronosticada;
 import com.example.demo.entities.Pronostico;
 import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.DemandaPronosticadaRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,152 +33,164 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     }
 
     @Override
-    public List<DemandaPronosticada> promedioMovil(List<Demanda> demandasHistoricasSeleccionadas) {
-        return List.of();
-    }
-
-    @Override
     public List<DemandaPronosticada> promedioPonderado(List<Demanda> demandasHistoricasSeleccionadas) {
         return List.of();
     }
 
     @Override
-    public List<DemandaPronosticada> suavizacionExponencial(List<Demanda> demandasHistoricasSeleccionadas) {
-        return List.of();
-    }
-
-    @Override
     public List<DemandaPronosticada> promedioMovil(List<Demanda> demandasHistoricasSeleccionadas, int n, int cantidadPeriodosAPredecir) {
-        List<DemandaPronosticada> demandaPronosticada3 = new ArrayList<>();
+        List<DemandaPronosticada> demandaPronosticadaList = new ArrayList<>();
         int periodoInicioPredecir = demandasHistoricasSeleccionadas.get(0).getNumPeriodo() + n;
 
         for (int i = 0; i < cantidadPeriodosAPredecir; i++) {
-            DemandaPronosticada dp = new DemandaPronosticada();
-            dp.setNroPeriodoDemandaPronosticada(periodoInicioPredecir + i);
-
             double suma = 0;
-            int indiceFin = i + n - 1;
-
-            for (int j = i; j <= indiceFin; j++) {
-                if (j < demandasHistoricasSeleccionadas.size()) {
-                    suma += demandasHistoricasSeleccionadas.get(j).getCantTotalDemanda();
+            for (int j = 0; j < n; j++) {
+                if (i + j < demandasHistoricasSeleccionadas.size()) {
+                    suma += demandasHistoricasSeleccionadas.get(i + j).getCantTotalDemanda();
                 }
             }
-
             double promedioMovil = suma / n;
-            dp.setCantidadDemandadaPronostico(promedioMovil);
-            dp.setAnioDemandaPronosticada(demandasHistoricasSeleccionadas.get(0).getAnio());
-            dp.setNroPeriodoDemandaPronosticada(periodoInicioPredecir + i + n);
-            if ((periodoInicioPredecir + i + n - 1) < demandasHistoricasSeleccionadas.size()) {
-                dp.setDemandaRealAsociada(demandasHistoricasSeleccionadas.get(periodoInicioPredecir + i + n - 1));
-            }
-            demandaPronosticada3.add(dp);
+            DemandaPronosticada dp = crearDemandaPronosticada(demandasHistoricasSeleccionadas, periodoInicioPredecir + i, promedioMovil);
+            demandaPronosticadaList.add(dp);
         }
-        return demandaPronosticada3;
+        return demandaPronosticadaList;
     }
 
     @Override
     public List<DemandaPronosticada> promedioPonderado(List<Demanda> demandasHistoricasSeleccionadas, int n, int cantidadPeriodosAPredecir) {
-        List<DemandaPronosticada> demandaPronosticada = new ArrayList<>();
+        List<DemandaPronosticada> demandaPronosticadaList = new ArrayList<>();
         double[] ponderaciones = calcularPonderaciones(n);
-
-        if (demandasHistoricasSeleccionadas.size() < n) {
-            throw new IllegalArgumentException("No hay suficientes datos históricos para realizar el cálculo.");
-        }
-
-        int periodoInicioPredecir = demandasHistoricasSeleccionadas.get(0).getNumPeriodo() + 1 - n;
 
         for (int i = 0; i < cantidadPeriodosAPredecir; i++) {
             double sumaPonderada = 0;
-
             for (int j = 0; j < n; j++) {
-                int indiceHistorico = i + j;
-                sumaPonderada += demandasHistoricasSeleccionadas.get(indiceHistorico).getCantTotalDemanda() * ponderaciones[j];
+                sumaPonderada += demandasHistoricasSeleccionadas.get(i + j).getCantTotalDemanda() * ponderaciones[j];
             }
-
-            DemandaPronosticada dp = new DemandaPronosticada();
-            dp.setNroPeriodoDemandaPronosticada(periodoInicioPredecir + i + n);
-            dp.setAnioDemandaPronosticada(demandasHistoricasSeleccionadas.get(0).getAnio());
-            dp.setCantidadDemandadaPronostico(sumaPonderada);
-            if ((periodoInicioPredecir + i + n - 1) < demandasHistoricasSeleccionadas.size()) {
-                dp.setDemandaRealAsociada(demandasHistoricasSeleccionadas.get(periodoInicioPredecir + i + n - 1));
-            }
-            demandaPronosticada.add(dp);
+            DemandaPronosticada dp = crearDemandaPronosticada(demandasHistoricasSeleccionadas, i + n, sumaPonderada);
+            demandaPronosticadaList.add(dp);
         }
-
-        return demandaPronosticada;
+        return demandaPronosticadaList;
     }
 
     @Override
     public List<DemandaPronosticada> suavizacionExponencial(List<Demanda> demandasHistoricasSeleccionadas, double alpha, int mesDemandaAnterior, int cantidadRealDemandadaAnterior, int cantidadDemandadaPronosticadaAnterior) {
         List<DemandaPronosticada> demandasPronosticadas = new ArrayList<>();
+        double prediccionSuavizacionExponencial = cantidadDemandadaPronosticadaAnterior + alpha * (cantidadRealDemandadaAnterior - cantidadDemandadaPronosticadaAnterior);
 
-        double prediccionSuavizacionExponencial = cantidadDemandadaPronosticadaAnterior
-                + alpha * (cantidadRealDemandadaAnterior - cantidadDemandadaPronosticadaAnterior);
-
-        DemandaPronosticada dp = new DemandaPronosticada();
-        dp.setAnioDemandaPronosticada(demandasHistoricasSeleccionadas.get(0).getAnio());
-        dp.setCantidadDemandadaPronostico(prediccionSuavizacionExponencial);
-        dp.setNroPeriodoDemandaPronosticada(mesDemandaAnterior + 1);
-        dp.setDemandaRealAsociada(demandasHistoricasSeleccionadas.get(mesDemandaAnterior - 1));
+        DemandaPronosticada dp = crearDemandaPronosticada(demandasHistoricasSeleccionadas, mesDemandaAnterior + 1, prediccionSuavizacionExponencial);
         demandasPronosticadas.add(dp);
-
         return demandasPronosticadas;
     }
 
     @Override
-    public List<DemandaPronosticada> pronosticoEstacional(List<Demanda> demandasHistoricas) {
-        // Implementación no proporcionada en el ejemplo original
-        return new ArrayList<>();
+    public List<DemandaPronosticada> pronosticoEstacional(List<Demanda> demandasHistoricas, int anioAPredecir, int anioInicio, int anioFin, int demandaEsperada) {
+        List<DemandaPronosticada> demandasPronosticadas = new ArrayList<>();
+        List<List<Demanda>> demandasPorAnio = new ArrayList<>();
+
+        for (int anio = anioInicio; anio <= anioFin; anio++) {
+            demandasPorAnio.add(seleccionarDemandaHistoricas(demandasHistoricas, anio));
+        }
+
+        double promedioTotal = calcularPromedioTotal(demandasPorAnio);
+        double[] indicesEstacionalidad = calcularIndicesEstacionalidad(demandasPorAnio, promedioTotal);
+
+        for (int mes = 0; mes < 12; mes++) {
+            double cantidadPronosticada = demandaEsperada * indicesEstacionalidad[mes];
+            DemandaPronosticada dp = new DemandaPronosticada();
+            dp.setCantidadDemandadaPronostico(cantidadPronosticada);
+            dp.setAnioDemandaPronosticada(anioAPredecir);
+            dp.setNroPeriodoDemandaPronosticada(mes + 1);
+            demandasPronosticadas.add(dp);
+        }
+        return demandasPronosticadas;
+    }
+
+    private double calcularPromedioTotal(List<List<Demanda>> demandasPorAnio) {
+        int suma = 0;
+        int contador = 0;
+
+        for (List<Demanda> demandasAnio : demandasPorAnio) {
+            for (Demanda demanda : demandasAnio) {
+                suma += demanda.getCantTotalDemanda();
+                contador++;
+            }
+        }
+        return (double) suma / contador;
+    }
+
+    private double[] calcularIndicesEstacionalidad(List<List<Demanda>> demandasPorAnio, double promedioTotal) {
+        int cantidadAnios = demandasPorAnio.size();
+        double[][] indicesPorAnio = new double[12][cantidadAnios];
+        double[] indicesEstacionalidad = new double[12];
+
+        for (int anio = 0; anio < cantidadAnios; anio++) {
+            for (int mes = 0; mes < 12; mes++) {
+                indicesPorAnio[mes][anio] = demandasPorAnio.get(anio).get(mes).getCantTotalDemanda() / promedioTotal;
+            }
+        }
+
+        for (int mes = 0; mes < 12; mes++) {
+            double suma = 0;
+            for (int anio = 0; anio < cantidadAnios; anio++) {
+                suma += indicesPorAnio[mes][anio];
+            }
+            indicesEstacionalidad[mes] = suma / cantidadAnios;
+        }
+        return indicesEstacionalidad;
+    }
+
+    private DemandaPronosticada crearDemandaPronosticada(List<Demanda> demandasHistoricasSeleccionadas, int periodo, double cantidadPronosticada) {
+        DemandaPronosticada dp = new DemandaPronosticada();
+        dp.setNroPeriodoDemandaPronosticada(periodo);
+        dp.setCantidadDemandadaPronostico(cantidadPronosticada);
+        dp.setAnioDemandaPronosticada(demandasHistoricasSeleccionadas.get(0).getAnio());
+        return dp;
+    }
+
+    private double[] calcularPonderaciones(int n) {
+        double[] ponderaciones = new double[n];
+        double sumaPonderaciones = 0;
+
+        for (int i = 1; i <= n; i++) {
+            sumaPonderaciones += i;
+        }
+
+        for (int i = 0; i < n; i++) {
+            ponderaciones[i] = (double) (i + 1) / sumaPonderaciones;
+        }
+        return ponderaciones;
     }
 
     @Override
     public List<DemandaPronosticada> predecirDemanda(List<Demanda> demandas) {
-        // Implementación no proporcionada en el ejemplo original
-        return new ArrayList<>();
+        // Implementación del método de predicción
+        return List.of();
     }
 
     @Override
     public DemandaPronosticada getPronostico(Long id) {
-        Optional<DemandaPronosticada> pronosticoOpt = demandaPronosticadaRepository.findById(id);
-        return pronosticoOpt.orElse(null);
+        Optional<DemandaPronosticada> optionalPronostico = demandaPronosticadaRepository.findById(id);
+        return optionalPronostico.orElse(null);
     }
 
     @Override
     public DemandaPronosticada updatePronostico(Long id, DemandaPronosticada pronosticoActualizado) {
-        if (!demandaPronosticadaRepository.existsById(id)) {
-            throw new IllegalArgumentException("El pronóstico no existe.");
+        if (demandaPronosticadaRepository.existsById(id)) {
+            pronosticoActualizado.setId(id);
+            return demandaPronosticadaRepository.save(pronosticoActualizado);
+        } else {
+            return null;
         }
-        pronosticoActualizado.setId(id);
-        return demandaPronosticadaRepository.save(pronosticoActualizado);
     }
 
     @Override
+    @Transactional
     public void deletePronostico(Long id) {
-        if (!demandaPronosticadaRepository.existsById(id)) {
-            throw new IllegalArgumentException("El pronóstico no existe.");
-        }
         demandaPronosticadaRepository.deleteById(id);
     }
 
     @Override
     public List<DemandaPronosticada> getAllPronosticos() {
         return demandaPronosticadaRepository.findAll();
-    }
-
-    private double[] calcularPonderaciones(int n) {
-        double[] ponderaciones = new double[n];
-        double sumaPonderaciones = 0.0;
-
-        for (int i = 0; i < n; i++) {
-            ponderaciones[i] = (double) (n - i) / (n * (n + 1) / 2.0);
-            sumaPonderaciones += ponderaciones[i];
-        }
-
-        for (int i = 0; i < n; i++) {
-            ponderaciones[i] /= sumaPonderaciones;
-        }
-
-        return ponderaciones;
     }
 }
