@@ -70,12 +70,24 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
 
     }
+    @Override
+    public Articulo AsignarUnProveedorAUnArticulo(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto, Long idArticulo, Long idProveedor) throws Exception {
+        try{
+            Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+            Proveedor p = proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+            ProveedorArticulo pa=a.agregarUnProveedor(tiempoPedido,costoPedido,costoAlmacenamiento,costoProducto,p,a);
+            proveedorArticuloRepository.save(pa);
+            return a;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
 
     @Override
     public Articulo calcularCGIConProvPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-        List<Demanda> demandas = demandaRepository.findByDesdeHasta(periodoDesde, añoDesde, periodoHasta, añoHasta);
+        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo,periodoDesde, añoDesde, periodoHasta, añoHasta);
         Proveedor proveedorPredeterminado= articulo.getProveedorPredeterminado();
         ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(proveedorPredeterminado.getId(),idArticulo);
         int D = 0;
@@ -98,7 +110,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public Articulo calcularCGI (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-        List<Demanda> demandas = demandaRepository.findByDesdeHasta(periodoDesde, añoDesde, periodoHasta, añoHasta);
+        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo,periodoDesde, añoDesde, periodoHasta, añoHasta);
         Proveedor proveedor= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
         ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(idProveedor,idArticulo);
         int D = 0;
@@ -117,21 +129,4 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return articulo;
     }
 
-
-    @Override
-    public Articulo AsignarUnProveedorAUnArticulo(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto, Long idArticulo, Long idProveedor) throws Exception {
-        try{
-            Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-            Proveedor p = proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
-            ProveedorArticulo pa=a.agregarUnProveedor(tiempoPedido,costoPedido,costoAlmacenamiento,costoProducto,p,a);
-            proveedorArticuloRepository.save(pa);
-            return a;
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-    }
-
-
-    
-    
 }

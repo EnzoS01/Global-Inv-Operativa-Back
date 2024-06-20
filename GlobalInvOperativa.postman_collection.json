@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e6b47602-a85c-4102-a696-7ff9ec89e107",
+		"_postman_id": "0faed691-d73a-4d0b-bb85-2e4ad1ef1f17",
 		"name": "GlobalInvOperativa",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30289981"
@@ -191,7 +191,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarProveedor/60/23.3/2.0/20.0/1/1",
+							"raw": "http://localhost:8080/api/articulos/agregarProveedorPredeterminado/20/23.3/2.0/20.0/1/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -200,8 +200,8 @@
 							"path": [
 								"api",
 								"articulos",
-								"agregarProveedor",
-								"60",
+								"agregarProveedorPredeterminado",
+								"20",
 								"23.3",
 								"2.0",
 								"20.0",
@@ -218,7 +218,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarCGIConProveedorPredeterminado/1/2022/2022/7/8",
+							"raw": "http://localhost:8080/api/articulos/agregarCGIConProveedorPredeterminado/1/2022/2022/1/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -231,8 +231,8 @@
 								"1",
 								"2022",
 								"2022",
-								"7",
-								"8"
+								"1",
+								"2"
 							]
 						}
 					},
@@ -1157,7 +1157,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"numPerido\":1,\r\n    \"anio\":2022,\r\n    \"cantTotalDemanda\":20,\r\n}",
+							"raw": "{   \r\n    \"numPerido\":1,\r\n    \"anio\":2022,\r\n    \"cantTotalDemanda\":20\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

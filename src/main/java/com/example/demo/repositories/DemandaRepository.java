@@ -12,11 +12,20 @@ import com.example.demo.entities.Demanda;
 public interface DemandaRepository extends BaseRepository<Demanda,Long>{
 
 
-        @Query(value="SELECT * FROM demanda D WHERE D.NUM_PERIODO >= :periodoDesde AND D.NUM_PERIODO <= :periodoHasta AND D.ANIO >= :anioDesde AND D.ANIO <= :anioHasta", nativeQuery = true)
+    /*@Query(value="SELECT * FROM demanda D WHERE D.NUM_PERIODO >= :periodoDesde AND D.NUM_PERIODO <= :periodoHasta AND D.ANIO >= :anioDesde AND D.ANIO <= :anioHasta", nativeQuery = true)
     List<Demanda> findByDesdeHasta(@Param("periodoDesde") int periodoDesde,
                                    @Param("anioDesde") int anioDesde,
                                    @Param("periodoHasta") int periodoHasta,
-                                   @Param("anioHasta") int anioHasta);
+                                   @Param("anioHasta") int anioHasta);*/
+    @Query(value="SELECT * FROM demanda D " +
+                 "WHERE D.NUM_PERIODO >= :periodoDesde AND D.NUM_PERIODO <= :periodoHasta AND D.ANIO >= :anioDesde AND D.ANIO <= :anioHasta AND D.fk_articulo= :idArticulo"
+                 ,nativeQuery = true)
+    List<Demanda> findByArticuloDesdeHasta(@Param("idArticulo") Long idArticulo,
+                                           @Param("periodoDesde") int periodoDesde,
+                                           @Param("anioDesde") int anioDesde,
+                                           @Param("periodoHasta") int periodoHasta,
+                                           @Param("anioHasta") int anioHasta);
+        
 }
 
 
