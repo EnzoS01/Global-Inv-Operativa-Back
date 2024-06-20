@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.DemandaRepository;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,12 +49,16 @@ public class DemandaServiceImpl extends BaseServiceImpl<Demanda,Long> implements
                 .orElseThrow(() -> new RuntimeException("Demanda no encontrada"));
 
         //Genero al fecha de inicio y fin con el año y numPeriodo de la demanda, para encontrar todas las ventas que se encuentren en ese rango de fechas;
-        Date fechaInicio= new Date(demanda.getAnio(),demanda.getNumPeriodo(),1 );
-        Date fechaFin=new Date(demanda.getAnio(),demanda.getNumPeriodo(),31 );
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(demanda.getAnio(), demanda.getNumPeriodo(), 1);
+        Date fechaInicio = calendar.getTime();
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date fechaFin = calendar.getTime();
 
         List<Venta> ventas= ventaRepository.findByFecha(fechaInicio,fechaFin);
 
-        List<Venta> ventasRevisar= new ArrayList<>();
+        // Remove the unused variable
+        // List<Venta> ventasRevisar= new ArrayList<>();
         //Por cada venta encontrada entre las fechas correspondientes, se busca que el detalle tenga el mismo artículo que la demanda para poder agregar el detalle a la demanda;
         for (Venta venta:ventas){
             List<DetalleVenta> detallesVenta=venta.getDetallesVenta();
