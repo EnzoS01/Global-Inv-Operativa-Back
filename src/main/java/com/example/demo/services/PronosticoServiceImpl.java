@@ -5,7 +5,6 @@ import com.example.demo.entities.DemandaPronosticada;
 import com.example.demo.entities.Pronostico;
 import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.DemandaPronosticadaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
     private final DemandaPronosticadaRepository demandaPronosticadaRepository;
 
-    @Autowired
     public PronosticoServiceImpl(BaseRepository<Pronostico, Long> baseRepository, DemandaPronosticadaRepository demandaPronosticadaRepository) {
         super(baseRepository);
         this.demandaPronosticadaRepository = demandaPronosticadaRepository;
