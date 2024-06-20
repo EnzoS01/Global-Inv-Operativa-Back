@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface DemandaPronosticadaRepository extends BaseRepository<DemandaPronosticada, Long> {
     List<DemandaPronosticada> findAllByPronosticoId(Long id);
+    
 }

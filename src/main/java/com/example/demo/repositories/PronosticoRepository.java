@@ -12,4 +12,6 @@ public interface PronosticoRepository extends BaseRepository<Pronostico, Long> {
 
     @Query("SELECT p FROM Pronostico p WHERE p.nombrePronostico = :nombrePronostico")
     List<Pronostico> findByNombrePronostico(@Param("nombrePronostico") String nombrePronostico);
+
+    
 }
