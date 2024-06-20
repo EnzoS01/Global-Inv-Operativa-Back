@@ -15,7 +15,6 @@ public class DemandaPronosticadaController {
 
     @Autowired
     private DemandaPronosticadaService demandaPronosticadaService;
-
     @GetMapping("/")
     public ResponseEntity<?> getAll() {
         try {

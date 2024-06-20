@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
     @Autowired
     protected ArticuloService articuloservice;
-    @PostMapping("/agregarProveedorPredeterminado/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
+    @PostMapping("/agregarProveedorPredeterminado/{tiempoPedido}/{costoPedido}/{costoAlmacenamiento}/{costoProducto}/{idArticulo}/{idProveedor}")
+    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("tiempoPedido") Duration tiempoPedido, @PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("costoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(idArticulo,idProveedor));
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(tiempoPedido,costoPedido,costoAlmacenamiento,costoProducto,idArticulo,idProveedor));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
@@ -36,7 +36,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     @PostMapping("/agregarModelo/{idArticulo}/{idModelo}")
     public ResponseEntity<?> setModelo(@PathVariable("idArticulo") Long idArticulo,@PathVariable("idModelo") Long idModelo){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(idArticulo,idModelo));
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarModelo(idArticulo,idModelo));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
