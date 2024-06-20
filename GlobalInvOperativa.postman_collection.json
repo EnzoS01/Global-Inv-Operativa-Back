@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "acebcd1e-6f2a-4f2d-9c8b-1d2b85ad06da",
+		"_postman_id": "e6b47602-a85c-4102-a696-7ff9ec89e107",
 		"name": "GlobalInvOperativa",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30289981"
@@ -191,7 +191,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarProveedorPredeterminado/1/1",
+							"raw": "http://localhost:8080/api/articulos/agregarProveedor/60/23.3/2.0/20.0/1/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -200,7 +200,11 @@
 							"path": [
 								"api",
 								"articulos",
-								"agregarProveedorPredeterminado",
+								"agregarProveedor",
+								"60",
+								"23.3",
+								"2.0",
+								"20.0",
 								"1",
 								"1"
 							]
@@ -976,7 +980,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/proveedores",
+							"raw": "http://localhost:8080/api/proveedorArticulos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -984,7 +988,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"proveedores"
+								"proveedorArticulos"
 							]
 						}
 					},
@@ -1153,7 +1157,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"nombre\":\"ale\",\r\n    \"telefono\":2613004548,\r\n    \"direccion\":\"Castelar 825\",\r\n    \"mail\":\"alear12373@gmail.com\",\r\n    \"fechaAlta\":\"2021-10-12T00:00:00\",\r\n    \"fechaBaja\":null\r\n}",
+							"raw": "{   \r\n    \"numPerido\":1,\r\n    \"anio\":2022,\r\n    \"cantTotalDemanda\":20,\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

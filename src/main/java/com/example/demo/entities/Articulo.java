@@ -68,4 +68,10 @@ public class Articulo extends Base {
         return pa;
     }
 
+    public ProveedorArticulo agregarUnProveedorPredeterminado(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
+        ProveedorArticulo pa = new ProveedorArticulo(tiempoPedido, costoPedido, costoAlmacenamiento, costoProducto, proveedor, articulo);
+        return pa;
+    }
+
+
 }

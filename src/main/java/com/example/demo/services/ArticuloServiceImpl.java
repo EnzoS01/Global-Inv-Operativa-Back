@@ -43,11 +43,13 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
 
     @Override
-    public Articulo agregarProveedorPredeterminado(Long idArticulo, Long idProveedor) throws Exception {
+    public Articulo agregarProveedorPredeterminado(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Long idArticulo, Long idProveedor) throws Exception {
         try{
             Articulo articulo= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
             Proveedor proveedor=proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
             articulo.setProveedorPredeterminado(proveedor);
+            ProveedorArticulo pa= articulo.agregarUnProveedorPredeterminado(tiempoPedido,costoPedido,costoAlmacenamiento,costoProducto,proveedor,articulo);
+            proveedorArticuloRepository.save(pa);
             articuloRepository.save(articulo);
             return articulo;
         } catch (Exception e){
