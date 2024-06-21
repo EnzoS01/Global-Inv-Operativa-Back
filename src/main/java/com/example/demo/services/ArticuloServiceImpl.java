@@ -39,9 +39,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         super(baseRepository);
         this.articuloRepository = articuloRepository;
     }
-
-
-
     @Override
     public Articulo agregarProveedorPredeterminado(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Long idArticulo, Long idProveedor) throws Exception {
         try{
@@ -86,47 +83,51 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Override
     public Articulo calcularCGIConProvPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception{
         //BUSQUEDA DE DATOS
-        Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo,periodoDesde, añoDesde, periodoHasta, añoHasta);
-        Proveedor proveedorPredeterminado= articulo.getProveedorPredeterminado();
-        ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(proveedorPredeterminado.getId(),idArticulo);
-        int D = 0;
-        float CGI= 0 ;
-        for (Demanda demanda: demandas){
-            D= D + demanda.getCantTotalDemanda();
+        Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo, periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor pp=a.getProveedorPredeterminado();
+        ProveedorArticulo pa= proveedorArticuloRepository.findByArticuloAndProveedor(pp.getId(), idArticulo);
+        //ASIGNACION VARIABLES
+        a.setCGI(0.0);
+        float CGI= 0;
+        int D=0;
+        for (Demanda d: demandas){
+            D += d.getCantTotalDemanda();
         }
-        double P=proveedorArticulo.getCostoProducto();
-        double Ca=proveedorArticulo.getCostoAlmacenamiento();
-        int Q=articulo.getLoteOptimo();
-        double Cp=proveedorArticulo.getCostoPedido();
+        float P=pa.getCostoProducto();
+        float Ca=pa.getCostoAlmacenamiento();
+        float Q=a.getLoteOptimo();
+        float Cp=pa.getCostoPedido();
+        float DSobreQ= (float)(D/Q);
         //CALCULO CGI
-        CGI= (float) ((P*D) + (Ca*(Q/2)) + (Cp*(D/Q)));
-        articulo.setCGI(CGI);
-        articuloRepository.save(articulo);
-        return articulo;
+        CGI = (P * D) + (Ca * (Q / 2))+(Cp*DSobreQ);
+        a.setCGI(CGI);
+        articuloRepository.save(a);
+        return a;
     }
 
     @Override
     public Articulo calcularCGI (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception{
         //BUSQUEDA DE DATOS
-        Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo,periodoDesde, añoDesde, periodoHasta, añoHasta);
-        Proveedor proveedor= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
-        ProveedorArticulo proveedorArticulo=proveedorArticuloRepository.findByArticuloandProveedor(idProveedor,idArticulo);
-        int D = 0;
+        Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo, periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor p= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        ProveedorArticulo pa= proveedorArticuloRepository.findByArticuloAndProveedor(idProveedor, idArticulo);
+        int D = 0;  
         float CGI= 0 ;
         for (Demanda demanda: demandas){
             D= D + demanda.getCantTotalDemanda();
         }
-        double P=proveedorArticulo.getCostoProducto();
-        double Ca=proveedorArticulo.getCostoAlmacenamiento();
-        int Q=articulo.getLoteOptimo();
-        double Cp=proveedorArticulo.getCostoPedido();
+        float P=pa.getCostoProducto();
+        float Ca=pa.getCostoAlmacenamiento();
+        float Q=a.getLoteOptimo();
+        float Cp=pa.getCostoPedido();
+        float DSobreQ= (float)(D/Q);
         //CALCULO CGI
-        CGI= (float) ((P*D) + (Ca*(Q/2)) + (Cp*(D/Q)));
-        articulo.setCGI(CGI);
-        articuloRepository.save(articulo);
-        return articulo;
+        CGI= ((P*D) + (Ca*(Q/2)) + (Cp*DSobreQ));
+        a.setCGI(CGI);
+        articuloRepository.save(a);
+        return a;
     }
 
 }

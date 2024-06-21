@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.entities.Demanda;
 import com.example.demo.services.DemandaServiceImpl;
+
+import jakarta.transaction.Transactional;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -16,7 +20,18 @@ public class DemandaController extends BaseControllerImpl<Demanda,DemandaService
     @Autowired
     private DemandaServiceImpl demandaService;
 
+    @GetMapping("/getDemandas/{idArticulo}/{periodoDesde}/{anioDesde}/{periodoHasta}/{anioHasta}")
+    public ResponseEntity<?> getDemandas(@PathVariable("idArticulo")Long idArticulo,@PathVariable("periodoDesde")int periodoDesde,@PathVariable("anioDesde")int anioDesde,@PathVariable("periodoHasta")int periodoHasta,@PathVariable("anioHasta")int anioHasta){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(demandaService.getDemandas(idArticulo, periodoDesde,anioDesde,periodoHasta,anioHasta));
 
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+
+    }
     @PostMapping("/setearArticulo/{demandaId}/{articuloId}")
     public ResponseEntity<?> setearArticulo(@PathVariable Long demandaId,@PathVariable Long articuloId){
         try {

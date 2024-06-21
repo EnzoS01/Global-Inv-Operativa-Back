@@ -45,7 +45,17 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
-    
+    @PostMapping("/agregarProveedor/{tiempoPedidoMinutos}/{costoPedido}/{costoAlmacenamiento}/{cotoProducto}/{idArticulo}/{idProveedor}")
+    public ResponseEntity<?> setProveedor(@PathVariable("tiempoPedidoMinutos") long tiempoPedidoMinutos,@PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("cotoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
+        try {
+            Duration duracionMinutos = Duration.ofMinutes(tiempoPedidoMinutos);
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(duracionMinutos, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
     @PostMapping("/agregarCGIConProveedorPredeterminado/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}")
     public ResponseEntity<?> setCGIConProveedorPredeterminado(@PathVariable("idArticulo") Long idArticulo,@PathVariable("añoDesde") int añoDesde ,@PathVariable("añoHasta") int añoHasta ,@PathVariable("periodoDesde") int periodoDesde ,@PathVariable("periodoHasta") int periodoHasta){
         try {
@@ -57,24 +67,11 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
-
     @PostMapping("/agregarCGI/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}")
     public ResponseEntity<?> setCGI(@PathVariable Long idArticulo,@PathVariable int añoDesde ,@PathVariable int añoHasta ,@PathVariable int periodoDesde ,@PathVariable int periodoHasta, @PathVariable Long idProveedor){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularCGI(idArticulo, añoDesde, añoHasta, periodoDesde, periodoHasta,idProveedor));
 
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-
-    @PostMapping("/agregarProveedor/{tiempoPedidoMinutos}/{costoPedido}/{costoAlmacenamiento}/{cotoProducto}/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedor(@PathVariable("tiempoPedidoMinutos") long tiempoPedidoMinutos,@PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("cotoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
-        try {
-            Duration duracionMinutos = Duration.ofMinutes(tiempoPedidoMinutos);
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(duracionMinutos, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         } catch (Exception e) {

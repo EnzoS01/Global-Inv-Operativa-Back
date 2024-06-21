@@ -44,7 +44,7 @@ public class Articulo extends Base {
     private int stockSeguridad;
 
     @Column(name = "CGI")
-    private float CGI;
+    private double CGI;
 
     @Column(name = "CantActual")
     private int CantActual;

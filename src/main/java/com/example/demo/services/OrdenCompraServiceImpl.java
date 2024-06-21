@@ -70,7 +70,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
         //necesito el precio del proveedor
         Proveedor p = detalleOrdenCompra.getProveedor();
-        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloandProveedor(p.getId(),detalleOrdenCompra.getArticulo().getId());
+        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(p.getId(),detalleOrdenCompra.getArticulo().getId());
 
         // Calculo el subtotal
         detalleOrdenCompra.setSubtotal(detalleOrdenCompra.getCantidad() * PA.getCostoPedido());
@@ -147,7 +147,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
         //creo la orden el detalle ode la orden con 1 producto en base al proveedor predeterminado
         Articulo a = ArticuloRepo.findById(idArticulo).orElseThrow(() -> new RuntimeException("No se encontro el articulo"));
-        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloandProveedor(a.getProveedorPredeterminado().getId(),idArticulo);
+        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(a.getProveedorPredeterminado().getId(),idArticulo);
 
         DetalleOrdenCompra detalle = new DetalleOrdenCompra();
         detalle.setArticulo(a);

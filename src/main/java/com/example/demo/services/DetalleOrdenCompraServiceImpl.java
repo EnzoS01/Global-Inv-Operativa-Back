@@ -35,7 +35,7 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
 
 
 
-        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloandProveedor(predeterminado.getId(), a.getId());
+        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(predeterminado.getId(), a.getId());
 
         d.setCantidad(a.getLoteOptimo());
         d.setSubtotal(a.getLoteOptimo() * PA.getCostoPedido());
@@ -66,7 +66,7 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
         DetalleOrdenCompra d = DetalleRepo.findById(idDetalle).orElseThrow(() -> new RuntimeException("No se encontro el detalle"));
         Articulo a = d.getArticulo();
 
-        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloandProveedor(p.getId(), a.getId());
+        ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(p.getId(), a.getId());
         d.setSubtotal(cantidad * PA.getCostoPedido());
         d.setCantidad(cantidad);
         d.setProveedor(p);
