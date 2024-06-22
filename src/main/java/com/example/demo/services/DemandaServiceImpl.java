@@ -30,11 +30,7 @@ public class DemandaServiceImpl extends BaseServiceImpl<Demanda,Long> implements
         super(baseRepository);
         this.demandaRepository=demandaRepository;
     }
-    @Transactional
-    public List<Demanda> getDemandas(Long idArticulo,int periodoDesde,int anioDesde,int periodoHasta,int anioHasta){
-        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo,periodoDesde,anioDesde,periodoHasta,anioHasta);
-        return demandas;
-    }
+
     @Transactional
     public Demanda setArticulo(Long demandaId, Long articuloId){
         Demanda demanda = demandaRepository.findById(demandaId)

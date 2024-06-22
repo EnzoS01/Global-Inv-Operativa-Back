@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e3c5de15-eb5c-4905-94fa-d4a1f5e3ec6a",
+		"_postman_id": "c95321fb-b452-4ab3-b9ec-98d5425ad239",
 		"name": "GlobalInvOperativa",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30289981"
@@ -63,7 +63,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 40,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"precioVenta\": 300.0,\r\n    \"periodo\": null,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\":null,\r\n    \"cgi\": 0.0,\r\n    \"cantActual\": 12\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": null,\r\n    \"puntoPedido\": null,\r\n    \"stockSeguridad\": null,\r\n    \"precioVenta\": 300.0,\r\n    \"periodo\": null,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\":null,\r\n    \"cgi\": 0.0,\r\n    \"cantActual\": 12\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -260,6 +260,35 @@
 								"1",
 								"2",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoteFijo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/LoteFijo/1/2022/2022/1/2/1/5/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"LoteFijo",
+								"1",
+								"2022",
+								"2022",
+								"1",
+								"2",
+								"1",
+								"5",
+								"2"
 							]
 						}
 					},
@@ -1201,49 +1230,6 @@
 							"path": [
 								"api",
 								"demandas"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getDemandas",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{   \r\n    \"numPerido\":1,\r\n    \"anio\":2022,\r\n    \"cantTotalDemanda\":20,\r\n    \"articulo\":{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 40,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"precioVenta\": 300.0,\r\n    \"periodo\": null,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": {\r\n        \"id\": 1,\r\n        \"nombre\": \"ale\",\r\n        \"telefono\": 2.613004548E9,\r\n        \"direccion\": \"Castelar 825\",\r\n        \"mail\": \"alear12373@gmail.com\",\r\n        \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n        \"fechaBaja\": null\r\n    },\r\n    \"cgi\": 0.0,\r\n    \"cantActual\": 12\r\n}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/demandas/getDemandas/1/1/2022/2/2022",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"demandas",
-								"getDemandas",
-								"1",
-								"1",
-								"2022",
-								"2",
-								"2022"
 							]
 						}
 					},

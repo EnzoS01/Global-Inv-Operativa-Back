@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
     @Autowired
     protected ArticuloService articuloservice;
-    @PostMapping("/agregarProveedorPredeterminado/{tiempoPedidoStr}/{costoPedido}/{costoAlmacenamiento}/{costoProducto}/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("tiempoPedidoStr") Long tiempoPedidoMinutos, @PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("costoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
+    @PostMapping("/agregarProveedorPredeterminado/{tiempoPedidoDias}/{costoPedido}/{costoAlmacenamiento}/{costoProducto}/{idArticulo}/{idProveedor}")
+    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("tiempoPedidoDias") Long tiempoPedidoDias, @PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("costoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {
-            Duration tiempoPedido = Duration.ofMinutes(tiempoPedidoMinutos);
+            Duration tiempoPedido = Duration.ofDays(tiempoPedidoDias);
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(tiempoPedido,costoPedido,costoAlmacenamiento,costoProducto,idArticulo,idProveedor));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
@@ -45,11 +45,11 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
-    @PostMapping("/agregarProveedor/{tiempoPedidoMinutos}/{costoPedido}/{costoAlmacenamiento}/{cotoProducto}/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedor(@PathVariable("tiempoPedidoMinutos") long tiempoPedidoMinutos,@PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("cotoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
+    @PostMapping("/agregarProveedor/{tiempoPedidoDias}/{costoPedido}/{costoAlmacenamiento}/{cotoProducto}/{idArticulo}/{idProveedor}")
+    public ResponseEntity<?> setProveedor(@PathVariable("tiempoPedidoDias") long tiempoPedidoDias,@PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("cotoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {
-            Duration duracionMinutos = Duration.ofMinutes(tiempoPedidoMinutos);
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(duracionMinutos, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));
+            Duration duracionDias = Duration.ofDays(tiempoPedidoDias);
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(duracionDias, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         } catch (Exception e) {
@@ -71,6 +71,32 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     public ResponseEntity<?> setCGI(@PathVariable Long idArticulo,@PathVariable int añoDesde ,@PathVariable int añoHasta ,@PathVariable int periodoDesde ,@PathVariable int periodoHasta, @PathVariable Long idProveedor){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularCGI(idArticulo, añoDesde, añoHasta, periodoDesde, periodoHasta,idProveedor));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+    @PostMapping("/LoteFijo/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}/{DPromedio}/{DDesvEstandar}")
+    public ResponseEntity<?> LoteFijo(@PathVariable Long idArticulo,
+                                      @PathVariable int añoDesde,
+                                      @PathVariable int añoHasta,
+                                      @PathVariable int periodoDesde,
+                                      @PathVariable int periodoHasta,
+                                      @PathVariable Long idProveedor,
+                                      @PathVariable float DPromedio,
+                                      @PathVariable float DDesvEstandar){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularLoteFijo(idArticulo,
+                                                                                              añoDesde,
+                                                                                              añoHasta,
+                                                                                              periodoDesde,
+                                                                                              periodoHasta,
+                                                                                              idProveedor,
+                                                                                              DPromedio,
+                                                                                              DDesvEstandar
+                                                                                              ));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
