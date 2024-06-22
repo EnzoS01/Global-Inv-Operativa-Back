@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.DTO.ArticuloDTO;
 import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Demanda;
 import com.example.demo.entities.DemandaPronosticada;
@@ -20,7 +21,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -221,11 +222,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         for (Demanda demanda: demandas){
             D= D + demanda.getCantTotalDemanda();
         }
-        //float P=pa.getCostoProducto();
-        //float Ca=pa.getCostoAlmacenamiento();
-        //float Cp=pa.getCostoPedido();
-        //Duration dias=pa.getTiempoPedido();
-        //Calculo stock seguridad
         Duration duracionPedidoDuration = pa.getTiempoPedido();
         long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
         long tiempoPeriodoEnDias = periodo.toDays();
@@ -259,11 +255,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         for (Demanda demanda: demandas){
             D= D + demanda.getCantTotalDemanda();
         }
-        //float P=pa.getCostoProducto();
-        //float Ca=pa.getCostoAlmacenamiento();
-        //float Cp=pa.getCostoPedido();
-        //Duration dias=pa.getTiempoPedido();
-        //Calculo stock seguridad
         Duration duracionPedidoDuration = pa.getTiempoPedido();
         long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
         long tiempoPeriodoEnDias = periodo.toDays();
@@ -281,6 +272,19 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         a.setLoteOptimo(Q);
         articuloRepository.save(a);
         return a;
+    }
+    public List<ArticuloDTO> ListadoDeArticulosFaltantes() throws Exception {
+        try{
+            List<Articulo> articulos=articuloRepository.articulosFaltantes();
+            List<ArticuloDTO> articulosDTO= new ArrayList<>();
+            for (Articulo a: articulos){
+                ArticuloDTO articulodto =new ArticuloDTO(a.getNombreArticulo(),a.getLoteOptimo(), a.getPuntoPedido(),a.getStockSeguridad(),a.getCantActual());
+                articulosDTO.add(articulodto);
+            }
+            return articulosDTO;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
     
 }

@@ -3,6 +3,7 @@ package com.example.demo.services;
 import java.time.Duration;
 import java.util.List;
 
+import com.example.demo.DTO.ArticuloDTO;
 import com.example.demo.entities.Articulo;
 
 public interface ArticuloService extends BaseService<Articulo,Long>{
@@ -17,4 +18,5 @@ public interface ArticuloService extends BaseService<Articulo,Long>{
     Articulo LoteFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z)throws Exception;
     Articulo IntervaloFijoConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception;
     Articulo IntervaloFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception;
+    List<ArticuloDTO> ListadoDeArticulosFaltantes() throws Exception;
 }

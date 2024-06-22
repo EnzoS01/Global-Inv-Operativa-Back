@@ -194,4 +194,18 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
+
+    @GetMapping("/ListadoArticulosFaltantes")
+    public ResponseEntity<?> IntervaloFijoConProveedorPredeterminado(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.ListadoDeArticulosFaltantes());
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
+
 }
