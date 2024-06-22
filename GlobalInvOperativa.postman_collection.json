@@ -136,33 +136,6 @@
 					"response": []
 				},
 				{
-					"name": "setProveedor",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarProveedor/60/23.3/2.0/20.0/1/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"agregarProveedor",
-								"60",
-								"23.3",
-								"2.0",
-								"20.0",
-								"1",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "setModelo",
 					"request": {
 						"method": "POST",
@@ -186,12 +159,39 @@
 					"response": []
 				},
 				{
+					"name": "setProveedor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/agregarProveedor/7/23.3/2.0/20.0/1/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"agregarProveedor",
+								"7",
+								"23.3",
+								"2.0",
+								"20.0",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "SetProveedorPredeterminado",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarProveedorPredeterminado/20/23.3/2.0/20.0/1/1",
+							"raw": "http://localhost:8080/api/articulos/agregarProveedorPredeterminado/7/23.3/2.0/20.0/1/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -201,7 +201,7 @@
 								"api",
 								"articulos",
 								"agregarProveedorPredeterminado",
-								"20",
+								"7",
 								"23.3",
 								"2.0",
 								"20.0",
@@ -266,12 +266,12 @@
 					"response": []
 				},
 				{
-					"name": "LoteFijo",
+					"name": "LoteFijoConProveedor",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articulos/LoteFijo/1/2022/2022/1/2/1/5/2",
+							"raw": "http://localhost:8080/api/articulos/LoteFijoConProveedor/1/2022/2022/1/2/1/5/2/1.64",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -280,7 +280,7 @@
 							"path": [
 								"api",
 								"articulos",
-								"LoteFijo",
+								"LoteFijoConProveedor",
 								"1",
 								"2022",
 								"2022",
@@ -288,7 +288,98 @@
 								"2",
 								"1",
 								"5",
-								"2"
+								"2",
+								"1.64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoteFijoConProveedorPredeterminado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/LoteFijoConProveedorPredeterminado/1/2022/2022/1/2/5/2/1.64",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"LoteFijoConProveedorPredeterminado",
+								"1",
+								"2022",
+								"2022",
+								"1",
+								"2",
+								"5",
+								"2",
+								"1.64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "IntervaloFijoConProveedor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/IntervaloFijoConProveedor/1/2022/2022/1/2/1/5/2/1.64/30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"IntervaloFijoConProveedor",
+								"1",
+								"2022",
+								"2022",
+								"1",
+								"2",
+								"1",
+								"5",
+								"2",
+								"1.64",
+								"30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "IntervaloFijoConProveedorPredeterminado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/articulos/IntervaloFijoConProveedorPredeterminado/1/2022/2022/1/2/5/2/1.64/30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"articulos",
+								"IntervaloFijoConProveedorPredeterminado",
+								"1",
+								"2022",
+								"2022",
+								"1",
+								"2",
+								"5",
+								"2",
+								"1.64",
+								"30"
 							]
 						}
 					},
@@ -347,7 +438,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"nombreModelo\":\"LoteFijo\"\r\n}",
+							"raw": "{   \r\n    \"nombreModelo\":\"INTERVALO_FIJO\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1213,7 +1304,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"numPeriodo\":1,\r\n    \"anio\":2022,\r\n    \"cantTotalDemanda\":22,\r\n    \"articulo\":{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 40,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"precioVenta\": 300.0,\r\n    \"periodo\": null,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\":null,\r\n    \"cgi\": 0.0,\r\n    \"cantActual\": 12\r\n}\r\n}",
+							"raw": "{   \r\n    \"numPeriodo\":1,\r\n    \"anio\":2022,\r\n    \"cantTotalDemanda\":22,\r\n    \"articulo\": {\r\n        \"id\": 1,\r\n        \"nombreArticulo\": \"hamburguesa\",\r\n        \"detalle\": \"queso,tomate\",\r\n        \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n        \"fechaBaja\": null,\r\n        \"loteOptimo\": 0,\r\n        \"puntoPedido\": 0,\r\n        \"stockSeguridad\": 0,\r\n        \"precioVenta\": 300.0,\r\n        \"periodo\": null,\r\n        \"modelo\": null,\r\n        \"proveedorPredeterminado\": {\r\n            \"id\": 1,\r\n            \"nombre\": \"ale\",\r\n            \"telefono\": 2.613004548E9,\r\n            \"direccion\": \"Castelar 825\",\r\n            \"mail\": \"alear12373@gmail.com\",\r\n            \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n            \"fechaBaja\": null\r\n        },\r\n        \"cgi\": 0.0,\r\n        \"cantActual\": 12\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

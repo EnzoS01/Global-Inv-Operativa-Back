@@ -17,6 +17,8 @@ import com.example.demo.repositories.ProveedorRepository;
 import jakarta.transaction.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,8 +131,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articuloRepository.save(a);
         return a;
     }
+
+    public long calcularDias(int mesDesde, int mesHasta,int añoDesde,int añoHasta){
+        LocalDate fechaDesde = LocalDate.of(añoDesde, mesDesde, 1);
+        LocalDate fechaHasta = LocalDate.of(añoHasta, mesHasta, 1);
+        fechaHasta = fechaHasta.plusMonths(1).minusDays(1);
+        long dias = ChronoUnit.DAYS.between(fechaDesde, fechaHasta);
+        return dias;
+    }
     @Override
-    public Articulo calcularLoteFijo (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar)throws Exception{
+    public Articulo LoteFijoConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar, double Z)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
         List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo, periodoDesde, añoDesde, periodoHasta, añoHasta);
@@ -148,8 +158,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         int Q=(int) Math.sqrt(2*D*(Cp/Ca));
         a.setLoteOptimo(Q);
         //Calculo stock seguridad
-        int diasTrabajoAlAño=260;   // se puede parametriza
-        double Z= 1.64;    //se puede parametrizar
         Duration duracionPedidoDuration = pa.getTiempoPedido();
         long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
         double DesvEstandarL=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias));
@@ -157,13 +165,122 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         a.setStockSeguridad((int)SS);
         //calculo punto pedido
         float demandaFloat= (float)D;
-        float d = demandaFloat/diasTrabajoAlAño;
+        long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
+        float d = demandaFloat/diasTrabajoEnElPeriodo;
         int puntoPedido= (int) (d*tiempoPedidoEnDias);
         a.setPuntoPedido(puntoPedido);
-        System.out.println("demandaFloat:"+demandaFloat );
-        System.out.println("d:"+ d);
         articuloRepository.save(a);
         return a;
     }
 
+    @Override
+    public Articulo LoteFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z)throws Exception{
+        //BUSQUEDA DE DATOS
+        Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo, periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor p= a.getProveedorPredeterminado();
+        ProveedorArticulo pa= proveedorArticuloRepository.findByArticuloAndProveedor(p.getId(), idArticulo);
+        int D = 0;  
+        for (Demanda demanda: demandas){
+            D= D + demanda.getCantTotalDemanda();
+        }
+        float P=pa.getCostoProducto();
+        float Ca=pa.getCostoAlmacenamiento();
+        float Cp=pa.getCostoPedido();
+        Duration dias=pa.getTiempoPedido();
+        //calculo lote optimo
+        int Q=(int) Math.sqrt(2*D*(Cp/Ca));
+        a.setLoteOptimo(Q);
+        //Calculo stock seguridad
+        Duration duracionPedidoDuration = pa.getTiempoPedido();
+        long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
+        double DesvEstandarL=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias));
+        double SS= DesvEstandarL*Z;
+        a.setStockSeguridad((int)SS);
+        //calculo punto pedido
+        float demandaFloat= (float)D;
+        long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
+        float d = demandaFloat/diasTrabajoEnElPeriodo;
+        int puntoPedido= (int) (d*tiempoPedidoEnDias);
+        a.setPuntoPedido(puntoPedido);
+        articuloRepository.save(a);
+        return a;
+    }
+
+    public Articulo IntervaloFijoConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception{
+        //BUSQUEDA DE DATOS
+        Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        Modelo modelo= a.getModelo();
+        //if(modelo.getNombreModelo()!="INTERVALO_FIJO"){
+        //    throw new IllegalArgumentException("El modelo del artículo no es INTERVALO_FIJO");
+        //}
+        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo, periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor p= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        ProveedorArticulo pa= proveedorArticuloRepository.findByArticuloAndProveedor(idProveedor, idArticulo);
+        int D = 0;  
+        for (Demanda demanda: demandas){
+            D= D + demanda.getCantTotalDemanda();
+        }
+        //float P=pa.getCostoProducto();
+        //float Ca=pa.getCostoAlmacenamiento();
+        //float Cp=pa.getCostoPedido();
+        //Duration dias=pa.getTiempoPedido();
+        //Calculo stock seguridad
+        Duration duracionPedidoDuration = pa.getTiempoPedido();
+        long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
+        long tiempoPeriodoEnDias = periodo.toDays();
+        double DesvEstandarLT=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        double SS= DesvEstandarLT*Z;
+        a.setStockSeguridad((int)SS);
+        //calculo punto pedido
+        float demandaFloat= (float)D;
+        long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
+        float d = demandaFloat/diasTrabajoEnElPeriodo;
+        int puntoPedido= (int) (d*(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        a.setPuntoPedido(puntoPedido);
+        //calculo lote optimo
+        int Q= (int)(puntoPedido+(Z*DesvEstandarLT)-a.getCantActual());
+        a.setLoteOptimo(Q);
+        articuloRepository.save(a);
+        return a;
+    }
+
+    public Articulo IntervaloFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception{
+        //BUSQUEDA DE DATOS
+        Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        Modelo modelo= a.getModelo();
+        //if(modelo.getNombreModelo()!="INTERVALO_FIJO"){
+        //    throw new IllegalArgumentException("El modelo del artículo no es INTERVALO_FIJO");
+        //}
+        List<Demanda> demandas = demandaRepository.findByArticuloDesdeHasta(idArticulo, periodoDesde, añoDesde, periodoHasta, añoHasta);
+        Proveedor p= a.getProveedorPredeterminado();
+        ProveedorArticulo pa= proveedorArticuloRepository.findByArticuloAndProveedor(p.getId(), idArticulo);
+        int D = 0;  
+        for (Demanda demanda: demandas){
+            D= D + demanda.getCantTotalDemanda();
+        }
+        //float P=pa.getCostoProducto();
+        //float Ca=pa.getCostoAlmacenamiento();
+        //float Cp=pa.getCostoPedido();
+        //Duration dias=pa.getTiempoPedido();
+        //Calculo stock seguridad
+        Duration duracionPedidoDuration = pa.getTiempoPedido();
+        long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
+        long tiempoPeriodoEnDias = periodo.toDays();
+        double DesvEstandarLT=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        double SS= DesvEstandarLT*Z;
+        a.setStockSeguridad((int)SS);
+        //calculo punto pedido
+        float demandaFloat= (float)D;
+        long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
+        float d = demandaFloat/diasTrabajoEnElPeriodo;
+        int puntoPedido= (int) (d*(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        a.setPuntoPedido(puntoPedido);
+        //calculo lote optimo
+        int Q= (int)(puntoPedido+(Z*DesvEstandarLT)-a.getCantActual());
+        a.setLoteOptimo(Q);
+        articuloRepository.save(a);
+        return a;
+    }
+    
 }

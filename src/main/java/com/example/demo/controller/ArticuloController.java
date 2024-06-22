@@ -78,24 +78,114 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
-    @PostMapping("/LoteFijo/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}/{DPromedio}/{DDesvEstandar}")
-    public ResponseEntity<?> LoteFijo(@PathVariable Long idArticulo,
+    @PostMapping("/LoteFijoConProveedor/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}/{DPromedio}/{DDesvEstandar}/{Z}")
+    public ResponseEntity<?> LoteFijoConProveedor(@PathVariable Long idArticulo,
                                       @PathVariable int añoDesde,
                                       @PathVariable int añoHasta,
                                       @PathVariable int periodoDesde,
                                       @PathVariable int periodoHasta,
                                       @PathVariable Long idProveedor,
                                       @PathVariable float DPromedio,
-                                      @PathVariable float DDesvEstandar){
+                                      @PathVariable float DDesvEstandar,
+                                      @PathVariable double Z){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.calcularLoteFijo(idArticulo,
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.LoteFijoConProveedor(idArticulo,
                                                                                               añoDesde,
                                                                                               añoHasta,
                                                                                               periodoDesde,
                                                                                               periodoHasta,
                                                                                               idProveedor,
                                                                                               DPromedio,
-                                                                                              DDesvEstandar
+                                                                                              DDesvEstandar,
+                                                                                              Z
+                                                                                              ));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
+    @PostMapping("/LoteFijoConProveedorPredeterminado/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{DPromedio}/{DDesvEstandar}/{Z}")
+    public ResponseEntity<?> LoteFijoConProveedorPredeterminado(@PathVariable Long idArticulo,
+                                      @PathVariable int añoDesde,
+                                      @PathVariable int añoHasta,
+                                      @PathVariable int periodoDesde,
+                                      @PathVariable int periodoHasta,
+                                      @PathVariable float DPromedio,
+                                      @PathVariable float DDesvEstandar,
+                                      @PathVariable double Z){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.LoteFijoConProveedorPredeterminado(idArticulo,
+                                                                                              añoDesde,
+                                                                                              añoHasta,
+                                                                                              periodoDesde,
+                                                                                              periodoHasta,
+                                                                                              DPromedio,
+                                                                                              DDesvEstandar,
+                                                                                              Z
+                                                                                              ));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+    @PostMapping("/IntervaloFijoConProveedor/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}/{DPromedio}/{DDesvEstandar}/{Z}/{periodoDias}")
+    public ResponseEntity<?> IntervaloFijoConProveedor(@PathVariable Long idArticulo,
+                                                                     @PathVariable int añoDesde,
+                                                                     @PathVariable int añoHasta,
+                                                                     @PathVariable int periodoDesde,
+                                                                     @PathVariable int periodoHasta,
+                                                                     @PathVariable Long idProveedor,
+                                                                     @PathVariable float DPromedio,
+                                                                     @PathVariable float DDesvEstandar,
+                                                                     @PathVariable double Z,
+                                                                     @PathVariable Long periodoDias){
+        try {
+            Duration periodo = Duration.ofDays(periodoDias);
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.IntervaloFijoConProveedor(idArticulo,
+                                                                                              añoDesde,
+                                                                                              añoHasta,
+                                                                                              periodoDesde,
+                                                                                              periodoHasta,
+                                                                                              idProveedor,
+                                                                                              DPromedio,
+                                                                                              DDesvEstandar,
+                                                                                              Z,
+                                                                                              periodo
+                                                                                              ));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
+    @PostMapping("/IntervaloFijoConProveedorPredeterminado/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{DPromedio}/{DDesvEstandar}/{Z}/{periodoDias}")
+    public ResponseEntity<?> IntervaloFijoConProveedorPredeterminado(@PathVariable Long idArticulo,
+                                                                     @PathVariable int añoDesde,
+                                                                     @PathVariable int añoHasta,
+                                                                     @PathVariable int periodoDesde,
+                                                                     @PathVariable int periodoHasta,
+                                                                     @PathVariable float DPromedio,
+                                                                     @PathVariable float DDesvEstandar,
+                                                                     @PathVariable double Z,
+                                                                     @PathVariable Long periodoDias){
+        try {
+            Duration periodo = Duration.ofDays(periodoDias);
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.IntervaloFijoConProveedorPredeterminado(idArticulo,
+                                                                                              añoDesde,
+                                                                                              añoHasta,
+                                                                                              periodoDesde,
+                                                                                              periodoHasta,
+                                                                                              DPromedio,
+                                                                                              DDesvEstandar,
+                                                                                              Z,
+                                                                                              periodo
                                                                                               ));
 
         } catch (RuntimeException e) {
