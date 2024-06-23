@@ -29,10 +29,18 @@ public class Pronostico extends Base {
         @Column(name = "cantidad_periodos_historicos")
         private int cantidadPeriodosHistoricos;
 
-        @OneToMany(mappedBy = "pronostico", cascade = CascadeType.ALL, orphanRemoval = true)
+        @OneToMany
+        @JoinTable(
+                name = "Pronostico_DemandaPronosticada",
+                joinColumns = @JoinColumn(name = "Pronostico_id"),
+                inverseJoinColumns = @JoinColumn(name = "DemandaPronosticada_id"))
         private List<DemandaPronosticada> demandaPronosticada = new ArrayList<>();
 
         @ManyToOne
         @JoinColumn(name = "articulo_id", nullable = false)
         private Articulo articulo;
+
+        public void addDemandaPronosticada(DemandaPronosticada demandaPronosticada) {
+                this.demandaPronosticada.add(demandaPronosticada);
+        }
 }

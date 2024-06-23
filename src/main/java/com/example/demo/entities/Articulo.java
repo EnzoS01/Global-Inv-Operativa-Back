@@ -6,12 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.envers.Audited;
 
-import java.io.Serializable;
-import java.time.DateTimeException;
 import java.time.Duration;
-import java.time.LocalDate;
+
 import java.util.Date;
 
 @Entity
