@@ -57,4 +57,5 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
+
 }

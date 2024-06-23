@@ -4,6 +4,7 @@ import com.example.demo.DTO.ArticuloDTO;
 import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Demanda;
 import com.example.demo.entities.DemandaPronosticada;
+import com.example.demo.entities.DetalleOrdenCompra;
 import com.example.demo.entities.DetalleVenta;
 import com.example.demo.entities.EstadoOrdenCompra;
 import com.example.demo.entities.Modelo;
@@ -51,6 +52,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         super(baseRepository);
         this.articuloRepository = articuloRepository;
     }
+    @Transactional
     @Override
     public Articulo agregarProveedorPredeterminado(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Long idArticulo, Long idProveedor) throws Exception {
         try{
@@ -65,7 +67,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             throw new Exception(e.getMessage());
         }
     }
-
+    @Transactional
     @Override
     public Articulo agregarModelo(Long idArticulo, Long idModelo) throws Exception {
         try{
@@ -79,6 +81,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
 
     }
+    @Transactional
     @Override
     public Articulo AsignarUnProveedorAUnArticulo(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto, Long idArticulo, Long idProveedor) throws Exception {
         try{
@@ -91,7 +94,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             throw new Exception(e.getMessage());
         }
     }
-
+    @Transactional
     @Override
     public Articulo calcularCGIConProvPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta)throws Exception{
         //BUSQUEDA DE DATOS
@@ -117,7 +120,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articuloRepository.save(a);
         return a;
     }
-
+    @Transactional
     @Override
     public Articulo calcularCGI (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor)throws Exception{
         //BUSQUEDA DE DATOS
@@ -149,6 +152,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         long dias = ChronoUnit.DAYS.between(fechaDesde, fechaHasta);
         return dias;
     }
+    @Transactional
     @Override
     public Articulo LoteFijoConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar, double Z)throws Exception{
         //BUSQUEDA DE DATOS
@@ -182,7 +186,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articuloRepository.save(a);
         return a;
     }
-
+    @Transactional
     @Override
     public Articulo LoteFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z)throws Exception{
         //BUSQUEDA DE DATOS
@@ -216,7 +220,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articuloRepository.save(a);
         return a;
     }
-
+    @Transactional
+    @Override
     public Articulo IntervaloFijoConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
@@ -249,7 +254,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articuloRepository.save(a);
         return a;
     }
-
+    @Transactional
+    @Override
     public Articulo IntervaloFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
@@ -295,19 +301,24 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             throw new Exception(e.getMessage());
         }
     }
-
+    @Transactional
+    @Override
     public List<ArticuloDTO> ListadoDeArticulosAReponer() throws Exception {
         try{
-            List<Articulo> articulos=articuloRepository.articulosAReponer();
+            List<Articulo> articulosAReponer=articuloRepository.articulosAReponer();
             List<ArticuloDTO> articulosDTO= new ArrayList<>();
-            EstadoOrdenCompra eoc=estadoOrdenCompraRepository.findByName("Pendiente");
-            Long idEoc=eoc.getId();
-            for (Articulo a: articulos){
-                Long idArti=a.getId();
-                List<OrdenCompra> ordenesPendientes=ordenCompraRepository.findByArticuloAndEstado2(idArti,idEoc);
-                if (!ordenesPendientes.isEmpty()){
-                ArticuloDTO articulodto =new ArticuloDTO(a.getNombreArticulo(),a.getLoteOptimo(), a.getPuntoPedido(),a.getStockSeguridad(),a.getCantActual());
-                articulosDTO.add(articulodto);}
+            List<OrdenCompra> OCPendientes= ordenCompraRepository.findByEstado("Pendiente");
+            for(OrdenCompra ocp : OCPendientes){
+                List<DetalleOrdenCompra> detallesOCPendientes=ocp.getDetallesOrdenCompra();
+                for(DetalleOrdenCompra docp:detallesOCPendientes){
+                    Articulo docpa=docp.getArticulo();
+                    for(Articulo a:articulosAReponer){
+                        if(docpa.getId()==a.getId()){
+                            ArticuloDTO articulodto=new ArticuloDTO(a.getNombreArticulo(),a.getLoteOptimo(),a.getPuntoPedido(),a.getStockSeguridad(),a.getCantActual());
+                            articulosDTO.add(articulodto);
+                        }
+                    }
+                }
             }
             return articulosDTO;
         } catch (Exception e){
