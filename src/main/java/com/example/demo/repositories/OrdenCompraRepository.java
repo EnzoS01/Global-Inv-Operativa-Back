@@ -17,8 +17,8 @@ public interface OrdenCompraRepository extends BaseRepository<OrdenCompra,Long>{
                    "where d.articulo_id = :articuloId and (o.fk_estadoOrdenCompra = :idEstado1 or o.fk_estadoOrdenCompra = :idEstado2)", nativeQuery = true)
     List<OrdenCompra> findByArticuloAndEstado(@Param("articuloId") Long articuloId, @Param("idEstado1") Long idEstado1, @Param("idEstado2") Long idEstado2);
 
-    @Query(value = "select o.* from ordenCompra o join detalleOrdenCompra d on o.id = d.ordenCompra_id "+
-                   "where d.articulo_id = :articuloId and (o.fk_estadoOrdenCompra = :idEstado1 or o.fk_estadoOrdenCompra = :idEstado2)", nativeQuery = true)
-    List<OrdenCompra> findByArticuloAndEstado2(@Param("articuloId") Long articuloId, @Param("idEstado1") Long idEstado1, @Param("idEstado2") Long idEstado2);
+    @Query(value = "select o.* from ORDEN_COMPRA o join ORDEN_COMRA_DETALLE_ORDEN_COMPRA ocdoc on o.ID = ocdoc.ORDEN_COMPRA_ID join DETALLE_ORDEN_COMPRA doc on doc.ID=ocdoc.DETALLE_ORDEN_COMPRA_ID "+
+                   "where doc.FK_ARTICULO = :articuloId and o.FK_ESTADO_ORDEN_COMPRA = :idEstado1", nativeQuery = true)
+    List<OrdenCompra> findByArticuloAndEstado2(@Param("articuloId") Long articuloId, @Param("idEstado1") Long idEstado1);
 }
 

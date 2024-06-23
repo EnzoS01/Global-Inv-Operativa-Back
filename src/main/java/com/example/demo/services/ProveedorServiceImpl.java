@@ -18,7 +18,7 @@ public class ProveedorServiceImpl extends BaseServiceImpl<Proveedor,Long> implem
     private ArticuloRepository articuloRepository;
     @Autowired
     private ProveedorArticuloRepository proveedorArticuloRepository;
-
+    
     public ProveedorServiceImpl(BaseRepository<Proveedor,Long> baseRepository, ProveedorRepository proveedorRepository) {
         super(baseRepository);
         this.proveedorRepository= proveedorRepository;

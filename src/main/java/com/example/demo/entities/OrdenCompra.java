@@ -24,9 +24,9 @@ public class OrdenCompra extends Base{
     @Column(name = "total")
     private double total;
 
-    @OneToMany
+        @OneToMany
     @JoinTable(
-            name = "OrdenComra_DetalleOrdenCompra",
+            name = "OrdenCompra_DetalleOrdenCompra",
             joinColumns = @JoinColumn(name = "OrdenCompra_id"),
             inverseJoinColumns = @JoinColumn(name = "detalleOrdenCompra_id")
     )

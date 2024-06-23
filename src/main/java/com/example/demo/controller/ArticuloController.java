@@ -196,7 +196,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     }
 
     @GetMapping("/ListadoArticulosFaltantes")
-    public ResponseEntity<?> IntervaloFijoConProveedorPredeterminado(){
+    public ResponseEntity<?> ListadoArticulosFaltantes(){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.ListadoDeArticulosFaltantes());
 
@@ -207,5 +207,14 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
-
+    @GetMapping("/ListadoArticulosAReponer")
+    public ResponseEntity<?> ListadoArticulosAReponer(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.ListadoDeArticulosAReponer());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
 }

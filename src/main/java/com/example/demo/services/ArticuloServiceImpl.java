@@ -5,13 +5,17 @@ import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Demanda;
 import com.example.demo.entities.DemandaPronosticada;
 import com.example.demo.entities.DetalleVenta;
+import com.example.demo.entities.EstadoOrdenCompra;
 import com.example.demo.entities.Modelo;
+import com.example.demo.entities.OrdenCompra;
 import com.example.demo.entities.Proveedor;
 import com.example.demo.entities.ProveedorArticulo;
 import com.example.demo.repositories.ArticuloRepository;
 import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.DemandaRepository;
+import com.example.demo.repositories.EstadoOrdenCompraRepository;
 import com.example.demo.repositories.ModeloRepository;
+import com.example.demo.repositories.OrdenCompraRepository;
 import com.example.demo.repositories.ProveedorArticuloRepository;
 import com.example.demo.repositories.ProveedorRepository;
 
@@ -37,6 +41,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     private DemandaRepository demandaRepository;
     @Autowired
     private ProveedorArticuloRepository proveedorArticuloRepository;
+    @Autowired
+    private EstadoOrdenCompraRepository estadoOrdenCompraRepository;
+    @Autowired
+    private OrdenCompraRepository ordenCompraRepository;
+
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
         super(baseRepository);
@@ -286,5 +295,26 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             throw new Exception(e.getMessage());
         }
     }
+
+    public List<ArticuloDTO> ListadoDeArticulosAReponer() throws Exception {
+        try{
+            List<Articulo> articulos=articuloRepository.articulosAReponer();
+            List<ArticuloDTO> articulosDTO= new ArrayList<>();
+            EstadoOrdenCompra eoc=estadoOrdenCompraRepository.findByName("Pendiente");
+            Long idEoc=eoc.getId();
+            for (Articulo a: articulos){
+                Long idArti=a.getId();
+                List<OrdenCompra> ordenesPendientes=ordenCompraRepository.findByArticuloAndEstado2(idArti,idEoc);
+                if (!ordenesPendientes.isEmpty()){
+                ArticuloDTO articulodto =new ArticuloDTO(a.getNombreArticulo(),a.getLoteOptimo(), a.getPuntoPedido(),a.getStockSeguridad(),a.getCantActual());
+                articulosDTO.add(articulodto);}
+            }
+            return articulosDTO;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
     
 }
