@@ -28,7 +28,7 @@ public class Pronostico extends Base {
         private DemandaPronosticada demandaPronosticada;
 
         @ManyToOne
-        @JoinColumn(name = "articulo_id", nullable = false)
+        @JoinColumn(name = "articulo_id")
         private Articulo articulo;
 
 

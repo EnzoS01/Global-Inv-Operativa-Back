@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Demanda;
 import com.example.demo.entities.DemandaPronosticada;
 import com.example.demo.entities.Pronostico;
@@ -16,23 +17,11 @@ public interface PronosticoService extends BaseService<Pronostico, Long> {
 
     public int periodoActual(Pronostico pron, int anio) throws Exception;
 
-    public DemandaPronosticada crearDPronosticada(int anioActual, int periodoActual, double pronostico) throws Exception;
+    public DemandaPronosticada crearDPronosticada(int anioActual, int periodoActual, double pronostico, Articulo articulo) throws Exception;
 
-    /*
-    List<Demanda> seleccionarDemandaHistoricas(List<Demanda> listaDemandasHistoricas, int nroAnio);
+    public Pronostico pmSuavizado(Long pronosticoId, double predecidaRaiz, double valorCoeficiente, int anio) throws Exception;
 
-    List<DemandaPronosticada> promedioMovil(List<Demanda> demandasHistoricasSeleccionadas, int n,
-            int cantidadPeriodosAPredecir);
+    public Pronostico regresionLineal(Long pronosticoId, int anio) throws Exception;
 
-    List<DemandaPronosticada> promedioPonderado(List<Demanda> demandasHistoricasSeleccionadas, int n,
-            int cantidadPeriodosAPredecir);
-
-    List<DemandaPronosticada> suavizacionExponencial(List<Demanda> demandasHistoricasSeleccionadas, double alpha,
-            int mesDemandaAnterior, int cantidadRealDemandadaAnterior, int cantidadDemandadaPronosticadaAnterior);
-
-    List<DemandaPronosticada> pronosticoEstacional(List<Demanda> demandasHistoricas, int anioAPredecir, int anioInicio,
-            int anioFin, int demandaEsperada);
-
-    List<DemandaPronosticada> predecirDemanda(List<Demanda> demandas);
-*/
+    public Pronostico pronosticoEstacionalidad(Long pronosticoId, int anioAPredecir, double demandaEsperada) throws Exception;
 }

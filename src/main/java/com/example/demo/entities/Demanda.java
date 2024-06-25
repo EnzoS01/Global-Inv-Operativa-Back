@@ -43,6 +43,7 @@ public class Demanda extends Base {
         detallesVenta.add(detalleVenta);
     }
 
+    /*
     public Demanda(int numPeriodo, int anio, Articulo articulo, List<Venta> ventas) {
         this.numPeriodo = numPeriodo;
         this.anio = anio;
@@ -70,4 +71,6 @@ public class Demanda extends Base {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
     }
+
+     */
 }
