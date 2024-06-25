@@ -1,14 +1,16 @@
 package com.example.demo.services;
 
+import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Demanda;
 import com.example.demo.entities.DemandaPronosticada;
 import com.example.demo.entities.Pronostico;
-import com.example.demo.repositories.BaseRepository;
-import com.example.demo.repositories.DemandaPronosticadaRepository;
+import com.example.demo.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,8 +18,15 @@ import java.util.stream.Collectors;
 @Service
 public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> implements PronosticoService {
 
-    private final DemandaPronosticadaRepository demandaPronosticadaRepository;
-    
+    @Autowired
+    private DemandaPronosticadaRepository demandaPronosticadaRepository;
+    @Autowired
+    private PronosticoRepository pronosticoRepository;
+    @Autowired
+    private ArticuloRepository articuloRepository;
+    @Autowired
+    private DemandaRepository demandaRepository;
+
     public PronosticoServiceImpl(BaseRepository<Pronostico, Long> baseRepository,
             DemandaPronosticadaRepository demandaPronosticadaRepository) {
         super(baseRepository);
@@ -25,7 +34,140 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     }
 
     @Override
+    public Pronostico asignarArticulo(Long pronosticoId,Long articuloId){
+        Pronostico pron = pronosticoRepository.findById(pronosticoId)
+                .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
+        Articulo articulo = articuloRepository.findById(articuloId)
+                .orElseThrow(() -> new RuntimeException("articulo no encontrado"));
+
+        pron.setArticulo(articulo);
+        pronosticoRepository.save(pron);
+        return pron;
+    }
+
+    @Override
+    public double[] calcularPonderaciones(int n) {
+        double[] ponderaciones = new double[n];
+        double sumaPonderaciones = 0;
+
+        for (int i = 1; i <= n; i++) {
+            sumaPonderaciones += i;
+        }
+
+        for (int i = 0; i < n; i++) {
+            ponderaciones[i] = (double) (i + 1) / sumaPonderaciones;
+        }
+        return ponderaciones;
+    }
+
+    @Override
+    public int periodoActual(Pronostico pron, int anio){
+        List<Demanda> demandas = demandaRepository.findByArticuloAnio(pron.getArticulo().getId(), anio);
+        return demandas.stream()
+                .max(Comparator.comparing(Demanda::getNumPeriodo))
+                .map(demanda -> demanda.getNumPeriodo() + 1)
+                .orElse(1); // Si no hay demandas, empezamos desde el periodo 1
+    }
+
+    @Override
+    public DemandaPronosticada crearDPronosticada(int anioActual, int periodoActual, double pronostico){
+        DemandaPronosticada demandaPronosticada= new DemandaPronosticada();
+        demandaPronosticada.setAnioDemandaPronosticada(anioActual);
+        demandaPronosticada.setCantidadDemandadaPronostico(pronostico);
+        demandaPronosticada.setNroPeriodoDemandaPronosticada(periodoActual);
+        return demandaPronosticada;
+    }
+
+    @Override
+    public Pronostico promedioPonderado(Long pronosticoId,int anio){
+        Pronostico pron = pronosticoRepository.findById(pronosticoId)
+                .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
+        int cantidadPeriodos=pron.getCantidadPeriodosHistoricos();
+        double[] ponderaciones= calcularPonderaciones(cantidadPeriodos);
+        int periodoActual= periodoActual(pron,anio);
+
+        //Ordena la lista demandas de manera descendente en la posicion 0 está la demanda con el numero de periodo más alto
+        List<Demanda> demandas= demandaRepository.findByArticuloAnio(pron.getArticulo().getId(),anio);
+        demandas.sort(Comparator.comparingInt(Demanda::getNumPeriodo).reversed());
+
+        double promedio = 0;
+        for (int i=0; i<cantidadPeriodos;i++){
+            promedio+=demandas.get(i).getCantTotalDemanda()*ponderaciones[cantidadPeriodos-(i+1)];
+        }
+        DemandaPronosticada demandaPronosticada= crearDPronosticada(anio,periodoActual,promedio);
+        demandaPronosticadaRepository.save(demandaPronosticada);
+        pron.setDemandaPronosticada(demandaPronosticada);
+        pronosticoRepository.save(pron);
+        return pron;
+    }
+
+    public Pronostico pmSuavizado(Long pronosticoId, double predecidaRaiz, double valorCoeficiente, int anio){
+        Pronostico pron = pronosticoRepository.findById(pronosticoId)
+                .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
+        int periodoActual= periodoActual(pron,anio);
+
+        //Buscar la demanda asociada al mismo articulo que el pronóstico con el año correspondiente y el periodo anterior
+        Demanda demandaReal= demandaRepository.findByArticuloAnioPeriodo(pron.getArticulo().getId(),anio,periodoActual-1);
+
+        //Se hace la cuenta
+        double pronostico= predecidaRaiz + valorCoeficiente*(demandaReal.getCantTotalDemanda()-predecidaRaiz);
+
+        DemandaPronosticada demandaPronosticada= crearDPronosticada(anio,periodoActual,pronostico);
+        demandaPronosticadaRepository.save(demandaPronosticada);
+        pron.setDemandaPronosticada(demandaPronosticada);
+        pronosticoRepository.save(pron);
+
+        return pron;
+    }
+
+    public Pronostico regresionLineal(Long pronosticoId, int anio){
+        Pronostico pron = pronosticoRepository.findById(pronosticoId)
+                .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
+        int periodoActual= periodoActual(pron,anio);
+        int cantidadPeriodos=pron.getCantidadPeriodosHistoricos();
+
+        //Ordena la lista demandas de manera ascendente en la posicion 0 está la demanda con el numero de periodo más bajo
+        List<Demanda> demandasReales= demandaRepository.findByArticuloAnio(pron.getArticulo().getId(),anio);
+        demandasReales.sort(Comparator.comparingInt(Demanda::getNumPeriodo));
+
+        double sumatoriaX=0, sumatoriaY=0;
+        double sumatoriaXCuadrado=0;
+        double sumatoriaMultiplicacionXY=0;
+        for (int i=0; i<cantidadPeriodos; i++){
+            sumatoriaX+=demandasReales.get(i).getNumPeriodo();
+            sumatoriaY+=demandasReales.get(i).getCantTotalDemanda();
+
+            sumatoriaXCuadrado+= demandasReales.get(i).getNumPeriodo()*demandasReales.get(i).getNumPeriodo();
+            sumatoriaMultiplicacionXY+=demandasReales.get(i).getNumPeriodo()*demandasReales.get(i).getCantTotalDemanda();
+
+        }
+        double promedioX= sumatoriaX/cantidadPeriodos;
+        double promedioY= sumatoriaY/cantidadPeriodos;
+
+        double parteArribaB= sumatoriaMultiplicacionXY - (cantidadPeriodos)*(promedioX*promedioY);
+        double parteAbajoB=  sumatoriaXCuadrado - (cantidadPeriodos)*(promedioX*promedioX);
+
+        double b= parteArribaB/parteAbajoB;
+        double a= promedioY -(b*promedioX);
+
+        double pronostico= a+ b*cantidadPeriodos;
+
+        DemandaPronosticada demandaPronosticada= crearDPronosticada(anio,periodoActual,pronostico);
+        demandaPronosticadaRepository.save(demandaPronosticada);
+        pron.setDemandaPronosticada(demandaPronosticada);
+        pronosticoRepository.save(pron);
+
+        return pron;
+    }
+
+
+
+
+
+    /*
+    @Override
     public List<Demanda> seleccionarDemandaHistoricas(List<Demanda> listaDemandasHistoricas, int nroAnio) {
+
         return listaDemandasHistoricas.stream()
                 .filter(demanda -> demanda.getAnio() == nroAnio)
                 .collect(Collectors.toList());
@@ -149,27 +291,17 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return dp;
     }
 
-    private double[] calcularPonderaciones(int n) {
-        double[] ponderaciones = new double[n];
-        double sumaPonderaciones = 0;
+    */
 
-        for (int i = 1; i <= n; i++) {
-            sumaPonderaciones += i;
-        }
 
-        for (int i = 0; i < n; i++) {
-            ponderaciones[i] = (double) (i + 1) / sumaPonderaciones;
-        }
-        return ponderaciones;
-    }
-
+    /*
     @Override
     public List<DemandaPronosticada> predecirDemanda(List<Demanda> demandas) {
         // Implementación del método de predicción
         return List.of();
     }
 
-   
+   /*
     // Código que va en archivo que contiene main()
 
     // package com.mycompany.sistemainventariosdemanda;

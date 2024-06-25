@@ -19,7 +19,12 @@ public interface DemandaRepository extends BaseRepository<Demanda,Long>{
                                            @Param("anioDesde") int anioDesde,
                                            @Param("periodoHasta") int periodoHasta,
                                            @Param("anioHasta") int anioHasta);
-        
+
+    @Query(value = "SELECT * FROM demanda D WHERE D.anio LIKE %:anio% AND D.fk_articulo LIKE %:idArticulo% ",nativeQuery = true)
+    List<Demanda> findByArticuloAnio(@Param("idArticulo") Long idArticulo, @Param("anio") int anio);
+
+    @Query(value = "SELECT * FROM demanda D WHERE D.anio LIKE %:anio% AND D.fk_articulo LIKE %:idArticulo% AND D.numPeriodo LIKE %:periodo%",nativeQuery = true)
+    Demanda findByArticuloAnioPeriodo(@Param("idArticulo") Long idArticulo, @Param("anio") int anio,@Param("periodo")int periodo);
 }
 
 

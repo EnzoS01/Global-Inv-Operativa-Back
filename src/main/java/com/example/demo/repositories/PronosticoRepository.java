@@ -13,5 +13,9 @@ public interface PronosticoRepository extends BaseRepository<Pronostico, Long> {
     @Query("SELECT p FROM Pronostico p WHERE p.nombrePronostico = :nombrePronostico")
     List<Pronostico> findByNombrePronostico(@Param("nombrePronostico") String nombrePronostico);
 
+    @Query(
+            value = "SELECT p FROM Pronostico p WHETE p.articulo_id LIKE %:articulo_id%",
+            nativeQuery = true)
+    List<Pronostico> findByArticulo(@Param("articulo_id")Long articulo_id);
     
 }

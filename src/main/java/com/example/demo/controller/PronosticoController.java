@@ -18,6 +18,7 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
     @Autowired
     private PronosticoServiceImpl pronosticoService;
 
+    /*
     @PostMapping("/demanda")
     public ResponseEntity<List<DemandaPronosticada>> predecirDemanda(@RequestBody List<Demanda> demandas) {
         try {
@@ -26,5 +27,19 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }*/
+
+    @PostMapping("/calcularPromedioPonderado/{pronosticoId}/{anio}")
+    public ResponseEntity<?> calcularPromedioPonderado(@PathVariable Long pronosticoId, @PathVariable int anio) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(pronosticoService.promedioPonderado(pronosticoId,anio));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
     }
+
+
 }
