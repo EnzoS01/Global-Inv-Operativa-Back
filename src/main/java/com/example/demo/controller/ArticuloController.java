@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.DTO.ArticuloDTO;
 import com.example.demo.entities.Articulo;
 import com.example.demo.services.ArticuloService;
 import com.example.demo.services.ArticuloServiceImpl;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,11 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
     @Autowired
     protected ArticuloService articuloservice;
+
     @PostMapping("/agregarProveedorPredeterminado/{tiempoPedidoDias}/{costoPedido}/{costoAlmacenamiento}/{costoProducto}/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("tiempoPedidoDias") Long tiempoPedidoDias, @PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("costoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
+    public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("tiempoPedidoDias") int tiempoPedidoDias, @PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("costoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {
-            Duration tiempoPedido = Duration.ofDays(tiempoPedidoDias);
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(tiempoPedido,costoPedido,costoAlmacenamiento,costoProducto,idArticulo,idProveedor));
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(tiempoPedidoDias,costoPedido,costoAlmacenamiento,costoProducto,idArticulo,idProveedor));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         } catch (Exception e) {
@@ -46,10 +48,9 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
     @PostMapping("/agregarProveedor/{tiempoPedidoDias}/{costoPedido}/{costoAlmacenamiento}/{cotoProducto}/{idArticulo}/{idProveedor}")
-    public ResponseEntity<?> setProveedor(@PathVariable("tiempoPedidoDias") long tiempoPedidoDias,@PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("cotoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
+    public ResponseEntity<?> setProveedor(@PathVariable("tiempoPedidoDias") int tiempoPedidoDias,@PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("cotoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {
-            Duration duracionDias = Duration.ofDays(tiempoPedidoDias);
-            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(duracionDias, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.AsignarUnProveedorAUnArticulo(tiempoPedidoDias, costoPedido, costoAlmacenamiento, costoProducto, idArticulo, idProveedor));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         } catch (Exception e) {
@@ -133,7 +134,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
-    @PostMapping("/IntervaloFijoConProveedor/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}/{DPromedio}/{DDesvEstandar}/{Z}/{periodoDias}")
+    @PostMapping("/IntervaloFijoConProveedor/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{idProveedor}/{DPromedio}/{DDesvEstandar}/{Z}")
     public ResponseEntity<?> IntervaloFijoConProveedor(@PathVariable Long idArticulo,
                                                                      @PathVariable int añoDesde,
                                                                      @PathVariable int añoHasta,
@@ -142,10 +143,8 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
                                                                      @PathVariable Long idProveedor,
                                                                      @PathVariable float DPromedio,
                                                                      @PathVariable float DDesvEstandar,
-                                                                     @PathVariable double Z,
-                                                                     @PathVariable Long periodoDias){
+                                                                     @PathVariable double Z){
         try {
-            Duration periodo = Duration.ofDays(periodoDias);
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.IntervaloFijoConProveedor(idArticulo,
                                                                                               añoDesde,
                                                                                               añoHasta,
@@ -154,8 +153,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
                                                                                               idProveedor,
                                                                                               DPromedio,
                                                                                               DDesvEstandar,
-                                                                                              Z,
-                                                                                              periodo
+                                                                                              Z
                                                                                               ));
 
         } catch (RuntimeException e) {
@@ -165,7 +163,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
-    @PostMapping("/IntervaloFijoConProveedorPredeterminado/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{DPromedio}/{DDesvEstandar}/{Z}/{periodoDias}")
+    @PostMapping("/IntervaloFijoConProveedorPredeterminado/{idArticulo}/{añoDesde}/{añoHasta}/{periodoDesde}/{periodoHasta}/{DPromedio}/{DDesvEstandar}/{Z}")
     public ResponseEntity<?> IntervaloFijoConProveedorPredeterminado(@PathVariable Long idArticulo,
                                                                      @PathVariable int añoDesde,
                                                                      @PathVariable int añoHasta,
@@ -173,10 +171,8 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
                                                                      @PathVariable int periodoHasta,
                                                                      @PathVariable float DPromedio,
                                                                      @PathVariable float DDesvEstandar,
-                                                                     @PathVariable double Z,
-                                                                     @PathVariable Long periodoDias){
+                                                                     @PathVariable double Z){
         try {
-            Duration periodo = Duration.ofDays(periodoDias);
             return ResponseEntity.status(HttpStatus.OK).body(articuloservice.IntervaloFijoConProveedorPredeterminado(idArticulo,
                                                                                               añoDesde,
                                                                                               añoHasta,
@@ -184,8 +180,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
                                                                                               periodoHasta,
                                                                                               DPromedio,
                                                                                               DDesvEstandar,
-                                                                                              Z,
-                                                                                              periodo
+                                                                                              Z
                                                                                               ));
 
         } catch (RuntimeException e) {

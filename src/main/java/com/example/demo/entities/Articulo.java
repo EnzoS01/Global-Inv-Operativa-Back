@@ -50,7 +50,7 @@ public class Articulo extends Base {
     private double precioVenta;
 
     @Column(name = "periodo")
-    private Duration periodo;
+    private int periodo;
 
     @OneToOne
     @JoinColumn(name = "fk_modelo")
@@ -60,12 +60,12 @@ public class Articulo extends Base {
     @JoinColumn(name = "fk_proveedorPredeterminado")
     private Proveedor proveedorPredeterminado;
 
-    public ProveedorArticulo agregarUnProveedor(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
+    public ProveedorArticulo agregarUnProveedor(int tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
         ProveedorArticulo pa = new ProveedorArticulo(tiempoPedido, costoPedido, costoAlmacenamiento, costoProducto, proveedor, articulo);
         return pa;
     }
 
-    public ProveedorArticulo agregarUnProveedorPredeterminado(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
+    public ProveedorArticulo agregarUnProveedorPredeterminado(int tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
         ProveedorArticulo pa = new ProveedorArticulo(tiempoPedido, costoPedido, costoAlmacenamiento, costoProducto, proveedor, articulo);
         this.proveedorPredeterminado=proveedor;
         return pa;

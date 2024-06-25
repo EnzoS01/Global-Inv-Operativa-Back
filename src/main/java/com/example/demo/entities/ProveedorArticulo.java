@@ -25,7 +25,7 @@ public class ProveedorArticulo extends Base{
     private LocalDate fechaAlta;
 
     @Column(name = "tiempoPedido")
-    private Duration tiempoPedido;
+    private int tiempoPedido;
 
     @Column(name = "costoPedido")
     private float costoPedido;
@@ -44,7 +44,7 @@ public class ProveedorArticulo extends Base{
     @JoinColumn(name = "fk_articulo")
     private Articulo articulo;
 
-    public ProveedorArticulo(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
+    public ProveedorArticulo(int tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Proveedor proveedor, Articulo articulo){
         this.fechaBaja=null;
         this.fechaAlta=LocalDate.now();
         this.tiempoPedido=tiempoPedido;

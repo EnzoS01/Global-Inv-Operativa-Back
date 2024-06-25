@@ -52,9 +52,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         super(baseRepository);
         this.articuloRepository = articuloRepository;
     }
+
+
     @Transactional
     @Override
-    public Articulo agregarProveedorPredeterminado(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Long idArticulo, Long idProveedor) throws Exception {
+    public Articulo agregarProveedorPredeterminado(int tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto,Long idArticulo, Long idProveedor) throws Exception {
         try{
             Articulo articulo= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
             Proveedor proveedor=proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
@@ -83,7 +85,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
     @Transactional
     @Override
-    public Articulo AsignarUnProveedorAUnArticulo(Duration tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto, Long idArticulo, Long idProveedor) throws Exception {
+    public Articulo AsignarUnProveedorAUnArticulo(int tiempoPedido, float costoPedido, float costoAlmacenamiento, float costoProducto, Long idArticulo, Long idProveedor) throws Exception {
         try{
             Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
             Proveedor p = proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
@@ -167,21 +169,19 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         float P=pa.getCostoProducto();
         float Ca=pa.getCostoAlmacenamiento();
         float Cp=pa.getCostoPedido();
-        Duration dias=pa.getTiempoPedido();
+        int tiempoPedido=pa.getTiempoPedido();
         //calculo lote optimo
         int Q=(int) Math.sqrt(2*D*(Cp/Ca));
         a.setLoteOptimo(Q);
         //Calculo stock seguridad
-        Duration duracionPedidoDuration = pa.getTiempoPedido();
-        long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
-        double DesvEstandarL=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias));
+        double DesvEstandarL=(DDesvEstandar*Math.sqrt(tiempoPedido));
         double SS= DesvEstandarL*Z;
         a.setStockSeguridad((int)SS);
         //calculo punto pedido
         float demandaFloat= (float)D;
         long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
         float d = demandaFloat/diasTrabajoEnElPeriodo;
-        int puntoPedido= (int) (d*tiempoPedidoEnDias);
+        int puntoPedido= (int) (d*tiempoPedido);
         a.setPuntoPedido(puntoPedido);
         articuloRepository.save(a);
         return a;
@@ -201,28 +201,26 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         float P=pa.getCostoProducto();
         float Ca=pa.getCostoAlmacenamiento();
         float Cp=pa.getCostoPedido();
-        Duration dias=pa.getTiempoPedido();
+        int tiempoPedido=pa.getTiempoPedido();
         //calculo lote optimo
         int Q=(int) Math.sqrt(2*D*(Cp/Ca));
         a.setLoteOptimo(Q);
         //Calculo stock seguridad
-        Duration duracionPedidoDuration = pa.getTiempoPedido();
-        long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
-        double DesvEstandarL=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias));
+        double DesvEstandarL=(DDesvEstandar*Math.sqrt(tiempoPedido));
         double SS= DesvEstandarL*Z;
         a.setStockSeguridad((int)SS);
         //calculo punto pedido
         float demandaFloat= (float)D;
         long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
         float d = demandaFloat/diasTrabajoEnElPeriodo;
-        int puntoPedido= (int) (d*tiempoPedidoEnDias);
+        int puntoPedido= (int) (d*tiempoPedido);
         a.setPuntoPedido(puntoPedido);
         articuloRepository.save(a);
         return a;
     }
     @Transactional
     @Override
-    public Articulo IntervaloFijoConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception{
+    public Articulo IntervaloFijoConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DPromedio, float DDesvEstandar, double Z)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
         Modelo modelo= a.getModelo();
@@ -236,17 +234,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         for (Demanda demanda: demandas){
             D= D + demanda.getCantTotalDemanda();
         }
-        Duration duracionPedidoDuration = pa.getTiempoPedido();
-        long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
-        long tiempoPeriodoEnDias = periodo.toDays();
-        double DesvEstandarLT=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        int tiempoPedido = pa.getTiempoPedido();
+        long tiempoPeriodoEnDias = a.getPeriodo();
+        double DesvEstandarLT=(DDesvEstandar*Math.sqrt(tiempoPedido+tiempoPeriodoEnDias));
         double SS= DesvEstandarLT*Z;
         a.setStockSeguridad((int)SS);
         //calculo punto pedido
         float demandaFloat= (float)D;
         long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
         float d = demandaFloat/diasTrabajoEnElPeriodo;
-        int puntoPedido= (int) (d*(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        int puntoPedido= (int) (d*(tiempoPedido+tiempoPeriodoEnDias));
         a.setPuntoPedido(puntoPedido);
         //calculo lote optimo
         int Q= (int)(puntoPedido+(Z*DesvEstandarLT)-a.getCantActual());
@@ -256,7 +253,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
     @Transactional
     @Override
-    public Articulo IntervaloFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z, Duration periodo)throws Exception{
+    public Articulo IntervaloFijoConProveedorPredeterminado (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, float DPromedio, float DDesvEstandar, double Z)throws Exception{
         //BUSQUEDA DE DATOS
         Articulo a= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
         Modelo modelo= a.getModelo();
@@ -270,17 +267,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         for (Demanda demanda: demandas){
             D= D + demanda.getCantTotalDemanda();
         }
-        Duration duracionPedidoDuration = pa.getTiempoPedido();
-        long tiempoPedidoEnDias = duracionPedidoDuration.toDays();
-        long tiempoPeriodoEnDias = periodo.toDays();
-        double DesvEstandarLT=(DDesvEstandar*Math.sqrt(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        int tiempoPedido = pa.getTiempoPedido();
+        long tiempoPeriodoEnDias = a.getPeriodo();
+        double DesvEstandarLT=(DDesvEstandar*Math.sqrt(tiempoPedido+tiempoPeriodoEnDias));
         double SS= DesvEstandarLT*Z;
         a.setStockSeguridad((int)SS);
         //calculo punto pedido
         float demandaFloat= (float)D;
         long diasTrabajoEnElPeriodo=calcularDias(periodoDesde,periodoHasta,añoDesde,añoHasta);
         float d = demandaFloat/diasTrabajoEnElPeriodo;
-        int puntoPedido= (int) (d*(tiempoPedidoEnDias+tiempoPeriodoEnDias));
+        int puntoPedido= (int) (d*(tiempoPedido+tiempoPeriodoEnDias));
         a.setPuntoPedido(puntoPedido);
         //calculo lote optimo
         int Q= (int)(puntoPedido+(Z*DesvEstandarLT)-a.getCantActual());
