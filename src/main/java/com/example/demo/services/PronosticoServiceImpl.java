@@ -70,9 +70,10 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
                 .orElse(1); // Si no hay demandas, empezamos desde el periodo 1
     }
 
+
     @Override
-    public DemandaPronosticada crearDPronosticada(int anioActual, int periodoActual, double pronostico,Articulo articulo){
-        DemandaPronosticada demandaPronosticada= new DemandaPronosticada();
+    public DemandaPronosticada crearDPronosticada(int anioActual, int periodoActual, double pronostico, Articulo articulo) {
+        DemandaPronosticada demandaPronosticada = new DemandaPronosticada();
         List<Demanda> demandas = demandaRepository.findByArticuloAndAnio(articulo, anioActual);
 
         // Determina si el periodo actual es 1 debido a un nuevo año
@@ -89,6 +90,11 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
         demandaPronosticada.setCantidadDemandadaPronostico(pronostico);
         demandaPronosticada.setNroPeriodoDemandaPronosticada(periodoActual);
+
+        System.out.println("Creando demanda pronosticada para el año: " + demandaPronosticada.getAnioDemandaPronosticada());
+        System.out.println("Periodo: " + demandaPronosticada.getNroPeriodoDemandaPronosticada());
+        System.out.println("Cantidad pronosticada: " + demandaPronosticada.getCantidadDemandadaPronostico());
+
         return demandaPronosticada;
     }
 
@@ -121,9 +127,16 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
         int periodoActual= periodoActual(pron,anio);
+        int periodoAnterior;
+        if (periodoActual==1){
+            periodoAnterior=12;
+        }
+        else {
+            periodoAnterior=periodoActual-1;
+        }
 
         //Buscar la demanda asociada al mismo articulo que el pronóstico con el año correspondiente y el periodo anterior
-        Demanda demandaReal= demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(),anio,periodoActual-1);
+        Demanda demandaReal= demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(),anio,periodoAnterior);
 
         //Se hace la cuenta
         double pronostico= predecidaRaiz + valorCoeficiente*(demandaReal.getCantTotalDemanda()-predecidaRaiz);
@@ -141,10 +154,19 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
         int periodoActual= periodoActual(pron,anio);
-
+        int periodoAnterior;
+        int anioBuscar;
+        if (periodoActual==1){
+            periodoAnterior=12;
+            anioBuscar=anio-1;
+        }
+        else {
+            periodoAnterior=periodoActual-1;
+            anioBuscar=anio;
+        }
 
         //Ordena la lista demandas de manera ascendente en la posicion 0 está la demanda con el numero de periodo más bajo
-        List<Demanda> demandasReales= demandaRepository.findByArticuloAndAnio(pron.getArticulo(),anio);
+        List<Demanda> demandasReales= demandaRepository.findByArticuloAndAnio(pron.getArticulo(),anioBuscar);
         demandasReales.sort(Comparator.comparingInt(Demanda::getNumPeriodo));
 
         double sumatoriaX=0;
@@ -152,7 +174,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         double sumatoriaXCuadrado=0;
         double sumatoriaMultiplicacionXY=0;
 
-        for (int i=0; i<periodoActual-1; i++){
+        for (int i=0; i<periodoAnterior; i++){
             System.out.println("NumeroPeriodo: "+ demandasReales.get(i).getNumPeriodo());
             sumatoriaX+=demandasReales.get(i).getNumPeriodo();
             System.out.println("sumatoriaX: "+sumatoriaX);
@@ -164,14 +186,14 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             sumatoriaMultiplicacionXY+=demandasReales.get(i).getNumPeriodo()*demandasReales.get(i).getCantTotalDemanda();
             System.out.println("sumatoriaMultiplicacionXY: "+sumatoriaMultiplicacionXY);
         }
-        double promedioX= sumatoriaX/(periodoActual-1);
-        double promedioY= sumatoriaY/(periodoActual-1);
+        double promedioX= sumatoriaX/(periodoAnterior);
+        double promedioY= sumatoriaY/(periodoAnterior);
 
         System.out.println("promedioX " + promedioX);
         System.out.println("PromedioY " +promedioY);
 
-        double parteArribaB= sumatoriaMultiplicacionXY - (periodoActual-1)*(promedioX*promedioY);
-        double parteAbajoB=  sumatoriaXCuadrado - (periodoActual-1)*(promedioX*promedioX);
+        double parteArribaB= sumatoriaMultiplicacionXY - (periodoAnterior)*(promedioX*promedioY);
+        double parteAbajoB=  sumatoriaXCuadrado - (periodoAnterior)*(promedioX*promedioX);
 
         double b= parteArribaB/parteAbajoB;
         System.out.println("b "+ b);
