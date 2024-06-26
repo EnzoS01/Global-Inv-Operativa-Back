@@ -57,7 +57,7 @@ public class GlobalInvOperativaApplication {
 
 			pron2.setCantidadPeriodosHistoricos(3);
 			pron2.setArticulo(art1);
-			pron2.setNombrePronostico("PM_Suavizad0");
+			pron2.setNombrePronostico("PM_Suavizado");
 			pronosticoRepository.save(pron2);
 
 			Pronostico pron3= new Pronostico();
