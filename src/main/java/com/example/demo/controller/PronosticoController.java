@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("api/pronosticos")
 public class PronosticoController extends BaseControllerImpl<Pronostico, PronosticoServiceImpl> {
 

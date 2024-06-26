@@ -36,9 +36,11 @@ public class GlobalInvOperativaApplication {
 	@Bean
 	CommandLineRunner init() {
 		return args -> {
-			System.out.println("-------------------Funcionando------------------");
+			System.out.println("----------------" +
+					"---Funcionando------------------");
 			Articulo art1= new Articulo();
-			art1.setDetalle("Hamburguesa");
+			art1.setNombreArticulo("Hamburguesa");
+			art1.setDetalle("queso,jamon,huevo");
 			art1.setCantActual(1000);
 			art1.setLoteOptimo(500);
 			art1.setPuntoPedido(980);
