@@ -31,5 +31,9 @@ public class Pronostico extends Base {
         @JoinColumn(name = "articulo_id")
         private Articulo articulo;
 
+        @ManyToOne
+        @JoinColumn(name = "ordenCompra_id")
+        private OrdenCompra ordenCompra;
+
 
 }

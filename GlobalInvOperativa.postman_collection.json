@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5245e483-6213-4258-aa4a-7ed1bca06fea",
+		"_postman_id": "98493ec4-ce84-48f3-a662-b2b12b3b348c",
 		"name": "GlobalInvOperativa",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "30289981"
+		"_exporter_id": "30258870"
 	},
 	"item": [
 		{
@@ -54,16 +54,10 @@
 					"name": "Create",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": null,\r\n    \"puntoPedido\": 27,\r\n    \"stockSeguridad\": 15,\r\n    \"precioVenta\": 300.0,\r\n    \"periodo\": null,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\":null,\r\n    \"cgi\": 0.0,\r\n    \"cantActual\": 26\r\n}",
+							"raw": "{   \r\n    \"id\": 2,\r\n        \"nombreArticulo\": null,\r\n        \"detalle\": \"Pizza\",\r\n        \"fechaAlta\": null,\r\n        \"fechaBaja\": null,\r\n        \"loteOptimo\": 0,\r\n        \"puntoPedido\": 0,\r\n        \"stockSeguridad\": 0,\r\n        \"precioVenta\": 0.0,\r\n        \"periodo\": null,\r\n        \"modelo\": null,\r\n        \"proveedorPredeterminado\": null,\r\n        \"cgi\": 0.0,\r\n        \"cantActual\": 0\r\n    \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -129,423 +123,6 @@
 							"path": [
 								"api",
 								"articulos",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "setModelo",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarModelo/1/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"agregarModelo",
-								"1",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "setProveedor",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarProveedor/7/23.3/2.0/20.0/1/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"agregarProveedor",
-								"7",
-								"23.3",
-								"2.0",
-								"20.0",
-								"1",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SetProveedorPredeterminado",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarProveedorPredeterminado/7/23.3/2.0/20.0/1/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"agregarProveedorPredeterminado",
-								"7",
-								"23.3",
-								"2.0",
-								"20.0",
-								"1",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "setCGIConProveedorPredeterminado",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarCGIConProveedorPredeterminado/1/2022/2022/1/2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"agregarCGIConProveedorPredeterminado",
-								"1",
-								"2022",
-								"2022",
-								"1",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "setCGI",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/agregarCGI/1/2022/2022/1/2/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"agregarCGI",
-								"1",
-								"2022",
-								"2022",
-								"1",
-								"2",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "LoteFijoConProveedor",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/LoteFijoConProveedor/1/2022/2022/1/2/1/5/2/1.64",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"LoteFijoConProveedor",
-								"1",
-								"2022",
-								"2022",
-								"1",
-								"2",
-								"1",
-								"5",
-								"2",
-								"1.64"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "LoteFijoConProveedorPredeterminado",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/LoteFijoConProveedorPredeterminado/1/2022/2022/1/2/5/2/1.64",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"LoteFijoConProveedorPredeterminado",
-								"1",
-								"2022",
-								"2022",
-								"1",
-								"2",
-								"5",
-								"2",
-								"1.64"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "IntervaloFijoConProveedor",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/IntervaloFijoConProveedor/1/2022/2022/1/2/1/5/2/1.64/30",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"IntervaloFijoConProveedor",
-								"1",
-								"2022",
-								"2022",
-								"1",
-								"2",
-								"1",
-								"5",
-								"2",
-								"1.64",
-								"30"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "IntervaloFijoConProveedorPredeterminado",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/IntervaloFijoConProveedorPredeterminado/1/2022/2022/1/2/5/2/1.64/30",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"IntervaloFijoConProveedorPredeterminado",
-								"1",
-								"2022",
-								"2022",
-								"1",
-								"2",
-								"5",
-								"2",
-								"1.64",
-								"30"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ListadoArticulosFaltantes",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/ListadoArticulosFaltantes",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"ListadoArticulosFaltantes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ListadoArticulosAReponer",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/articulos/ListadoArticulosAReponer",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"articulos",
-								"ListadoArticulosAReponer"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Modelos",
-			"item": [
-				{
-					"name": "Get All",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/modelos",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"modelos"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get One",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/modelos/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"modelos",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{   \r\n    \"nombreModelo\":\"INTERVALO_FIJO\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/modelos",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"modelos"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/modelos",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"modelos"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/modelos/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"modelos",
 								"1"
 							]
 						}
@@ -689,7 +266,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"cantidad\": 1,\r\n    \"subtotal\": 420.0,\r\n    \"linea\": 2,\r\n    \"articulo\": null\r\n}"
+							"raw": "{   \"id\":1,\r\n    \"cantidad\": 6,\r\n    \"subtotal\": null,\r\n    \"linea\": 1,\r\n    \"articulo\": null\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/api/ventas/agregarDetalle/1",
@@ -1169,7 +746,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/proveedorArticulos",
+							"raw": "http://localhost:8080/api/proveedores",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1177,7 +754,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"proveedorArticulos"
+								"proveedores"
 							]
 						}
 					},
@@ -1346,7 +923,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"numPeriodo\":1,\r\n    \"anio\":2022,\r\n    \"cantTotalDemanda\":22,\r\n    \"articulo\": {\r\n        \"id\": 1,\r\n        \"nombreArticulo\": \"hamburguesa\",\r\n        \"detalle\": \"queso,tomate\",\r\n        \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n        \"fechaBaja\": null,\r\n        \"loteOptimo\": 0,\r\n        \"puntoPedido\": 0,\r\n        \"stockSeguridad\": 0,\r\n        \"precioVenta\": 300.0,\r\n        \"periodo\": null,\r\n        \"modelo\": null,\r\n        \"proveedorPredeterminado\": {\r\n            \"id\": 1,\r\n            \"nombre\": \"ale\",\r\n            \"telefono\": 2.613004548E9,\r\n            \"direccion\": \"Castelar 825\",\r\n            \"mail\": \"alear12373@gmail.com\",\r\n            \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n            \"fechaBaja\": null\r\n        },\r\n        \"cgi\": 0.0,\r\n        \"cantActual\": 12\r\n    }\r\n}",
+							"raw": "    \r\n    {\r\n        \r\n        \"numPeriodo\": 1,\r\n        \"anio\": 2024,\r\n        \"cantTotalDemanda\": 100,\r\n        \"articulo\": {\r\n            \"id\": 1,\r\n            \"nombreArticulo\": null,\r\n            \"detalle\": \"Hamburguesa\",\r\n            \"fechaAlta\": null,\r\n            \"fechaBaja\": null,\r\n            \"loteOptimo\": 0,\r\n            \"puntoPedido\": 0,\r\n            \"stockSeguridad\": 0,\r\n            \"precioVenta\": 0.0,\r\n            \"periodo\": null,\r\n            \"modelo\": null,\r\n            \"proveedorPredeterminado\": null,\r\n            \"cgi\": 0.0,\r\n            \"cantActual\": 0\r\n        },\r\n        \"detallesVenta\": []\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1417,19 +994,14 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Orden Compra",
-			"item": [
+				},
 				{
-					"name": "Get All",
+					"name": "SetArticulo",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/ordenesCompra",
+							"raw": "http://localhost:8080/api/demandas/setearArticulo/1/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1437,7 +1009,79 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"ordenesCompra"
+								"demandas",
+								"setearArticulo",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SetDetallesVenta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/demandas/setearDetallesVenta/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandas",
+								"setearDetallesVenta",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SetTotalDemandada",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/demandas/setearTotalDemanda/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandas",
+								"setearTotalDemanda",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Demanda Pronosticada",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/demandaspronosticada",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandaspronosticada"
 							]
 						}
 					},
@@ -1449,7 +1093,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/ordenesCompra/1",
+							"raw": "http://localhost:8080/api/demandapronosticada/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1457,7 +1101,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"ordenesCompra",
+								"demandapronosticada",
 								"1"
 							]
 						}
@@ -1476,7 +1120,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"fechaRealizacion\":\"2021-10-12T00:00:00.000+00:00\",\r\n    \"total\":2.4,\r\n    \"detallesOrdenCompra\":[\r\n        {\r\n    \"id\": 1,\r\n    \"cantidad\": 2,\r\n    \"subtotal\": 3.4,\r\n    \"linea\": 1,\r\n    \"proveedor\": null,\r\n    \"articulo\": {\r\n        \"id\": 1,\r\n        \"nombreArticulo\": \"hamburguesa\",\r\n        \"detalle\": \"queso,tomate\",\r\n        \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n        \"fechaBaja\": null,\r\n        \"loteOptimo\": 0,\r\n        \"puntoPedido\": 27,\r\n        \"stockSeguridad\": 15,\r\n        \"precioVenta\": 300.0,\r\n        \"periodo\": null,\r\n        \"modelo\": null,\r\n        \"proveedorPredeterminado\": null,\r\n        \"cgi\": 0.0,\r\n        \"cantActual\": 26\r\n    }\r\n}\r\n    ],\r\n    \"estadoOrdenCompra\":{\r\n    \"id\": 1,\r\n    \"nombreEstado\": \"Pendiente\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null\r\n}\r\n}",
+							"raw": "{\r\n        \"id\": 40,\r\n        \"cantidadDemandadaPronostico\": 81.83333333333333,\r\n        \"valorErrorPronosticoDemandaPronosticada\": 0.0,\r\n        \"nroPeriodoDemandaPronosticada\": 1,\r\n        \"anioDemandaPronosticada\": 2024,\r\n        \"cantidadDemandaReal\": 0,\r\n        \"demandaRealAsociada\": null\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1484,7 +1128,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/ordenesCompra",
+							"raw": "http://localhost:8080/api/demandaspronosticada",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1492,7 +1136,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"ordenesCompra"
+								"demandaspronosticada"
 							]
 						}
 					},
@@ -1505,7 +1149,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}",
+							"raw": "{\r\n        \"id\": 1,\r\n        \"cantidadDemandadaPronostico\": 81.83333333333333,\r\n        \"valorErrorPronosticoDemandaPronosticada\": 0.0,\r\n        \"nroPeriodoDemandaPronosticada\": 1,\r\n        \"anioDemandaPronosticada\": 2024,\r\n        \"cantidadDemandaReal\": 0,\r\n        \"demandaRealAsociada\": null\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1513,7 +1157,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/ordenesCompra",
+							"raw": "http://localhost:8080/api/demandapronosticada",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1521,7 +1165,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"ordenesCompra"
+								"demandapronosticada"
 							]
 						}
 					},
@@ -1533,7 +1177,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/ordenesCompra/1",
+							"raw": "http://localhost:8080/api/demandaspronosticada/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1541,8 +1185,31 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"ordenesCompra",
-								"1"
+								"demandaspronosticada",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignar Demanda",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/demandaspronosticada/asignarDemanda/1/37",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"demandaspronosticada",
+								"asignarDemanda",
+								"1",
+								"37"
 							]
 						}
 					},
@@ -1551,15 +1218,27 @@
 			]
 		},
 		{
-			"name": "Detalle Orden Compra",
+			"name": "Pronostico",
 			"item": [
 				{
 					"name": "Get All",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:8080/api/detalleOrden",
+							"raw": "http://localhost:8080/api/pronosticos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1567,7 +1246,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"detalleOrden"
+								"pronosticos"
 							]
 						}
 					},
@@ -1579,7 +1258,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/detalleOrden/1",
+							"raw": "http://localhost:8080/api/pronosticos/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1587,7 +1266,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"detalleOrden",
+								"pronosticos",
 								"1"
 							]
 						}
@@ -1606,7 +1285,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \r\n    \"cantidad\":2,\r\n    \"subtotal\":3.4,\r\n    \"linea\":1,\r\n    \"articulo\":{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 27,\r\n    \"stockSeguridad\": 15,\r\n    \"precioVenta\": 300.0,\r\n    \"periodo\": null,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cgi\": 0.0,\r\n    \"cantActual\": 26\r\n}\r\n}",
+							"raw": "{\r\n        \"id\": 2,\r\n        \"nombrePronostico\": \"Promedio_Ponderado\",\r\n        \"errorAceptable\": 0.0,\r\n        \"cantidadPeriodosHistoricos\": 3,\r\n        \"demandaPronosticada\": null,\r\n        \"articulo\": {\r\n            \"id\": 1,\r\n            \"nombreArticulo\": null,\r\n            \"detalle\": \"Hamburguesa\",\r\n            \"fechaAlta\": null,\r\n            \"fechaBaja\": null,\r\n            \"loteOptimo\": 0,\r\n            \"puntoPedido\": 0,\r\n            \"stockSeguridad\": 0,\r\n            \"precioVenta\": 0.0,\r\n            \"periodo\": null,\r\n            \"modelo\": null,\r\n            \"proveedorPredeterminado\": null,\r\n            \"cgi\": 0.0,\r\n            \"cantActual\": 0\r\n        }\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1614,7 +1293,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/detalleOrden",
+							"raw": "http://localhost:8080/api/pronosticos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1622,7 +1301,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"detalleOrden"
+								"pronosticos"
 							]
 						}
 					},
@@ -1635,7 +1314,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1643,7 +1322,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/detalleOrden",
+							"raw": "http://localhost:8080/api/pronosticos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1651,7 +1330,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"detalleOrden"
+								"pronosticos"
 							]
 						}
 					},
@@ -1663,7 +1342,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/detalleOrden/1",
+							"raw": "http://localhost:8080/api/pronosticos/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1671,53 +1350,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"detalleOrden",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Estado Orden Compra",
-			"item": [
-				{
-					"name": "Get All",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/estadosOrdenCompra",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"estadosOrdenCompra"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get One",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/estadosOrdenCompra/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"estadosOrdenCompra",
+								"pronosticos",
 								"1"
 							]
 						}
@@ -1725,75 +1358,12 @@
 					"response": []
 				},
 				{
-					"name": "Create",
+					"name": "SetArticulo",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"nombreEstado\":\"Pendiente\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\"\r\n    \r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/estadosOrdenCompra",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"estadosOrdenCompra"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"nombreArticulo\": \"hamburguesa\",\r\n    \"detalle\": \"queso,tomate\",\r\n    \"fechaAlta\": \"2021-10-12T00:00:00.000+00:00\",\r\n    \"fechaBaja\": null,\r\n    \"loteOptimo\": 0,\r\n    \"puntoPedido\": 0,\r\n    \"stockSeguridad\": 0,\r\n    \"modelo\": null,\r\n    \"proveedorPredeterminado\": null,\r\n    \"cantActual\": 12,\r\n    \"cgi\": 0.0\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/estadosOrdenCompra",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"estadosOrdenCompra"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete",
-					"request": {
-						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/estadosOrdenCompra/1",
+							"raw": "http://localhost:8080/api/pronosticos/asignarArticulo/1/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1801,8 +1371,127 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"estadosOrdenCompra",
+								"pronosticos",
+								"asignarArticulo",
+								"1",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generar OrdenCompra",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/pronosticos/generarOrdenCompra/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"pronosticos",
+								"generarOrdenCompra",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PromedioPonderado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/pronosticos/calcularPromedioPonderado/1/2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"pronosticos",
+								"calcularPromedioPonderado",
+								"1",
+								"2023"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PromedioSuavizado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/pronosticos/calcularPMSuavizado/2/98/0.2/2023",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"pronosticos",
+								"calcularPMSuavizado",
+								"2",
+								"98",
+								"0.2",
+								"2023"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Regresion Lineal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/pronosticos/calcularRegresionLineal/3/2024",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"pronosticos",
+								"calcularRegresionLineal",
+								"3",
+								"2024"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PronosticoEstacionalidad",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/pronosticos/calcularPronosticoEstacionalidad/4/2024/1250",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"pronosticos",
+								"calcularPronosticoEstacionalidad",
+								"4",
+								"2024",
+								"1250"
 							]
 						}
 					},

@@ -3,6 +3,7 @@ package com.example.demo;
 import com.example.demo.entities.*;
 import com.example.demo.repositories.ArticuloRepository;
 import com.example.demo.repositories.DemandaRepository;
+import com.example.demo.repositories.EstadoOrdenCompraRepository;
 import com.example.demo.repositories.PronosticoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +24,8 @@ public class GlobalInvOperativaApplication {
 
 	@Autowired
 	private DemandaRepository demandaRepository;
+	@Autowired
+	private EstadoOrdenCompraRepository estadoOrdenCompraRepository;
 
 
 	public static void main(String[] args) {
@@ -36,6 +39,9 @@ public class GlobalInvOperativaApplication {
 			System.out.println("-------------------Funcionando------------------");
 			Articulo art1= new Articulo();
 			art1.setDetalle("Hamburguesa");
+			art1.setCantActual(1000);
+			art1.setLoteOptimo(500);
+			art1.setPuntoPedido(980);
 			articuloRepository.save(art1);
 
 			Pronostico pron1= new Pronostico();
@@ -65,6 +71,11 @@ public class GlobalInvOperativaApplication {
 			pron4.setArticulo(art1);
 			pron4.setNombrePronostico("Pronostico_Estacionalidad");
 			pronosticoRepository.save(pron4);
+
+			EstadoOrdenCompra estadoOrdenCompra= new EstadoOrdenCompra();
+			estadoOrdenCompra.setNombreEstado("Pendiente");
+			estadoOrdenCompraRepository.save(estadoOrdenCompra);
+
 
 			//Demandas AÑO 2021
 			Demanda demanda121=new Demanda();

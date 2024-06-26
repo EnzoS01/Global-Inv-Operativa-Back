@@ -10,58 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/demandapronosticada")
+@RequestMapping("api/demandaspronosticada")
 public class DemandaPronosticadaController {
 
     @Autowired
     private DemandaPronosticadaService demandaPronosticadaService;
-    @GetMapping("/")
-    public ResponseEntity<?> getAll() {
-        try {
-            List<DemandaPronosticada> demandasPronosticadas = demandaPronosticadaService.findAll();
-            return new ResponseEntity<>(demandasPronosticadas, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
+    @PostMapping("/asignarDemanda/{demandaPronosticadaId}/{demandaId}")
+    public ResponseEntity<?> asignarDemanda(@PathVariable Long demandaPronosticadaId, @PathVariable Long demandaId) {
         try {
-            DemandaPronosticada demandaPronosticada = demandaPronosticadaService.findById(id);
-            return new ResponseEntity<>(demandaPronosticada, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+            return ResponseEntity.status(HttpStatus.OK).body(demandaPronosticadaService.asignarDemanda(demandaPronosticadaId,demandaId));
 
-    @PostMapping("/")
-    public ResponseEntity<?> create(@RequestBody DemandaPronosticada demandaPronosticada) {
-        try {
-            DemandaPronosticada createdDemandaPronosticada = demandaPronosticadaService.save(demandaPronosticada);
-            return new ResponseEntity<>(createdDemandaPronosticada, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody DemandaPronosticada demandaPronosticada) {
-        try {
-            DemandaPronosticada updatedDemandaPronosticada = demandaPronosticadaService.update(id, demandaPronosticada);
-            return new ResponseEntity<>(updatedDemandaPronosticada, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            demandaPronosticadaService.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
 }
