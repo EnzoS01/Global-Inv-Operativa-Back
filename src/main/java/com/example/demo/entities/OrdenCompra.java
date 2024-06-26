@@ -35,4 +35,8 @@ public class OrdenCompra extends Base{
     @ManyToOne
     @JoinColumn(name = "fk_estadoOrdenCompra")
     private EstadoOrdenCompra estadoOrdenCompra;
+
+    public void addDetallesOrdenCompra(DetalleOrdenCompra detalleOrdenCompra){
+        this.detallesOrdenCompra.add(detalleOrdenCompra);
+    }
 }

@@ -1,16 +1,17 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.Articulo;
-import com.example.demo.entities.Demanda;
-import com.example.demo.entities.DemandaPronosticada;
-import com.example.demo.entities.Pronostico;
+import com.example.demo.entities.*;
 import com.example.demo.repositories.*;
 import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.time.ZoneId;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,6 +25,12 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     private ArticuloRepository articuloRepository;
     @Autowired
     private DemandaRepository demandaRepository;
+    @Autowired
+    private EstadoOrdenCompraRepository estadoOrdenCompraRepository;
+    @Autowired
+    private DetalleOrdenCompraRepository detalleOrdenCompraRepository;
+    @Autowired
+    private OrdenCompraRepository ordenCompraRepository;
 
     public PronosticoServiceImpl(BaseRepository<Pronostico, Long> baseRepository,
             DemandaPronosticadaRepository demandaPronosticadaRepository) {
@@ -105,6 +112,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         int cantidadPeriodos=pron.getCantidadPeriodosHistoricos();
         double[] ponderaciones= calcularPonderaciones(cantidadPeriodos);
         int periodoActual= periodoActual(pron,anio);
+
 
         //Ordena la lista demandas de manera descendente en la posicion 0 está la demanda con el numero de periodo más alto
         List<Demanda> demandas= demandaRepository.findByArticuloAndAnio(pron.getArticulo(),anio);
@@ -209,6 +217,8 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
         return pron;
     }
+
+
     @Override
     public Pronostico pronosticoEstacionalidad(Long pronosticoId, int anioAPredecir, double demandaEsperada){
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
@@ -252,6 +262,47 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
         return pron;
     }
+
+    @Override
+    public Pronostico generarOrdenCompra(Long pronosticoId){
+        Pronostico pron = pronosticoRepository.findById(pronosticoId)
+                .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
+
+        double cantidadPronosticada=pron.getDemandaPronosticada().getCantidadDemandadaPronostico();
+        int cantidadActual= pron.getArticulo().getCantActual();
+        int puntoPedido= pron.getArticulo().getPuntoPedido();
+
+        if (cantidadActual-cantidadPronosticada <puntoPedido){
+
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+
+            // Convertir LocalDateTime a ZonedDateTime
+            ZonedDateTime zonedDateTime = fechaHoraActual.atZone(ZoneId.systemDefault());
+
+            // Convertir ZonedDateTime a Date
+            Date date = Date.from(zonedDateTime.toInstant());
+
+            OrdenCompra ordenCompra= new OrdenCompra();
+            ordenCompra.setFechaRealizacion(date);
+
+            EstadoOrdenCompra estadoOrdenCompra= estadoOrdenCompraRepository.findByName("Pendiente");
+            ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
+
+            DetalleOrdenCompra detalle1= new DetalleOrdenCompra();
+            detalle1.setArticulo(pron.getArticulo());
+            detalle1.setCantidad(pron.getArticulo().getLoteOptimo());
+
+            ordenCompra.addDetallesOrdenCompra(detalle1);
+            detalleOrdenCompraRepository.save(detalle1);
+            pron.setOrdenCompra(ordenCompra);
+            ordenCompraRepository.save(ordenCompra);
+
+            pronosticoRepository.save(pron);
+
+        }
+        return pron;
+    }
+
 
 
 

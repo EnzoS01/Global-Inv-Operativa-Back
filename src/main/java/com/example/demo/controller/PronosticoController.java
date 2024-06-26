@@ -18,11 +18,22 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
     @Autowired
     private PronosticoServiceImpl pronosticoService;
 
-
     @PostMapping("/asignarArticulo/{pronosticoId}/{articuloId}")
     public ResponseEntity<?> asignarArticulo(@PathVariable Long pronosticoId, @PathVariable Long articuloId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(pronosticoService.asignarArticulo(pronosticoId,articuloId));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
+    @PostMapping("/generarOrdenCompra/{pronosticoId}")
+    public ResponseEntity<?> generarOrdenCompra(@PathVariable Long pronosticoId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(pronosticoService.generarOrdenCompra(pronosticoId));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");

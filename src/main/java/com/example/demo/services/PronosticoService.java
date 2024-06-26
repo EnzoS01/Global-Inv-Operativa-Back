@@ -24,4 +24,6 @@ public interface PronosticoService extends BaseService<Pronostico, Long> {
     public Pronostico regresionLineal(Long pronosticoId, int anio) throws Exception;
 
     public Pronostico pronosticoEstacionalidad(Long pronosticoId, int anioAPredecir, double demandaEsperada) throws Exception;
+
+    public Pronostico generarOrdenCompra(Long pronosticoId) throws Exception;
 }
