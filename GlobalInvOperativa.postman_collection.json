@@ -57,7 +57,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    \"id\": 2,\r\n        \"nombreArticulo\": null,\r\n        \"detalle\": \"Pizza\",\r\n        \"fechaAlta\": null,\r\n        \"fechaBaja\": null,\r\n        \"loteOptimo\": 0,\r\n        \"puntoPedido\": 0,\r\n        \"stockSeguridad\": 0,\r\n        \"precioVenta\": 0.0,\r\n        \"periodo\": null,\r\n        \"modelo\": null,\r\n        \"proveedorPredeterminado\": null,\r\n        \"cgi\": 0.0,\r\n        \"cantActual\": 0\r\n    \r\n}",
+							"raw": "{   \r\n    \"id\": 2,\r\n        \"nombreArticulo\": \"pizza\",\r\n        \"detalle\": \"Pizza\",\r\n        \"fechaAlta\": null,\r\n        \"fechaBaja\": null,\r\n        \"loteOptimo\": 0,\r\n        \"puntoPedido\": 0,\r\n        \"stockSeguridad\": 0,\r\n        \"precioVenta\": 0.0,\r\n        \"periodo\": null,\r\n        \"modelo\": null,\r\n        \"proveedorPredeterminado\": null,\r\n        \"cgi\": 0.0,\r\n        \"cantActual\": 0\r\n    \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1073,7 +1073,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/demandaspronosticada",
+							"raw": "http://localhost:8080/api/demandaspronosticadas",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1081,7 +1081,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"demandaspronosticada"
+								"demandaspronosticadas"
 							]
 						}
 					},
@@ -1093,7 +1093,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/demandapronosticada/1",
+							"raw": "http://localhost:8080/api/demandapronosticadas/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1101,7 +1101,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"demandapronosticada",
+								"demandapronosticadas",
 								"1"
 							]
 						}
@@ -1128,7 +1128,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/demandaspronosticada",
+							"raw": "http://localhost:8080/api/demandaspronosticadas",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1136,7 +1136,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"demandaspronosticada"
+								"demandaspronosticadas"
 							]
 						}
 					},
@@ -1157,7 +1157,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/demandapronosticada",
+							"raw": "http://localhost:8080/api/demandapronosticadas",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1165,7 +1165,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"demandapronosticada"
+								"demandapronosticadas"
 							]
 						}
 					},
@@ -1177,7 +1177,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/demandaspronosticada/2",
+							"raw": "http://localhost:8080/api/demandaspronosticadas/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1185,7 +1185,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"demandaspronosticada",
+								"demandaspronosticadas",
 								"2"
 							]
 						}
@@ -1198,7 +1198,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/demandaspronosticada/asignarDemanda/1/37",
+							"raw": "http://localhost:8080/api/demandaspronosticadas/asignarDemanda/1/37",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1206,7 +1206,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"demandaspronosticada",
+								"demandaspronosticadas",
 								"asignarDemanda",
 								"1",
 								"37"

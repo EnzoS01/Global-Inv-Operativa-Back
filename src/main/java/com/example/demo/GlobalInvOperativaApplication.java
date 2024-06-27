@@ -8,8 +8,6 @@ import com.example.demo.repositories.EstadoOrdenCompraRepository;
 import com.example.demo.repositories.ModeloRepository;
 import com.example.demo.repositories.OrdenCompraRepository;
 import com.example.demo.repositories.PronosticoRepository;
-
-import org.h2.engine.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -163,10 +161,6 @@ public class GlobalInvOperativaApplication {
 			pron4.setArticulo(art1);
 			pron4.setNombrePronostico("Pronostico_Estacionalidad");
 			pronosticoRepository.save(pron4);
-
-			EstadoOrdenCompra estadoOrdenCompra= new EstadoOrdenCompra();
-			estadoOrdenCompra.setNombreEstado("Pendiente");
-			estadoOrdenCompraRepository.save(estadoOrdenCompra);
 
 
 			//Demandas AÑO 2021
