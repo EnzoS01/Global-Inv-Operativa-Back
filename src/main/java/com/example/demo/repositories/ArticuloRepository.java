@@ -18,6 +18,4 @@ public interface ArticuloRepository extends BaseRepository<Articulo,Long> {
 
     @Query(value = "select * from  articulo a where a.PUNTO_PEDIDO >= a.CANT_ACTUAL ", nativeQuery = true)
     List<Articulo> articulosAReponer();   
-
-    
 }

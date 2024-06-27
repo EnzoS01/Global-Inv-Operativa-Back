@@ -52,7 +52,7 @@ public class Articulo extends Base {
     @Column(name = "periodo")
     private int periodo;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "fk_modelo")
     private Modelo modelo;
 

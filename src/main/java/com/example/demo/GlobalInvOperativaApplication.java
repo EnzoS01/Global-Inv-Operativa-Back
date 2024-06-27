@@ -3,8 +3,13 @@ package com.example.demo;
 import com.example.demo.entities.*;
 import com.example.demo.repositories.ArticuloRepository;
 import com.example.demo.repositories.DemandaRepository;
+import com.example.demo.repositories.DetalleOrdenCompraRepository;
 import com.example.demo.repositories.EstadoOrdenCompraRepository;
+import com.example.demo.repositories.ModeloRepository;
+import com.example.demo.repositories.OrdenCompraRepository;
 import com.example.demo.repositories.PronosticoRepository;
+
+import org.h2.engine.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,12 +25,21 @@ public class GlobalInvOperativaApplication {
 	private ArticuloRepository articuloRepository;
 
 	@Autowired
+	private ModeloRepository modeloRepository;
+
+	@Autowired
 	private PronosticoRepository pronosticoRepository;
 
 	@Autowired
 	private DemandaRepository demandaRepository;
 	@Autowired
 	private EstadoOrdenCompraRepository estadoOrdenCompraRepository;
+
+	@Autowired
+	private OrdenCompraRepository ordenCompraRepository;
+
+	@Autowired
+	private DetalleOrdenCompraRepository detalleOrdenCompraRepository;
 
 
 	public static void main(String[] args) {
@@ -45,6 +59,82 @@ public class GlobalInvOperativaApplication {
 			art1.setLoteOptimo(500);
 			art1.setPuntoPedido(980);
 			articuloRepository.save(art1);
+			
+
+			Modelo loteFijo= new Modelo();
+			loteFijo.setNombreModelo("LOTE_FIJO");
+			modeloRepository.save(loteFijo);
+			Modelo intervaloFijo= new Modelo();
+			intervaloFijo.setNombreModelo("INTERVALO_FIJO");
+			modeloRepository.save(intervaloFijo);
+
+			EstadoOrdenCompra pendiente = new EstadoOrdenCompra();
+			pendiente.setNombreEstado("Pendiente");
+			estadoOrdenCompraRepository.save(pendiente);
+
+			EstadoOrdenCompra recibido = new EstadoOrdenCompra();
+			recibido.setNombreEstado("Recibido");
+			estadoOrdenCompraRepository.save(recibido);
+
+			Articulo pizza= new Articulo();
+			pizza.setNombreArticulo("Pizza");
+			pizza.setDetalle("queso,jamon,huevo,queso");
+			pizza.setCantActual(1000);
+			pizza.setLoteOptimo(500);
+			pizza.setPuntoPedido(980);
+			pizza.setStockSeguridad(1050);
+			pizza.setModelo(intervaloFijo);
+			articuloRepository.save(pizza);
+
+			Articulo fideos= new Articulo();
+			fideos.setNombreArticulo("Fideos con crema");
+			fideos.setDetalle("fideos, crema, jamon y queso");
+			fideos.setCantActual(1000);
+			fideos.setLoteOptimo(500);
+			fideos.setPuntoPedido(980);
+			fideos.setStockSeguridad(1050);
+			fideos.setModelo(intervaloFijo);
+			articuloRepository.save(fideos);
+
+			Articulo papasGrandesConCheddarYBacon= new Articulo();
+			papasGrandesConCheddarYBacon.setNombreArticulo("Papas con cheddar y bacon");
+			papasGrandesConCheddarYBacon.setDetalle("Papas con cheddar y pedazos de bacon por arriba");
+			papasGrandesConCheddarYBacon.setCantActual(930);
+			papasGrandesConCheddarYBacon.setLoteOptimo(500);
+			papasGrandesConCheddarYBacon.setPuntoPedido(980);
+			papasGrandesConCheddarYBacon.setStockSeguridad(1050);
+			papasGrandesConCheddarYBacon.setModelo(intervaloFijo);
+			articuloRepository.save(papasGrandesConCheddarYBacon);
+
+			Articulo Empanadas= new Articulo();
+			Empanadas.setNombreArticulo("Empanadas");
+			Empanadas.setDetalle("Empanadas al horno");
+			Empanadas.setCantActual(930);
+			Empanadas.setLoteOptimo(500);
+			Empanadas.setPuntoPedido(980);
+			Empanadas.setStockSeguridad(1050);
+			Empanadas.setModelo(loteFijo);
+			articuloRepository.save(Empanadas);
+
+			OrdenCompra oc1 = new OrdenCompra();
+			oc1.setEstadoOrdenCompra(recibido);
+			
+			DetalleOrdenCompra doc1= new DetalleOrdenCompra();
+			doc1.setArticulo(papasGrandesConCheddarYBacon);
+			doc1.setCantidad(2);
+			doc1.setSubtotal(40);
+			doc1.setLinea(1);
+			detalleOrdenCompraRepository.save(doc1);
+			DetalleOrdenCompra doc2= new DetalleOrdenCompra();
+			doc2.setArticulo(Empanadas);
+			doc2.setCantidad(2);
+			doc2.setSubtotal(40);
+			doc2.setLinea(2);
+			detalleOrdenCompraRepository.save(doc2);
+			oc1.addDetallesOrdenCompra(doc1);
+			oc1.addDetallesOrdenCompra(doc2);
+
+			ordenCompraRepository.save(oc1);
 
 			Pronostico pron1= new Pronostico();
 

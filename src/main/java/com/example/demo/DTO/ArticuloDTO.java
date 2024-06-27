@@ -12,14 +12,13 @@ public class ArticuloDTO {
     public int stockSeguridad;
     public int CantActual;
 
-    public ArticuloDTO (String nombreArticulo,int loteOptimo,int puntoPedido,int stockSeguridad,int CantActual){
-        this.nombreArticulo=nombreArticulo;
-        this.loteOptimo=loteOptimo;
-        this.puntoPedido=puntoPedido;
-        this.stockSeguridad=stockSeguridad;
-        this.CantActual=CantActual;
+    public ArticuloDTO(String nombreArticulo, int loteOptimo, int puntoPedido, int stockSeguridad, int CantActual) {
+        this.nombreArticulo = nombreArticulo;
+        this.loteOptimo = loteOptimo;
+        this.puntoPedido = puntoPedido;
+        this.stockSeguridad = stockSeguridad;
+        this.CantActual = CantActual;
     }
-
     public ArticuloDTO(){
     }
 }
