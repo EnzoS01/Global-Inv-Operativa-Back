@@ -12,9 +12,10 @@ import java.util.List;
 @Repository
 public interface VentaRepository extends BaseRepository<Venta,Long> {
 
-    @Query(value = "select * from venta V where V.fechaRealizacion >= :fecha1 and V.fechafechaRealizacion <= :fecha2", nativeQuery = true)
-    List<Venta> findByFecha(@Param("fecha1") Date fecha1, @Param("fecha2") Date fecha2);
+    //@Query(value = "select * from venta V where V.fechaRealizacion >= :fecha1 and V.fechaRealizacion <= :fecha2", nativeQuery = true)
+    //List<Venta> findByFecha(@Param("fecha1") Date fecha1, @Param("fecha2") Date fecha2);
 
+    List<Venta> findByfechaRealizacionBetween(Date fecha1, Date fecha2);
 
 
 

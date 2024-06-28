@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.DemandaRepository;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,25 +46,28 @@ public class DemandaServiceImpl extends BaseServiceImpl<Demanda,Long> implements
     }
 
     @Transactional
-    public Demanda setDetallesVenta(Long demandaId){
+    public Demanda setDetallesVenta(Long demandaId) {
         Demanda demanda = demandaRepository.findById(demandaId)
                 .orElseThrow(() -> new RuntimeException("Demanda no encontrada"));
-        //Genero al fecha de inicio y fin con el año y numPeriodo de la demanda, para encontrar todas las ventas que se encuentren en ese rango de fechas;
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(demanda.getAnio(), demanda.getNumPeriodo(), 1);
-        Date fechaInicio = calendar.getTime();
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        Date fechaFin = calendar.getTime();
 
-        List<Venta> ventas= ventaRepository.findByFecha(fechaInicio,fechaFin);
+        // Genero la fecha de inicio y fin con el año y numPeriodo de la demanda
+        LocalDate fechaInicio = LocalDate.of(demanda.getAnio(), demanda.getNumPeriodo(), 1);
+        System.out.println("Esta es la fecha de inicio generada: " + fechaInicio);
 
-        // Remove the unused variable
-        // List<Venta> ventasRevisar= new ArrayList<>();
-        //Por cada venta encontrada entre las fechas correspondientes, se busca que el detalle tenga el mismo artículo que la demanda para poder agregar el detalle a la demanda;
-        for (Venta venta:ventas){
-            List<DetalleVenta> detallesVenta=venta.getDetallesVenta();
-            for (DetalleVenta detalleVenta:detallesVenta){
-                if(demanda.getArticulo()==detalleVenta.getArticulo()){
+        LocalDate fechaFin = fechaInicio.withDayOfMonth(fechaInicio.lengthOfMonth());
+        System.out.println("Esta es la fecha de fin generada: " + fechaFin);
+
+        // Convertir LocalDate a Date
+        Date startDate = Date.from(fechaInicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(fechaFin.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        List<Venta> ventas = ventaRepository.findByfechaRealizacionBetween(startDate, endDate);
+
+        // Por cada venta encontrada entre las fechas correspondientes, se busca que el detalle tenga el mismo artículo que la demanda para poder agregar el detalle a la demanda;
+        for (Venta venta : ventas) {
+            List<DetalleVenta> detallesVenta = venta.getDetallesVenta();
+            for (DetalleVenta detalleVenta : detallesVenta) {
+                if (demanda.getArticulo().equals(detalleVenta.getArticulo())) {
                     demanda.addDetallesVenta(detalleVenta);
                 }
             }
