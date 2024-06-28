@@ -32,7 +32,13 @@ public class DemandaPronosticadaServiceImpl extends BaseServiceImpl<DemandaProno
 
         //Calcula el error
         demandaPronosticada.setCantidadDemandaReal(demanda.getCantTotalDemanda());
-        demandaPronosticada.setValorErrorPronosticoDemandaPronosticada((demanda.getCantTotalDemanda()-demandaPronosticada.getCantidadDemandadaPronostico()));
+        double error;
+        if ((demanda.getCantTotalDemanda()-demandaPronosticada.getCantidadDemandadaPronostico())<0){
+            error=(demanda.getCantTotalDemanda()-demandaPronosticada.getCantidadDemandadaPronostico())*(-1);
+        }else{
+            error=(demanda.getCantTotalDemanda()-demandaPronosticada.getCantidadDemandadaPronostico());
+        }
+        demandaPronosticada.setValorErrorPronosticoDemandaPronosticada(error);
 
         demandaPronosticadaRepository.save(demandaPronosticada);
         return demandaPronosticada;
