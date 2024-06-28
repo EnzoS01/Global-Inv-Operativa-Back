@@ -896,7 +896,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/demandas/1",
+							"raw": "http://localhost:8080/api/demandas/37",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -905,7 +905,7 @@
 							"path": [
 								"api",
 								"demandas",
-								"1"
+								"37"
 							]
 						}
 					},
@@ -1024,7 +1024,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/demandas/setearDetallesVenta/1",
+							"raw": "http://localhost:8080/api/demandas/setearDetallesVenta/37",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1034,7 +1034,7 @@
 								"api",
 								"demandas",
 								"setearDetallesVenta",
-								"1"
+								"37"
 							]
 						}
 					},
@@ -1363,7 +1363,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/pronosticos/asignarArticulo/1/1",
+							"raw": "http://localhost:8080/api/pronosticos/asignarArticulo/5/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1373,7 +1373,7 @@
 								"api",
 								"pronosticos",
 								"asignarArticulo",
-								"1",
+								"5",
 								"1"
 							]
 						}
