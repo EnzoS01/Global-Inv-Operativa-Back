@@ -1,13 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.entities.*;
-import com.example.demo.repositories.ArticuloRepository;
-import com.example.demo.repositories.DemandaRepository;
-import com.example.demo.repositories.DetalleOrdenCompraRepository;
-import com.example.demo.repositories.EstadoOrdenCompraRepository;
-import com.example.demo.repositories.ModeloRepository;
-import com.example.demo.repositories.OrdenCompraRepository;
-import com.example.demo.repositories.PronosticoRepository;
+import com.example.demo.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -38,7 +32,8 @@ public class GlobalInvOperativaApplication {
 
 	@Autowired
 	private DetalleOrdenCompraRepository detalleOrdenCompraRepository;
-
+	@Autowired
+	private ClienteRepository clienteRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(GlobalInvOperativaApplication.class, args);
@@ -57,6 +52,11 @@ public class GlobalInvOperativaApplication {
 			art1.setLoteOptimo(500);
 			art1.setPuntoPedido(980);
 			articuloRepository.save(art1);
+
+			Cliente clie1=new Cliente();
+			clie1.setDni(213312L);
+			clie1.setNombre("Gerardo Muñoz");
+			clienteRepository.save(clie1);
 			
 
 			Modelo loteFijo= new Modelo();
