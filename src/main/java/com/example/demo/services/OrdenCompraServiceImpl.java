@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.DTO.DTOProveedor;
+import com.example.demo.DTO.DTOProveedorArticulo;
 import com.example.demo.entities.*;
 import com.example.demo.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +42,43 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         this.ordenCompraRepository = ordenCompraRepository;
     }
 
+    public OrdenCompra crearUna(OrdenCompra orden){
+        OrdenCompra nueva = new OrdenCompra();
+        nueva.setTotal(orden.getTotal());
+        nueva.setEstadoOrdenCompra(orden.getEstadoOrdenCompra());
+        nueva.setFechaRealizacion(orden.getFechaRealizacion());
+
+        List<DetalleOrdenCompra> detalles = nueva.getDetallesOrdenCompra();
+        float total = 0;
+        List<DetalleOrdenCompra> nuevosdetalles = new ArrayList<>();
+        for (DetalleOrdenCompra detalle : detalles) {
+            DetalleOrdenCompra nuevoDetalle = new DetalleOrdenCompra();
+            nuevoDetalle.setSubtotal(detalle.getSubtotal());
+            nuevoDetalle.setLinea(detalle.getLinea());
+            total += detalle.getSubtotal();
+             Articulo a = detalle.getArticulo();
+            nuevoDetalle.setArticulo(ArticuloRepo.getReferenceById(a.getId()));
+             Proveedor p = detalle.getProveedor();
+            nuevoDetalle.setProveedor(proveedorRepository.findByName(p.getNombre()));
+            detalleOrdenCompraRepository.save(nuevoDetalle);
+            nuevosdetalles.add(nuevoDetalle);
+        }
+
+        nueva.setDetallesOrdenCompra(nuevosdetalles);
+        ordenCompraRepository.save(nueva);
+        return nueva;
+    }
+
     public List<OrdenCompra> ListaOrdenes(){ //este metodo se encarga de recuperar las ordenes de compra pendientes o enviadas
         //busco los estados que necesito    //serian las ordenes de compra que se listarian al ingresar a la seccion correspondiente
+        System.out.println("Estoy por buscar los estados");
         EstadoOrdenCompra estadoPendiente = estadoOrdenRepository.findByName("Pendiente");
         EstadoOrdenCompra estadoEnviada = estadoOrdenRepository.findByName("Enviada");
 
         //busco las ordenes de compra que esten en standBy
         List<OrdenCompra> ordenes = ordenCompraRepository.findByState(estadoPendiente.getId(),estadoEnviada.getId());
+
+        System.out.println("Regreso las ordenes encontradas: " + ordenes);
 
         return ordenes;
     }
@@ -84,6 +116,17 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     @Transactional
     public OrdenCompra finalizarCreacion(Long ordenCompraId){
         OrdenCompra OC = ordenCompraRepository.getReferenceById(ordenCompraId);
+
+        EstadoOrdenCompra estadoPendiente = estadoOrdenRepository.findByName("Pendiente");
+        OC.setEstadoOrdenCompra(estadoPendiente);
+        ordenCompraRepository.save(OC);
+
+        // documento el cambio de estado
+        CambioOrdenCompraEstado CambioEstado = new CambioOrdenCompraEstado();
+        CambioEstado.setFechaCambio(Date.from(Instant.now()));
+        CambioEstado.setOrdenCompra(OC);
+        CambioEstado.setEstadoOrdenCompra(estadoPendiente);
+        CambioOrdenCompraEstadoRepo.save(CambioEstado);
 
         // Calculo el total de la orden
         double total = 0;
@@ -138,6 +181,79 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
         return OC;
     }
+
+
+    public List<DTOProveedorArticulo> BuildDTOData() {
+        List<Articulo> a = ArticuloRepo.findAll();
+        List<DTOProveedorArticulo> articulos = new ArrayList<>();
+        System.out.println("encontre los articulos: " + a.size());
+
+        for (Articulo articulo : a) {
+            System.out.println("empiezo a loopear los artiulos: " + articulo.getNombreArticulo());
+
+            // buscar el predeterminado
+            Proveedor predeterminado = articulo.getProveedorPredeterminado();
+            DTOProveedor Pre = null; // inicializar el DTOProveedor como null
+
+            if (predeterminado != null) {
+                // Busco el ProveedorArticulo para este articulo y este proveedor
+                ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(predeterminado.getId(), articulo.getId());
+                System.out.println("Encontre el PA del arcticulo: " + PA);
+
+                if (PA != null) {
+                    // construyo el dto para el predeterminado
+                    Pre = DTOProveedor.builder()
+                            .IdProveedor(predeterminado.getId())
+                            .mail(predeterminado.getMail())
+                            .costoPedido(PA.getCostoPedido())
+                            .direccion(predeterminado.getDireccion())
+                            .nombre(predeterminado.getNombre())
+                            .telefono(predeterminado.getTelefono())
+                            .tiempoPedido(PA.getTiempoPedido())
+                            .build();
+                    System.out.println("Arme el DTOProveedor predeterminado " + Pre);
+                    System.out.println("Arme el DTOProveedor predeterminado " + Pre.getIdProveedor());
+                }
+            }
+
+            // armo la lista de proveedores para ese articulo
+            List<DTOProveedor> proveedores = new ArrayList<>();
+            List<ProveedorArticulo> Datos = ProveedorArticuloRepo.findByArticulo(articulo.getId());
+            System.out.println("Recupere la lista de PA para ese articulo: " + Datos.size());
+
+            for (ProveedorArticulo proveedorArticulo : Datos) {
+                Proveedor Usar = proveedorArticulo.getProveedor();
+                DTOProveedor proveedorlista = DTOProveedor.builder()
+                        .IdProveedor(Usar.getId())
+                        .mail(Usar.getMail())
+                        .costoPedido(proveedorArticulo.getCostoPedido())
+                        .direccion(Usar.getDireccion())
+                        .nombre(Usar.getNombre())
+                        .telefono(Usar.getTelefono())
+                        .tiempoPedido(proveedorArticulo.getTiempoPedido())
+                        .build();
+                System.out.println("Arme el DTOProveedor  " + proveedorlista.getIdProveedor());
+                proveedores.add(proveedorlista);
+                System.out.println("Arme el dto proveedor: " + proveedorlista.nombre);
+            }
+
+            // creo el DTOProveedorArticulo
+            DTOProveedorArticulo art = DTOProveedorArticulo.builder()
+                    .IdArticulo(articulo.getId())
+                    .detalle(articulo.getDetalle())
+                    .nombreArticulo(articulo.getNombreArticulo())
+                    .loteOptimo(articulo.getLoteOptimo())
+                    .listaproveedores(proveedores)
+                    .ProveedorPredeterminado(Pre) // puede ser null si no se encuentra el PA
+                    .build();
+            System.out.println("Arme el DTOProveedorArticulo " + art.getIdArticulo());
+            articulos.add(art);
+        }
+        System.out.println("Termine de armar la lista de articulos: " + articulos.size());
+        return articulos;
+    }
+
+
 
     @Transactional
     //metodo para el pronostico de demanda probabilistica (genera orden de compra al final de la prediccion si falta stock para satisfacer la demanda

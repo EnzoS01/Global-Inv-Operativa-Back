@@ -293,6 +293,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
-
-    
+    @Override
+    public Articulo findByname(String nombre) throws Exception {
+        return articuloRepository.findByName(nombre);
+    }
 }

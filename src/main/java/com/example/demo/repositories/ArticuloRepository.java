@@ -17,5 +17,8 @@ public interface ArticuloRepository extends BaseRepository<Articulo,Long> {
     List<Articulo> articulosFaltantes();   
 
     @Query(value = "select * from  articulo a where a.PUNTO_PEDIDO >= a.CANT_ACTUAL ", nativeQuery = true)
-    List<Articulo> articulosAReponer();   
+    List<Articulo> articulosAReponer();
+
+    @Query(value = "select * from  articulo a where a.nombreArticulo = :nombre ", nativeQuery = true)
+    Articulo findByName(@Param("nombre") String nombre);
 }

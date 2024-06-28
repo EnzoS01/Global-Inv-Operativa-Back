@@ -5,13 +5,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.example.demo.entities.ProveedorArticulo;
 
+import java.util.List;
+
 
 @Repository
 public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArticulo,Long>  {
 
     @Query(value = "SELECT * FROM PROVEEDOR_ARTICULO P  " +
                "WHERE P.fk_proveedor = :idProveedor AND P.fk_articulo = :idArticulo AND P.FECHA_BAJA IS NULL", nativeQuery = true)
-    ProveedorArticulo findByArticuloAndProveedor(@Param("idProveedor") Long idProveedor, @Param("idArticulo") Long idArticulo); 
+    ProveedorArticulo findByArticuloAndProveedor(@Param("idProveedor") Long idProveedor, @Param("idArticulo") Long idArticulo);
+
+    @Query(value="select * from PROVEEDOR_ARTICULO P where P.fk_articulo = :idArticulo and P.FECHA_BAJA is null", nativeQuery = true)
+    List<ProveedorArticulo> findByArticulo(@Param("idArticulo") Long idArticulo);
 
     @Query(value="select * from P where P.fk_articulo = :idArticulo and P.FECHA_BAJA is null", nativeQuery = true)
     ProveedorArticulo findByArticuloConFechaBajaNula( @Param("idArticulo") Long idArticulo);

@@ -17,4 +17,5 @@ public interface ArticuloService extends BaseService<Articulo,Long>{
     Articulo ModeloConProveedor (Long idArticulo ,int añoDesde ,int añoHasta ,int periodoDesde ,int periodoHasta, Long idProveedor, float DDesvEstandar, double Z)throws Exception;
     List<ArticuloDTO> ListadoDeArticulosFaltantes() throws Exception;
     List<ArticuloDTO> ListadoDeArticulosAReponer() throws Exception;
+    Articulo findByname(String nombre) throws Exception;
 }

@@ -5,6 +5,9 @@ import com.example.demo.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 @Service
 public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenCompra,Long> implements DetalleOrdenCompraService {
 
@@ -25,6 +28,22 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
     @Autowired
     private ProveedorArticuloRepository ProveedorArticuloRepo;
 
+    @Autowired
+    private EstadoOrdenCompraRepository estadoOrdenRepository;
+
+    @Autowired
+    private OrdenCompraRepository ordenCompraRepository;
+
+
+    public DetalleOrdenCompra nuevoDetalle(DetalleOrdenCompra Detalle){
+        DetalleOrdenCompra nuevo = new DetalleOrdenCompra();
+        nuevo.setSubtotal(Detalle.getSubtotal());
+        nuevo.setCantidad(Detalle.getCantidad());
+        nuevo.setLinea(Detalle.getLinea());
+        nuevo.setArticulo(Detalle.getArticulo());
+        DetalleRepo.save(nuevo);
+        return nuevo;
+    }
     
     @Transactional
     public DetalleOrdenCompra DetallePorDefecto(Long idDetalle, Long idArticulo){
@@ -33,6 +52,17 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
         Proveedor predeterminado = proveedorRepository.findById(a.getProveedorPredeterminado().getId()).orElseThrow(() -> new RuntimeException("No se encontro el proveedor"));
         DetalleOrdenCompra d = DetalleRepo.findById(idDetalle).orElseThrow(() -> new RuntimeException("No se encontro el detalle"));
 
+        EstadoOrdenCompra estadoOrdenCompraPen = estadoOrdenRepository.findByName("Pendiente");
+        // .orElseThrow(() -> new RuntimeException("Estado Orden de compra no encontrada"));
+
+        EstadoOrdenCompra estadoOrdenCompraEnv = estadoOrdenRepository.findByName("Enviada");
+
+        // Verifico si existe una orden para el artículo
+        List<OrdenCompra> ordenesActivas = ordenCompraRepository.findByArticuloAndEstado(a.getId(), estadoOrdenCompraPen.getId(), estadoOrdenCompraEnv.getId());
+
+        if (!ordenesActivas.isEmpty()) {
+            throw new RuntimeException("Ya existe/n"+ ordenesActivas.toArray().length + " orden/es de compra activa/s para el artículo " + a.getNombreArticulo());
+        }
 
 
         ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(predeterminado.getId(), a.getId());

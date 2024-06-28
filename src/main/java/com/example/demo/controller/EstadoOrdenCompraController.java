@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.repositories.EstadoOrdenCompraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,10 @@ import com.example.demo.services.EstadoOrdenCompraServiceImpl;
 public class EstadoOrdenCompraController extends BaseControllerImpl<EstadoOrdenCompra, EstadoOrdenCompraServiceImpl>{
     @Autowired
     private EstadoOrdenCompraServiceImpl estadoOrdenCompraService;
+    @Autowired
+    private EstadoOrdenCompraRepository repo;
+
+
 
 }
 

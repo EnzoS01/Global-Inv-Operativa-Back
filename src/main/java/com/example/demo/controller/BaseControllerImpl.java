@@ -34,6 +34,9 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceIm
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody E entity){
         try {
+            System.out.println("estoy creando: " + entity);
+            System.out.println("estoy creando: " + entity.getId());
+
             return ResponseEntity.status(HttpStatus.OK).body(servicio.save(entity));
 
         } catch (Exception e){
