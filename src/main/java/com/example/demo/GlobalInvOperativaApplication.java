@@ -1,13 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.entities.*;
-import com.example.demo.repositories.ArticuloRepository;
-import com.example.demo.repositories.DemandaRepository;
-import com.example.demo.repositories.DetalleOrdenCompraRepository;
-import com.example.demo.repositories.EstadoOrdenCompraRepository;
-import com.example.demo.repositories.ModeloRepository;
-import com.example.demo.repositories.OrdenCompraRepository;
-import com.example.demo.repositories.PronosticoRepository;
+import com.example.demo.repositories.*;
 
 import org.h2.engine.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +10,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -41,6 +38,13 @@ public class GlobalInvOperativaApplication {
 	@Autowired
 	private DetalleOrdenCompraRepository detalleOrdenCompraRepository;
 
+	@Autowired
+	private VentaRepository ventaRepository;
+	@Autowired
+	private DetalleVentaRepository detalleVentaRepository;
+	@Autowired
+	private ClienteRepository clienteRepository;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(GlobalInvOperativaApplication.class, args);
@@ -60,6 +64,10 @@ public class GlobalInvOperativaApplication {
 			art1.setPuntoPedido(980);
 			articuloRepository.save(art1);
 
+			Cliente clie1=new Cliente();
+			clie1.setNombre("Gerardo ");
+			clie1.setDni(731732L);
+			clienteRepository.save(clie1);
 
 			Modelo loteFijo= new Modelo();
 			loteFijo.setNombreModelo("LOTE_FIJO");
@@ -428,6 +436,21 @@ public class GlobalInvOperativaApplication {
 			demandaRepository.save(demanda1223);
 
 
+			Venta venta=new Venta();
+			LocalDate localDate = LocalDate.of(2024, 1, 4);
+
+			// Convertir LocalDate a Date
+			Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			venta.setCliente(clie1);
+			venta.setFechaRealizacion(date);
+
+			DetalleVenta detallev1=new DetalleVenta();
+			detallev1.setArticulo(art1);
+			detallev1.setCantidad(20);
+			venta.addDetallesVenta(detallev1);
+			detalleVentaRepository.save(detallev1);
+
+			ventaRepository.save(venta);
 
 
 
