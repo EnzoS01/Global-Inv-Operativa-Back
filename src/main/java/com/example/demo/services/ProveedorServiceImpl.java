@@ -3,6 +3,7 @@ package com.example.demo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DTO.ArticuloDTO;
 import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Proveedor;
 import com.example.demo.entities.ProveedorArticulo;
@@ -10,6 +11,8 @@ import com.example.demo.repositories.ArticuloRepository;
 import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.ProveedorArticuloRepository;
 import com.example.demo.repositories.ProveedorRepository;
+import java.util.List;
+import java.util.ArrayList;
 @Service
 public class ProveedorServiceImpl extends BaseServiceImpl<Proveedor,Long> implements ProveedorService{
     @Autowired
@@ -31,6 +34,17 @@ public class ProveedorServiceImpl extends BaseServiceImpl<Proveedor,Long> implem
         pa.setArticulo(a);
         proveedorArticuloRepository.save(pa);
         return p;} catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public List<Proveedor> ObtenerProveedoresQueProveenUnArticulo(Long idArticulo) throws Exception{
+        try{
+        Articulo a = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        List<Proveedor> proveedores= new ArrayList<>();
+        proveedores=proveedorRepository.findProveedoresByArticuloId(idArticulo);
+        return proveedores;
+    } catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }

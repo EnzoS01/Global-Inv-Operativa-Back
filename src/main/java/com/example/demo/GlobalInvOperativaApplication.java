@@ -8,6 +8,9 @@ import com.example.demo.repositories.EstadoOrdenCompraRepository;
 import com.example.demo.repositories.ModeloRepository;
 import com.example.demo.repositories.OrdenCompraRepository;
 import com.example.demo.repositories.PronosticoRepository;
+import com.example.demo.repositories.ProveedorArticuloRepository;
+import com.example.demo.repositories.ProveedorRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -38,6 +41,12 @@ public class GlobalInvOperativaApplication {
 
 	@Autowired
 	private DetalleOrdenCompraRepository detalleOrdenCompraRepository;
+
+	@Autowired
+	private ProveedorRepository proveedorRepository;
+
+	@Autowired
+	private ProveedorArticuloRepository proveedorArticuloRepository;
 
 
 	public static void main(String[] args) {
@@ -133,6 +142,25 @@ public class GlobalInvOperativaApplication {
 			oc1.addDetallesOrdenCompra(doc2);
 
 			ordenCompraRepository.save(oc1);
+
+			Proveedor prov1 = new Proveedor();
+			prov1.setNombre("serenisima");
+			proveedorRepository.save(prov1);
+
+			Proveedor prov2 = new Proveedor();
+			prov2.setNombre("Ilolay");
+			proveedorRepository.save(prov2);
+
+			ProveedorArticulo pa1 = new ProveedorArticulo();
+			pa1.setProveedor(prov1);
+			pa1.setArticulo(Empanadas);
+			proveedorArticuloRepository.save(pa1);
+
+			ProveedorArticulo pa2 = new ProveedorArticulo();
+			pa2.setProveedor(prov2);
+			pa2.setArticulo(Empanadas);
+			proveedorArticuloRepository.save(pa2);
+			
 
 			Pronostico pron1= new Pronostico();
 
