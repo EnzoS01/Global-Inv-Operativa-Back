@@ -23,7 +23,7 @@ public class ProveedorController extends BaseControllerImpl<Proveedor,ProveedorS
     @Autowired
     protected ProveedorService proveedorService;
 
-        @GetMapping("/getProveedoresQueProveenUnArticulo/{idArticulo}")
+    @GetMapping("/getProveedoresQueProveenUnArticulo/{idArticulo}")
     public ResponseEntity<?> getProveedoresQueProveenUnArticulo(@PathVariable Long idArticulo){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(proveedorService.ObtenerProveedoresQueProveenUnArticulo(idArticulo));

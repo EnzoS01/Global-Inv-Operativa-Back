@@ -26,6 +26,17 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     @Autowired
     protected ArticuloService articuloservice;
 
+    @PostMapping("/agregarProveedorPredeterminado/{idArticulo}/{idProveedor}")
+    public ResponseEntity<?> setProveedorPredeterminado2(@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(articuloservice.agregarProveedorPredeterminado(idArticulo,idProveedor));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
     @PostMapping("/agregarProveedorPredeterminado/{tiempoPedidoDias}/{costoPedido}/{costoAlmacenamiento}/{costoProducto}/{idArticulo}/{idProveedor}")
     public ResponseEntity<?> setProveedorPredeterminado(@PathVariable("tiempoPedidoDias") int tiempoPedidoDias, @PathVariable("costoPedido") float costoPedido,@PathVariable("costoAlmacenamiento") float costoAlmacenamiento,@PathVariable("costoProducto") float costoProducto,@PathVariable("idArticulo") Long idArticulo,@PathVariable("idProveedor") Long idProveedor){
         try {

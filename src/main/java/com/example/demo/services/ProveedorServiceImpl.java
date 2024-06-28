@@ -11,6 +11,9 @@ import com.example.demo.repositories.ArticuloRepository;
 import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.ProveedorArticuloRepository;
 import com.example.demo.repositories.ProveedorRepository;
+
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 import java.util.ArrayList;
 @Service
@@ -37,7 +40,8 @@ public class ProveedorServiceImpl extends BaseServiceImpl<Proveedor,Long> implem
             throw new Exception(e.getMessage());
         }
     }
-
+    @Transactional
+    @Override
     public List<Proveedor> ObtenerProveedoresQueProveenUnArticulo(Long idArticulo) throws Exception{
         try{
         Articulo a = articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));

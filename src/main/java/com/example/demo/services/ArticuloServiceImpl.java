@@ -53,6 +53,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         this.articuloRepository = articuloRepository;
     }
 
+    @Transactional
+    @Override
+    public Articulo agregarProveedorPredeterminado(Long idArticulo, Long idProveedor) throws Exception{
+        Articulo articulo= articuloRepository.findById(idArticulo).orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+        Proveedor prov= proveedorRepository.findById(idProveedor).orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        proveedorArticuloRepository.findByArticuloAndProveedor(idProveedor, idArticulo);
+        articulo.setProveedorPredeterminado(prov);
+        articuloRepository.save(articulo);
+        return articulo;
+    }
 
     @Transactional
     @Override
@@ -155,6 +165,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return dias;
     }
 
+
     public Articulo calcularLoteFijo(Articulo a,int D,float P,float Ca, float Cp,int tiempoPedido, float DDesvEstandar, double Z,long diasTrabajoEnElPeriodo)throws Exception{
         //calculo lote optimo
         int Q=(int) Math.sqrt(2*D*(Cp/Ca));
@@ -171,6 +182,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articuloRepository.save(a);
         return a;
     }
+
 
     public Articulo calcularIntervaloFijo(Articulo a,int D,int tiempoPedido, float DDesvEstandar, double Z,int tiempoPeriodoEnDias,long diasTrabajoEnElPeriodo)throws Exception{
          //calculo stock de seguridad
