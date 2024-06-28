@@ -291,6 +291,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             DetalleOrdenCompra detalle1= new DetalleOrdenCompra();
             detalle1.setArticulo(pron.getArticulo());
             detalle1.setCantidad(pron.getArticulo().getLoteOptimo());
+            detalle1.setProveedor(pron.getArticulo().getProveedorPredeterminado());
 
             ordenCompra.addDetallesOrdenCompra(detalle1);
             detalleOrdenCompraRepository.save(detalle1);
