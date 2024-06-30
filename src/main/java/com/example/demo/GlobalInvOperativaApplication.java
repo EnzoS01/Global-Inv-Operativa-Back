@@ -45,6 +45,9 @@ public class GlobalInvOperativaApplication {
 	@Autowired
 	private ClienteRepository clienteRepository;
 
+	@Autowired
+	private ProveedorRepository proveedorRepository;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(GlobalInvOperativaApplication.class, args);
@@ -56,19 +59,27 @@ public class GlobalInvOperativaApplication {
 		return args -> {
 			System.out.println("----------------" +
 					"---Funcionando------------------");
-			Articulo art1= new Articulo();
-			art1.setNombreArticulo("Hamburguesa");
-			art1.setDetalle("queso,jamon,huevo");
-			art1.setCantActual(1000);
-			art1.setLoteOptimo(500);
-			art1.setPuntoPedido(980);
-			articuloRepository.save(art1);
-
+			//Creacion Cliente
 			Cliente clie1=new Cliente();
 			clie1.setNombre("Gerardo ");
 			clie1.setDni(731732L);
 			clienteRepository.save(clie1);
 
+			//Creacion ModelosPrediccion
+			ModeloPrediccion promedioPonderado=new ModeloPrediccion();
+			promedioPonderado.setNombreModelo("Promedio_Ponderado");
+
+			ModeloPrediccion promedioMovilSuavizado=new ModeloPrediccion();
+			promedioMovilSuavizado.setNombreModelo("PM_Suavizado");
+
+			ModeloPrediccion regresionLineal=new ModeloPrediccion();
+			regresionLineal.setNombreModelo("Regresion_Lineal");
+
+			ModeloPrediccion promedioEstacionalidad=new ModeloPrediccion();
+			promedioEstacionalidad.setNombreModelo("Pronostico_Estacionalidad");
+
+
+			//Creacion Modelos
 			Modelo loteFijo= new Modelo();
 			loteFijo.setNombreModelo("LOTE_FIJO");
 			modeloRepository.save(loteFijo);
@@ -76,6 +87,12 @@ public class GlobalInvOperativaApplication {
 			intervaloFijo.setNombreModelo("INTERVALO_FIJO");
 			modeloRepository.save(intervaloFijo);
 
+			//Creacion Proveedores
+			Proveedor prov1 = new Proveedor();
+			prov1.setNombre("Ale");
+			proveedorRepository.save(prov1);
+
+			//Creacion EstadosOrdenCompra
 			EstadoOrdenCompra pendiente = new EstadoOrdenCompra();
 			pendiente.setNombreEstado("Pendiente");
 			estadoOrdenCompraRepository.save(pendiente);
@@ -83,6 +100,17 @@ public class GlobalInvOperativaApplication {
 			EstadoOrdenCompra recibido = new EstadoOrdenCompra();
 			recibido.setNombreEstado("Recibido");
 			estadoOrdenCompraRepository.save(recibido);
+
+
+			//Creacion Articulos
+
+			Articulo art1= new Articulo();
+			art1.setNombreArticulo("Hamburguesa");
+			art1.setDetalle("queso,jamon,huevo");
+			art1.setCantActual(1000);
+			art1.setLoteOptimo(500);
+			art1.setPuntoPedido(980);
+			articuloRepository.save(art1);
 
 			Articulo pizza= new Articulo();
 			pizza.setNombreArticulo("Pizza");
@@ -124,6 +152,7 @@ public class GlobalInvOperativaApplication {
 			Empanadas.setModelo(loteFijo);
 			articuloRepository.save(Empanadas);
 
+			//Creacion OrdenesCompra
 			OrdenCompra oc1 = new OrdenCompra();
 			oc1.setEstadoOrdenCompra(recibido);
 
@@ -141,41 +170,16 @@ public class GlobalInvOperativaApplication {
 			detalleOrdenCompraRepository.save(doc2);
 			oc1.addDetallesOrdenCompra(doc1);
 			oc1.addDetallesOrdenCompra(doc2);
-
 			ordenCompraRepository.save(oc1);
 
+
+			//Creacion Pronostico
 			Pronostico pron1= new Pronostico();
-
-			pron1.setCantidadPeriodosHistoricos(3);
+			pron1.setCantidadPeriodosHistoricos(4);
+			pron1.setAnioAPredecir(2023);
+			pron1.setPeriodoAPredecir(2);
 			pron1.setArticulo(art1);
-			pron1.setNombrePronostico("Promedio_Ponderado");
 			pronosticoRepository.save(pron1);
-
-			Pronostico pron2= new Pronostico();
-
-			pron2.setCantidadPeriodosHistoricos(3);
-			pron2.setArticulo(art1);
-			pron2.setNombrePronostico("PM_Suavizado");
-			pronosticoRepository.save(pron2);
-
-			Pronostico pron3= new Pronostico();
-
-			pron3.setCantidadPeriodosHistoricos(3);
-			pron3.setArticulo(art1);
-			pron3.setNombrePronostico("Regresion_Lineal");
-			pronosticoRepository.save(pron3);
-
-			Pronostico pron4= new Pronostico();
-
-			pron4.setCantidadPeriodosHistoricos(3);
-			pron4.setArticulo(art1);
-			pron4.setNombrePronostico("Pronostico_Estacionalidad");
-			pronosticoRepository.save(pron4);
-
-			EstadoOrdenCompra estadoOrdenCompra= new EstadoOrdenCompra();
-			estadoOrdenCompra.setNombreEstado("Pendiente");
-			estadoOrdenCompraRepository.save(estadoOrdenCompra);
-
 
 			//Demandas AÑO 2021
 			Demanda demanda121=new Demanda();

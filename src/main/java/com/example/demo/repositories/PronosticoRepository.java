@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface PronosticoRepository extends BaseRepository<Pronostico, Long> {
 
-    @Query("SELECT p FROM Pronostico p WHERE p.nombrePronostico = :nombrePronostico")
-    List<Pronostico> findByNombrePronostico(@Param("nombrePronostico") String nombrePronostico);
 
     @Query(
             value = "SELECT p FROM Pronostico p WHETE p.articulo_id LIKE %:articulo_id%",

@@ -20,16 +20,11 @@ public class DemandaPronosticada extends Base {
     @Column(name = "valor_error_pronostico_demanda_pronosticada")
     private double valorErrorPronosticoDemandaPronosticada;
 
-    @Column(name = "nro_periodo_demanda_pronosticada")
-    private int nroPeriodoDemandaPronosticada;
-
-    @Column(name = "anio_demanda_pronosticada")
-    private int anioDemandaPronosticada;
-
-    @Column(name = "cantidad_demanda_real")
-    private int cantidadDemandaReal;
-
     @ManyToOne
     @JoinColumn(name = "demanda_id")
     private Demanda demandaRealAsociada;
+
+    @ManyToOne
+    @JoinColumn(name = "modeloPrediccion")
+    private ModeloPrediccion modeloPrediccion;
 }

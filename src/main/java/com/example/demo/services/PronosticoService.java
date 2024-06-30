@@ -8,7 +8,7 @@ import com.example.demo.entities.Pronostico;
 import java.util.List;
 
 public interface PronosticoService extends BaseService<Pronostico, Long> {
-
+/*
     public Pronostico asignarArticulo(Long pronosticoId,Long articuloId) throws Exception;
 
     public Pronostico promedioPonderado(Long pronosticoId,int anio) throws Exception;
@@ -26,4 +26,5 @@ public interface PronosticoService extends BaseService<Pronostico, Long> {
     public Pronostico pronosticoEstacionalidad(Long pronosticoId, int anioAPredecir, double demandaEsperada) throws Exception;
 
     public Pronostico generarOrdenCompra(Long pronosticoId) throws Exception;
+*/
 }

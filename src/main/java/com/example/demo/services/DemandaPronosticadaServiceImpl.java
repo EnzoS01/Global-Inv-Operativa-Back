@@ -21,7 +21,7 @@ public class DemandaPronosticadaServiceImpl extends BaseServiceImpl<DemandaProno
         super(demandaPronosticadaRepository);
     }
 
-    @Override
+    /*
     public DemandaPronosticada asignarDemanda(Long demandaPronosticadaId, Long demandaId){
         DemandaPronosticada demandaPronosticada= demandaPronosticadaRepository.findById(demandaPronosticadaId)
                 .orElseThrow(() -> new RuntimeException("DemandaPronosticada no encontrada"));
@@ -44,7 +44,7 @@ public class DemandaPronosticadaServiceImpl extends BaseServiceImpl<DemandaProno
         return demandaPronosticada;
     }
 
-
+*/
 
 
 }

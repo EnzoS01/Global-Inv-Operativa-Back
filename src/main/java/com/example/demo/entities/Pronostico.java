@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "pronostico")
@@ -14,18 +17,31 @@ import lombok.Setter;
 @Setter
 public class Pronostico extends Base {
 
-        @Column(name = "nombre_pronostico", nullable = false)
-        private String nombrePronostico;
-
         @Column(name = "error_aceptable")
         private double errorAceptable;
 
         @Column(name = "cantidad_periodos_historicos")
         private int cantidadPeriodosHistoricos;
 
-        @OneToOne
-        @JoinColumn(name = "demandaPronosticada_id")
-        private DemandaPronosticada demandaPronosticada;
+        @Column(name = "periodoAPredecir")
+        private int periodoAPredecir;
+
+        @Column(name = "anioAPredecir")
+        private int anioAPredecir;
+
+        @OneToMany
+        @JoinTable(name = "Pronostico_DemandaPronosticada",
+                        joinColumns = @JoinColumn(name = "pronostico_id"),
+                        inverseJoinColumns = @JoinColumn(name = "demandaPronosticad_id"))
+        private List<DemandaPronosticada> demandasPronosticada=new ArrayList<>();
+
+        public void addDemandaPronosticada(DemandaPronosticada demandaPronosticada){
+                this.demandasPronosticada.add(demandaPronosticada);
+        }
+
+        @ManyToOne
+        @JoinColumn(name = "metodoError_id")
+        private MetodoError metodoError;
 
         @ManyToOne
         @JoinColumn(name = "articulo_id")

@@ -67,6 +67,7 @@ public class DemandaServiceImpl extends BaseServiceImpl<Demanda,Long> implements
         for (Venta venta : ventas) {
             List<DetalleVenta> detallesVenta = venta.getDetallesVenta();
             for (DetalleVenta detalleVenta : detallesVenta) {
+
                 if (demanda.getArticulo().equals(detalleVenta.getArticulo())) {
                     demanda.addDetallesVenta(detalleVenta);
                 }

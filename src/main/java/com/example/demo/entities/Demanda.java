@@ -36,7 +36,9 @@ public class Demanda extends Base {
     private Articulo articulo;
 
     @OneToMany
-    @JoinTable(name = "Demanda_DetalleVenta", joinColumns = @JoinColumn(name = "Demanda_id"), inverseJoinColumns = @JoinColumn(name = "DetalleVenta_id"))
+    @JoinTable(name = "Demanda_DetalleVenta",
+            joinColumns = @JoinColumn(name = "Demanda_id"),
+            inverseJoinColumns = @JoinColumn(name = "DetalleVenta_id"))
     private List<DetalleVenta> detallesVenta = new ArrayList<>();
 
     public void addDetallesVenta(DetalleVenta detalleVenta) {

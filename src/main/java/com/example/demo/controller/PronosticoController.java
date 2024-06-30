@@ -18,7 +18,7 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
 
     @Autowired
     private PronosticoServiceImpl pronosticoService;
-
+/*
     @PostMapping("/asignarArticulo/{pronosticoId}/{articuloId}")
     public ResponseEntity<?> asignarArticulo(@PathVariable Long pronosticoId, @PathVariable Long articuloId) {
         try {
@@ -43,11 +43,11 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
         }
     }
 
-
-    @PostMapping("/calcularPromedioPonderado/{pronosticoId}/{anio}")
-    public ResponseEntity<?> calcularPromedioPonderado(@PathVariable Long pronosticoId, @PathVariable int anio) {
+*/
+    @PostMapping("/calcularPromedioPonderado/{pronosticoId}/{factorPonderacion}")
+    public ResponseEntity<?> calcularPromedioPonderado(@PathVariable Long pronosticoId, @PathVariable double factorPonderacion) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(pronosticoService.promedioPonderado(pronosticoId,anio));
+            return ResponseEntity.status(HttpStatus.OK).body(pronosticoService.promedioPonderado(pronosticoId,factorPonderacion));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
@@ -55,7 +55,7 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
-
+/*
     @PostMapping("/calcularPMSuavizado/{pronosticoId}/{predecidaRaiz}/{valorCoeficiente}/{anio}")
     public ResponseEntity<?> calcularPMSuavizado(@PathVariable Long pronosticoId,@PathVariable double predecidaRaiz,@PathVariable double valorCoeficiente, @PathVariable int anio) {
         try {
@@ -92,6 +92,6 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
         }
     }
 
-
+*/
 
 }
