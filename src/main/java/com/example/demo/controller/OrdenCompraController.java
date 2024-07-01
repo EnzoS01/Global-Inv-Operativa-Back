@@ -31,6 +31,17 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
         }
     }
 
+    @GetMapping("/ExisteOrden/{idArticulo}")
+    public ResponseEntity<?> VerOrden(@PathVariable Long idArticulo){
+        try{
+            //ServicioOrdenCompra.existeOrden(idArticulo);
+            System.out.println("Al controlador llego este id: " + idArticulo );
+            return ResponseEntity.status(HttpStatus.OK).body(ServicioOrdenCompra.existeOrden(idArticulo));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
     @PostMapping("/nuevaOrden")
     public ResponseEntity<?> nuevaOrdenCompra(@RequestBody OrdenCompra OrdenCompra) {
         try {

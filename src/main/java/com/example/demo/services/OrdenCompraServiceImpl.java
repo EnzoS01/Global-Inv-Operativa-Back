@@ -48,25 +48,42 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         nueva.setEstadoOrdenCompra(orden.getEstadoOrdenCompra());
         nueva.setFechaRealizacion(orden.getFechaRealizacion());
 
-        List<DetalleOrdenCompra> detalles = nueva.getDetallesOrdenCompra();
-        float total = 0;
+        List<DetalleOrdenCompra> detalles = orden.getDetallesOrdenCompra();
+        System.out.println("La longitud de los detalles es: " + detalles.size());
+
+
         List<DetalleOrdenCompra> nuevosdetalles = new ArrayList<>();
         for (DetalleOrdenCompra detalle : detalles) {
+            //float total = 0;
+            System.out.println("Estoy dentro del for ");
+            System.out.println("El articulo del detalle donde estoy parado : " + detalle.getArticulo().getNombreArticulo());
             DetalleOrdenCompra nuevoDetalle = new DetalleOrdenCompra();
             nuevoDetalle.setSubtotal(detalle.getSubtotal());
             nuevoDetalle.setLinea(detalle.getLinea());
-            total += detalle.getSubtotal();
+            nuevoDetalle.setCantidad(detalle.getCantidad());
+           // total += detalle.getSubtotal();
              Articulo a = detalle.getArticulo();
+             System.out.println("El articulo es: " + a.getNombreArticulo()+ "  "+ a.getId());
+
             nuevoDetalle.setArticulo(ArticuloRepo.getReferenceById(a.getId()));
-             Proveedor p = detalle.getProveedor();
+
+
+            Proveedor p = detalle.getProveedor();
+            System.out.println("El proveedor es: " + p.getNombre()+ "  "+ p.getId());
+
+
             nuevoDetalle.setProveedor(proveedorRepository.findByName(p.getNombre()));
-            detalleOrdenCompraRepository.save(nuevoDetalle);
-            nuevosdetalles.add(nuevoDetalle);
+
+
+            DetalleOrdenCompra n = detalleOrdenCompraRepository.save(nuevoDetalle);
+            nuevosdetalles.add(n);
+            System.out.println("añadi el detalle a la lista de detalles: " + n.getId());
         }
 
-        nueva.setDetallesOrdenCompra(nuevosdetalles);
-        ordenCompraRepository.save(nueva);
-        return nueva;
+        OrdenCompra Ordennueva = ordenCompraRepository.save(nueva);
+        Ordennueva.setDetallesOrdenCompra(nuevosdetalles);
+
+        return ordenCompraRepository.save(Ordennueva);
     }
 
     public List<OrdenCompra> ListaOrdenes(){ //este metodo se encarga de recuperar las ordenes de compra pendientes o enviadas
@@ -160,7 +177,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             /* incremento el inventario de cada producto en la oc (suponiendo que llega todo ok) */
             for (DetalleOrdenCompra detalle : OC.getDetallesOrdenCompra()) {
                 Articulo a = detalle.getArticulo();
-                a.setCantActual(a.getCantActual() + detalle.getCantidad() + a.getStockSeguridad());
+                a.setCantActual(a.getCantActual() + detalle.getCantidad());
                 ArticuloRepo.save(a);
             }
         } else if (OC.getEstadoOrdenCompra().getNombreEstado().equals("Pendiente")) {
@@ -258,11 +275,26 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     @Transactional
     //metodo para el pronostico de demanda probabilistica (genera orden de compra al final de la prediccion si falta stock para satisfacer la demanda
     public OrdenCompra OrdenStockFaltante(Long idArticulo, int cantidadFaltante){
+        EstadoOrdenCompra estadoOrdenCompraPen = estadoOrdenRepository.findByName("Pendiente");
+        // .orElseThrow(() -> new RuntimeException("Estado Orden de compra no encontrada"));
+
+        EstadoOrdenCompra estadoOrdenCompraEnv = estadoOrdenRepository.findByName("Enviada");
+        Articulo a = ArticuloRepo.findById(idArticulo).orElseThrow(() -> new RuntimeException("No se encontro el articulo"));
+
+        // Verifico si existe una orden para el artículo
+        List<OrdenCompra> ordenesActivas = ordenCompraRepository.findByArticuloAndEstado(idArticulo, estadoOrdenCompraPen.getId(), estadoOrdenCompraEnv.getId());
+
+        if (!ordenesActivas.isEmpty()) {
+            throw new RuntimeException("Ya existe/n"+ ordenesActivas.toArray().length + " orden/es de compra activa/s para el artículo " + a.getNombreArticulo());
+        }
+
+        System.out.println("No habian ordenes activas para el articulo  " + a.getNombreArticulo() );
         OrdenCompra nueva = new OrdenCompra();
         nueva.setFechaRealizacion(Date.from(Instant.now()));
 
+
         //creo la orden el detalle ode la orden con 1 producto en base al proveedor predeterminado
-        Articulo a = ArticuloRepo.findById(idArticulo).orElseThrow(() -> new RuntimeException("No se encontro el articulo"));
+
         ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(a.getProveedorPredeterminado().getId(),idArticulo);
 
         DetalleOrdenCompra detalle = new DetalleOrdenCompra();
@@ -275,7 +307,6 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         lista.add(detalle);
 
         //busco el estado para la OC
-        EstadoOrdenCompra estadoOrdenCompraPen = estadoOrdenRepository.findByName("Pendiente");
         CambioOrdenCompraEstado CambioEstado = new CambioOrdenCompraEstado();
         CambioEstado.setFechaCambio(Date.from(Instant.now()));
         CambioEstado.setOrdenCompra(nueva);
@@ -285,7 +316,26 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         nueva.setDetallesOrdenCompra(lista);
         nueva.setTotal(detalle.getSubtotal());
         ordenCompraRepository.save(nueva);
+        System.out.println("Ya cree la OC para el articulo: " + a.getNombreArticulo());
         return nueva;
+    }
+
+    public boolean existeOrden (Long idArticulo){
+        EstadoOrdenCompra estadoOrdenCompraPen = estadoOrdenRepository.findByName("Pendiente");
+        // .orElseThrow(() -> new RuntimeException("Estado Orden de compra no encontrada"));
+
+        EstadoOrdenCompra estadoOrdenCompraEnv = estadoOrdenRepository.findByName("Enviada");
+        Articulo a = ArticuloRepo.findById(idArticulo).orElseThrow(() -> new RuntimeException("No se encontro el articulo"));
+        System.out.println("Estoy buscando ordenes para: " + a.getNombreArticulo());
+        // Verifico si existe una orden para el artículo
+        List<OrdenCompra> ordenesActivas = ordenCompraRepository.findByArticuloAndEstado(idArticulo, estadoOrdenCompraPen.getId(), estadoOrdenCompraEnv.getId());
+
+        if (!ordenesActivas.isEmpty()) {
+            System.out.println("Si hay ordenes para:  "  + a.getNombreArticulo() + "en total " + ordenesActivas.size());
+            return true;
+        }
+        System.out.println("No hay ordenes para: " + a.getNombreArticulo());
+        return false;
     }
 
 }

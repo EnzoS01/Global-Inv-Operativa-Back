@@ -46,7 +46,10 @@ public class GlobalInvOperativaApplication {
 	private ClienteRepository clienteRepository;
 
 	@Autowired
-	private ProveedorRepository proveedorRepository;
+	private ProveedorRepository ProveedorRepo;
+
+	@Autowired
+	private ProveedorArticuloRepository ProveedorArticuloRepo;
 
 
 	public static void main(String[] args) {
@@ -59,11 +62,60 @@ public class GlobalInvOperativaApplication {
 		return args -> {
 			System.out.println("----------------" +
 					"---Funcionando------------------");
+
+
 			//Creacion Cliente
 			Cliente clie1=new Cliente();
 			clie1.setNombre("Gerardo ");
 			clie1.setDni(731732L);
 			clienteRepository.save(clie1);
+
+			Cliente clie2=new Cliente();
+			clie2.setNombre("Mariano ");
+			clie2.setDni(23445677L);
+			clienteRepository.save(clie2);
+
+			Cliente clie3=new Cliente();
+			clie3.setNombre("Mariana");
+			clie3.setDni(34599866L);
+			clienteRepository.save(clie3);
+
+			Cliente clie4=new Cliente();
+			clie4.setNombre("Liliana");
+			clie4.setDni(44788566L);
+			clienteRepository.save(clie4);
+
+
+
+			//PROVEEDORES
+			LocalDate fechalocal = LocalDate.of(2024, 1, 4);
+
+			// Convertir LocalDate a Date
+			Date fecha = Date.from(fechalocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+			Proveedor proveedor1 = new Proveedor();
+			proveedor1.setDireccion("Rodriguez 324");
+			proveedor1.setMail("mayorista@gmail.com");
+			proveedor1.setFechaAlta(fecha);
+			proveedor1.setNombre("Mayorista");
+			proveedor1.setTelefono(261789341);
+			ProveedorRepo.save(proveedor1);
+
+			Proveedor proveedor2 = new Proveedor();
+			proveedor2.setDireccion("Pascal 123");
+			proveedor2.setFechaAlta(fecha);
+			proveedor2.setMail("Meraki@gmail.com");
+			proveedor2.setNombre("Meraki");
+			proveedor2.setTelefono(261789342);
+			ProveedorRepo.save(proveedor2);
+
+			Proveedor proveedor3 = new Proveedor();
+			proveedor3.setDireccion("Ironia 324");
+			proveedor3.setFechaAlta(fecha);
+			proveedor3.setMail("Sakura@gmail.com");
+			proveedor3.setNombre("Sakura");
+			proveedor3.setTelefono(261789345);
+			ProveedorRepo.save(proveedor3);
 
 			//Creacion ModelosPrediccion
 			ModeloPrediccion promedioPonderado=new ModeloPrediccion();
@@ -79,7 +131,7 @@ public class GlobalInvOperativaApplication {
 			promedioEstacionalidad.setNombreModelo("Pronostico_Estacionalidad");
 
 
-			//Creacion Modelos
+			//CREACION MODELOS
 			Modelo loteFijo= new Modelo();
 			loteFijo.setNombreModelo("LOTE_FIJO");
 			modeloRepository.save(loteFijo);
@@ -87,12 +139,7 @@ public class GlobalInvOperativaApplication {
 			intervaloFijo.setNombreModelo("INTERVALO_FIJO");
 			modeloRepository.save(intervaloFijo);
 
-			//Creacion Proveedores
-			Proveedor prov1 = new Proveedor();
-			prov1.setNombre("Ale");
-			proveedorRepository.save(prov1);
-
-			//Creacion EstadosOrdenCompra
+			//creacion ESTADO ORDENES DE COMPRA
 			EstadoOrdenCompra pendiente = new EstadoOrdenCompra();
 			pendiente.setNombreEstado("Pendiente");
 			estadoOrdenCompraRepository.save(pendiente);
@@ -101,15 +148,24 @@ public class GlobalInvOperativaApplication {
 			recibido.setNombreEstado("Recibido");
 			estadoOrdenCompraRepository.save(recibido);
 
+			EstadoOrdenCompra enviada= new EstadoOrdenCompra();
+			enviada.setNombreEstado("Enviada");
+			estadoOrdenCompraRepository.save(enviada);
 
-			//Creacion Articulos
+			EstadoOrdenCompra entregada= new EstadoOrdenCompra();
+			entregada.setNombreEstado("Entregada");
+			estadoOrdenCompraRepository.save(entregada);
 
+			//CREACION ARTICULOS
 			Articulo art1= new Articulo();
 			art1.setNombreArticulo("Hamburguesa");
 			art1.setDetalle("queso,jamon,huevo");
 			art1.setCantActual(1000);
 			art1.setLoteOptimo(500);
 			art1.setPuntoPedido(980);
+			art1.setPrecioVenta(2000);
+			art1.setModelo(loteFijo);
+			art1.setProveedorPredeterminado(proveedor1);
 			articuloRepository.save(art1);
 
 			Articulo pizza= new Articulo();
@@ -119,7 +175,9 @@ public class GlobalInvOperativaApplication {
 			pizza.setLoteOptimo(500);
 			pizza.setPuntoPedido(980);
 			pizza.setStockSeguridad(1050);
+			pizza.setPrecioVenta(4000);
 			pizza.setModelo(intervaloFijo);
+			pizza.setProveedorPredeterminado(proveedor3);
 			articuloRepository.save(pizza);
 
 			Articulo fideos= new Articulo();
@@ -129,7 +187,9 @@ public class GlobalInvOperativaApplication {
 			fideos.setLoteOptimo(500);
 			fideos.setPuntoPedido(980);
 			fideos.setStockSeguridad(1050);
+			fideos.setPrecioVenta(2000);
 			fideos.setModelo(intervaloFijo);
+			fideos.setProveedorPredeterminado(proveedor2);
 			articuloRepository.save(fideos);
 
 			Articulo papasGrandesConCheddarYBacon= new Articulo();
@@ -140,6 +200,8 @@ public class GlobalInvOperativaApplication {
 			papasGrandesConCheddarYBacon.setPuntoPedido(980);
 			papasGrandesConCheddarYBacon.setStockSeguridad(1050);
 			papasGrandesConCheddarYBacon.setModelo(intervaloFijo);
+			papasGrandesConCheddarYBacon.setPrecioVenta(3000);
+			papasGrandesConCheddarYBacon.setProveedorPredeterminado(proveedor1);
 			articuloRepository.save(papasGrandesConCheddarYBacon);
 
 			Articulo Empanadas= new Articulo();
@@ -149,28 +211,201 @@ public class GlobalInvOperativaApplication {
 			Empanadas.setLoteOptimo(500);
 			Empanadas.setPuntoPedido(980);
 			Empanadas.setStockSeguridad(1050);
+			Empanadas.setPrecioVenta(2000);
 			Empanadas.setModelo(loteFijo);
+			Empanadas.setProveedorPredeterminado(proveedor2);
 			articuloRepository.save(Empanadas);
 
-			//Creacion OrdenesCompra
+
+			//ORDENES DE COMPRA
 			OrdenCompra oc1 = new OrdenCompra();
 			oc1.setEstadoOrdenCompra(recibido);
-
-			DetalleOrdenCompra doc1= new DetalleOrdenCompra();
-			doc1.setArticulo(papasGrandesConCheddarYBacon);
-			doc1.setCantidad(2);
-			doc1.setSubtotal(40);
-			doc1.setLinea(1);
-			detalleOrdenCompraRepository.save(doc1);
-			DetalleOrdenCompra doc2= new DetalleOrdenCompra();
-			doc2.setArticulo(Empanadas);
-			doc2.setCantidad(2);
-			doc2.setSubtotal(40);
-			doc2.setLinea(2);
-			detalleOrdenCompraRepository.save(doc2);
-			oc1.addDetallesOrdenCompra(doc1);
-			oc1.addDetallesOrdenCompra(doc2);
+				DetalleOrdenCompra doc1= new DetalleOrdenCompra();
+				doc1.setArticulo(papasGrandesConCheddarYBacon);
+				doc1.setCantidad(2);
+				doc1.setSubtotal(40);
+				doc1.setLinea(1);
+				detalleOrdenCompraRepository.save(doc1);
+				DetalleOrdenCompra doc2= new DetalleOrdenCompra();
+				doc2.setArticulo(Empanadas);
+				doc2.setCantidad(2);
+				doc2.setSubtotal(40);
+				doc2.setLinea(2);
+				detalleOrdenCompraRepository.save(doc2);
+				oc1.addDetallesOrdenCompra(doc1);
+				oc1.addDetallesOrdenCompra(doc2);
 			ordenCompraRepository.save(oc1);
+
+			OrdenCompra oc2 = new OrdenCompra();
+			oc2.setEstadoOrdenCompra(pendiente);
+				DetalleOrdenCompra doc3= new DetalleOrdenCompra();
+				doc3.setArticulo(papasGrandesConCheddarYBacon);
+				doc3.setCantidad(2);
+				doc3.setSubtotal(90);
+				doc3.setLinea(1);
+				detalleOrdenCompraRepository.save(doc3);
+				DetalleOrdenCompra doc4= new DetalleOrdenCompra();
+				doc4.setArticulo(Empanadas);
+				doc4.setCantidad(2);
+				doc4.setSubtotal(200);
+				doc4.setLinea(2);
+				detalleOrdenCompraRepository.save(doc4);
+				oc2.addDetallesOrdenCompra(doc3);
+				oc2.addDetallesOrdenCompra(doc4);
+				oc2.setTotal(doc3.getSubtotal() + doc4.getSubtotal());
+			ordenCompraRepository.save(oc2);
+
+			OrdenCompra oc3 = new OrdenCompra();
+			oc3.setEstadoOrdenCompra(enviada);
+				DetalleOrdenCompra doc5= new DetalleOrdenCompra();
+				doc5.setArticulo(papasGrandesConCheddarYBacon);
+				doc5.setCantidad(2);
+				doc5.setSubtotal(100);
+				doc5.setLinea(1);
+				detalleOrdenCompraRepository.save(doc5);
+				DetalleOrdenCompra doc6= new DetalleOrdenCompra();
+				doc6.setArticulo(Empanadas);
+				doc6.setCantidad(2);
+				doc6.setSubtotal(789);
+				doc6.setLinea(2);
+				detalleOrdenCompraRepository.save(doc6);
+				oc2.addDetallesOrdenCompra(doc5);
+				oc2.addDetallesOrdenCompra(doc6);
+				oc3.setTotal(doc5.getSubtotal() + doc6.getSubtotal());
+			ordenCompraRepository.save(oc3);
+
+
+			//PROVEEDORARTICULO
+			ProveedorArticulo PA1 = new ProveedorArticulo();
+			PA1.setArticulo(pizza);
+			PA1.setFechaAlta(LocalDate.now());
+			PA1.setProveedor(proveedor1);
+			PA1.setCostoPedido(254);
+			PA1.setCostoAlmacenamiento(354);
+			PA1.setCostoProducto(654);
+			PA1.setTiempoPedido(4);
+			ProveedorArticuloRepo.save(PA1);
+
+			ProveedorArticulo PA2 = new ProveedorArticulo();
+			PA2.setArticulo(pizza);
+			PA2.setFechaAlta(LocalDate.now());
+			PA2.setProveedor(proveedor2);
+			PA2.setCostoPedido(345);
+			PA2.setCostoAlmacenamiento(567);
+			PA2.setCostoProducto(789);
+			PA2.setTiempoPedido(20);
+			ProveedorArticuloRepo.save(PA2);
+
+			ProveedorArticulo PA3 = new ProveedorArticulo();
+			PA3.setArticulo(pizza);
+			PA3.setFechaAlta(LocalDate.now());
+			PA3.setProveedor(proveedor3);
+			PA3.setCostoPedido(469);
+			PA3.setCostoAlmacenamiento(800);
+			PA3.setCostoProducto(789);
+			PA3.setTiempoPedido(28);
+			ProveedorArticuloRepo.save(PA3);
+
+			ProveedorArticulo PA4 = new ProveedorArticulo();
+			PA4.setArticulo(Empanadas);
+			PA4.setFechaAlta(LocalDate.now());
+			PA4.setProveedor(proveedor1);
+			PA4.setCostoPedido(254);
+			PA4.setCostoAlmacenamiento(354);
+			PA4.setCostoProducto(654);
+			PA4.setTiempoPedido(4);
+			ProveedorArticuloRepo.save(PA4);
+
+			ProveedorArticulo PA5 = new ProveedorArticulo();
+			PA5.setArticulo(Empanadas);
+			PA5.setFechaAlta(LocalDate.now());
+			PA5.setProveedor(proveedor2);
+			PA5.setCostoPedido(345);
+			PA5.setCostoAlmacenamiento(567);
+			PA5.setCostoProducto(789);
+			PA5.setTiempoPedido(20);
+			ProveedorArticuloRepo.save(PA5);
+
+			ProveedorArticulo PA6 = new ProveedorArticulo();
+			PA6.setArticulo(Empanadas);
+			PA6.setFechaAlta(LocalDate.now());
+			PA6.setProveedor(proveedor3);
+			PA6.setCostoPedido(469);
+			PA6.setCostoAlmacenamiento(800);
+			PA6.setCostoProducto(789);
+			PA6.setTiempoPedido(28);
+			ProveedorArticuloRepo.save(PA6);
+
+			ProveedorArticulo PA7 = new ProveedorArticulo();
+			PA7.setArticulo(fideos);
+			PA7.setFechaAlta(LocalDate.now());
+			PA7.setProveedor(proveedor1);
+			PA7.setCostoPedido(254);
+			PA7.setCostoAlmacenamiento(354);
+			PA7.setCostoProducto(654);
+			PA7.setTiempoPedido(4);
+			ProveedorArticuloRepo.save(PA7);
+
+			ProveedorArticulo PA8 = new ProveedorArticulo();
+			PA8.setArticulo(fideos);
+			PA8.setFechaAlta(LocalDate.now());
+			PA8.setProveedor(proveedor2);
+			PA8.setCostoPedido(345);
+			PA8.setCostoAlmacenamiento(567);
+			PA8.setCostoProducto(789);
+			PA8.setTiempoPedido(20);
+			ProveedorArticuloRepo.save(PA8);
+
+			ProveedorArticulo PA9 = new ProveedorArticulo();
+			PA9.setArticulo(fideos);
+			PA9.setFechaAlta(LocalDate.now());
+			PA9.setProveedor(proveedor3);
+			PA9.setCostoPedido(469);
+			PA9.setCostoAlmacenamiento(800);
+			PA9.setCostoProducto(789);
+			PA9.setTiempoPedido(28);
+			ProveedorArticuloRepo.save(PA9);
+
+			ProveedorArticulo PA10 = new ProveedorArticulo();
+			PA10.setArticulo(art1);
+			PA10.setFechaAlta(LocalDate.now());
+			PA10.setProveedor(proveedor1);
+			PA10.setCostoPedido(254);
+			PA10.setCostoAlmacenamiento(354);
+			PA10.setCostoProducto(654);
+			PA10.setTiempoPedido(4);
+			ProveedorArticuloRepo.save(PA10);
+
+			ProveedorArticulo PA11 = new ProveedorArticulo();
+			PA11.setArticulo(art1);
+			PA11.setFechaAlta(LocalDate.now());
+			PA11.setProveedor(proveedor2);
+			PA11.setCostoPedido(345);
+			PA11.setCostoAlmacenamiento(567);
+			PA11.setCostoProducto(789);
+			PA11.setTiempoPedido(20);
+			ProveedorArticuloRepo.save(PA11);
+
+			ProveedorArticulo PA12 = new ProveedorArticulo();
+			PA12.setArticulo(art1);
+			PA12.setFechaAlta(LocalDate.now());
+			PA12.setProveedor(proveedor3);
+			PA12.setCostoPedido(469);
+			PA12.setCostoAlmacenamiento(800);
+			PA12.setCostoProducto(789);
+			PA12.setTiempoPedido(28);
+			ProveedorArticuloRepo.save(PA12);
+
+			ProveedorArticulo PA13 = new ProveedorArticulo();
+			PA13.setArticulo(papasGrandesConCheddarYBacon);
+			PA13.setFechaAlta(LocalDate.now());
+			PA13.setProveedor(proveedor3);
+			PA13.setCostoPedido(469);
+			PA13.setCostoAlmacenamiento(800);
+			PA13.setCostoProducto(789);
+			PA13.setTiempoPedido(28);
+			ProveedorArticuloRepo.save(PA13);
+
 
 
 			//Creacion Pronostico
@@ -180,6 +415,8 @@ public class GlobalInvOperativaApplication {
 			pron1.setPeriodoAPredecir(2);
 			pron1.setArticulo(art1);
 			pronosticoRepository.save(pron1);
+
+
 
 			//Demandas AÑO 2021
 			Demanda demanda121=new Demanda();
@@ -440,6 +677,7 @@ public class GlobalInvOperativaApplication {
 			demandaRepository.save(demanda1223);
 
 
+			//VENTAS
 			Venta venta=new Venta();
 			LocalDate localDate = LocalDate.of(2024, 1, 4);
 

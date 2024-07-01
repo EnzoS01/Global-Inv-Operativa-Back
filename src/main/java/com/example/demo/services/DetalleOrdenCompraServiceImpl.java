@@ -72,8 +72,7 @@ public class DetalleOrdenCompraServiceImpl extends BaseServiceImpl<DetalleOrdenC
         d.setArticulo(a);
         d.setProveedor(predeterminado);
 
-        DetalleRepo.save(d);
-        return d;
+        return DetalleRepo.save(d);
     }
 
 
