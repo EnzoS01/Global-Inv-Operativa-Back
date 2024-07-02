@@ -30,6 +30,8 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     private ModeloPrediccionRepository modeloPrediccionRepository;
     @Autowired
     private MetodoErrorRepository metodoErrorRepository;
+    @Autowired
+    private ProveedorArticuloRepository proveedorArticuloRepository;
 
     public PronosticoServiceImpl(BaseRepository<Pronostico, Long> baseRepository,
                                  DemandaPronosticadaRepository demandaPronosticadaRepository) {
@@ -536,8 +538,12 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             // Convertir ZonedDateTime a Date
             Date date = Date.from(zonedDateTime.toInstant());
 
+            ProveedorArticulo proArt= proveedorArticuloRepository.findByArticuloAndProveedor(pron.getArticulo().getProveedorPredeterminado().getId(), pron.getArticulo().getId());
+            float subtotal= pron.getArticulo().getLoteOptimo()*proArt.getCostoProducto();
+
             OrdenCompra ordenCompra = new OrdenCompra();
             ordenCompra.setFechaRealizacion(date);
+            ordenCompra.setTotal(subtotal);
 
             EstadoOrdenCompra estadoOrdenCompra = estadoOrdenCompraRepository.findByName("Pendiente");
             ordenCompra.setEstadoOrdenCompra(estadoOrdenCompra);
@@ -546,6 +552,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             detalle1.setArticulo(pron.getArticulo());
             detalle1.setCantidad(pron.getArticulo().getLoteOptimo());
             detalle1.setProveedor(pron.getArticulo().getProveedorPredeterminado());
+            detalle1.setSubtotal(subtotal);
 
             ordenCompra.addDetallesOrdenCompra(detalle1);
             detalleOrdenCompraRepository.save(detalle1);
@@ -554,6 +561,8 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
             pronosticoRepository.save(pron);
 
+        }else{
+            System.out.println("No se generó orden de compra porque no se cumple que la cantidad actual menos la pronosticada sea menor que el punto de pedido del articulo");
         }
         return pron;
     }
