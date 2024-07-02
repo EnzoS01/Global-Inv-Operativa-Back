@@ -21,30 +21,5 @@ public class DemandaPronosticadaServiceImpl extends BaseServiceImpl<DemandaProno
         super(demandaPronosticadaRepository);
     }
 
-    /*
-    public DemandaPronosticada asignarDemanda(Long demandaPronosticadaId, Long demandaId){
-        DemandaPronosticada demandaPronosticada= demandaPronosticadaRepository.findById(demandaPronosticadaId)
-                .orElseThrow(() -> new RuntimeException("DemandaPronosticada no encontrada"));
-        Demanda demanda= demandaRepository.findById(demandaId)
-                .orElseThrow(() -> new RuntimeException("Demanda no encontrada"));
-        //Setea la demanda real
-        demandaPronosticada.setDemandaRealAsociada(demanda);
-
-        //Calcula el error
-        demandaPronosticada.setCantidadDemandaReal(demanda.getCantTotalDemanda());
-        double error;
-        if ((demanda.getCantTotalDemanda()-demandaPronosticada.getCantidadDemandadaPronostico())<0){
-            error=(demanda.getCantTotalDemanda()-demandaPronosticada.getCantidadDemandadaPronostico())*(-1);
-        }else{
-            error=(demanda.getCantTotalDemanda()-demandaPronosticada.getCantidadDemandadaPronostico());
-        }
-        demandaPronosticada.setValorErrorPronosticoDemandaPronosticada(error);
-
-        demandaPronosticadaRepository.save(demandaPronosticada);
-        return demandaPronosticada;
-    }
-
-*/
-
 
 }

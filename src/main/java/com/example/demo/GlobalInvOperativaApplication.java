@@ -50,6 +50,15 @@ public class GlobalInvOperativaApplication {
 
 	@Autowired
 	private ProveedorArticuloRepository ProveedorArticuloRepo;
+    @Autowired
+	private ProveedorRepository proveedorRepository;
+	@Autowired
+	private ModeloPrediccionRepository modeloPrediccionRepository;
+
+	@Autowired
+	private MetodoErrorRepository metodoErrorRepository;
+	@Autowired
+	private DemandaPronosticadaRepository demandaPronosticadaRepository;
 
 
 	public static void main(String[] args) {
@@ -129,7 +138,23 @@ public class GlobalInvOperativaApplication {
 
 			ModeloPrediccion promedioEstacionalidad=new ModeloPrediccion();
 			promedioEstacionalidad.setNombreModelo("Pronostico_Estacionalidad");
+			modeloPrediccionRepository.save(promedioPonderado);
+			modeloPrediccionRepository.save(promedioMovilSuavizado);
+			modeloPrediccionRepository.save(regresionLineal);
+			modeloPrediccionRepository.save(promedioEstacionalidad);
 
+			//Creacion MetodosError
+			MetodoError errorMAD=new MetodoError();
+			errorMAD.setNombreMetodoError("MAD");
+			metodoErrorRepository.save(errorMAD);
+
+			MetodoError errorMSE=new MetodoError();
+			errorMSE.setNombreMetodoError("MSE");
+			metodoErrorRepository.save(errorMSE);
+
+			MetodoError errorMAPE=new MetodoError();
+			errorMAPE.setNombreMetodoError("MAPE");
+			metodoErrorRepository.save(errorMAPE);
 
 			//CREACION MODELOS
 			Modelo loteFijo= new Modelo();
@@ -139,7 +164,12 @@ public class GlobalInvOperativaApplication {
 			intervaloFijo.setNombreModelo("INTERVALO_FIJO");
 			modeloRepository.save(intervaloFijo);
 
-			//creacion ESTADO ORDENES DE COMPRA
+			//Creacion Proveedores
+			Proveedor prov1 = new Proveedor();
+			prov1.setNombre("Ale");
+			proveedorRepository.save(prov1);
+
+			//Creacion EstadosOrdenCompra
 			EstadoOrdenCompra pendiente = new EstadoOrdenCompra();
 			pendiente.setNombreEstado("Pendiente");
 			estadoOrdenCompraRepository.save(pendiente);
@@ -408,15 +438,6 @@ public class GlobalInvOperativaApplication {
 
 
 
-			//Creacion Pronostico
-			Pronostico pron1= new Pronostico();
-			pron1.setCantidadPeriodosHistoricos(4);
-			pron1.setAnioAPredecir(2023);
-			pron1.setPeriodoAPredecir(2);
-			pron1.setArticulo(art1);
-			pronosticoRepository.save(pron1);
-
-
 
 			//Demandas AÑO 2021
 			Demanda demanda121=new Demanda();
@@ -676,8 +697,93 @@ public class GlobalInvOperativaApplication {
 			demandaRepository.save(demanda1123);
 			demandaRepository.save(demanda1223);
 
+			//Demandas AÑO 2024
+			Demanda demanda124=new Demanda();
+			demanda124.setCantTotalDemanda(105);
+			demanda124.setArticulo(art1);
+			demanda124.setNumPeriodo(1);
+			demanda124.setAnio(2024);
+			demandaRepository.save(demanda124);
 
-			//VENTAS
+			//Creacion Pronostico
+
+			Pronostico pron1= new Pronostico();
+			pron1.setCantidadPeriodosHistoricos(3);
+			pron1.setAnioAPredecir(2023);
+			pron1.setPeriodoAPredecir(10);
+			pron1.setArticulo(art1);
+			pron1.setMetodoError(errorMSE);
+
+			DemandaPronosticada demPro1PP= new DemandaPronosticada();
+			demPro1PP.setCantidadDemandadaPronostico(103);
+			demPro1PP.setDemandaRealAsociada(demanda1023);
+			demPro1PP.setModeloPrediccion(promedioPonderado);
+			pron1.addDemandaPronosticada(demPro1PP);
+			demandaPronosticadaRepository.save(demPro1PP);
+
+			DemandaPronosticada demPro2SE= new DemandaPronosticada();
+			demPro2SE.setCantidadDemandadaPronostico(103);
+			demPro2SE.setDemandaRealAsociada(demanda1023);
+			demPro2SE.setModeloPrediccion(promedioPonderado);
+			pron1.addDemandaPronosticada(demPro2SE);
+			demandaPronosticadaRepository.save(demPro2SE);
+
+			pronosticoRepository.save(pron1);
+
+
+			Pronostico pron2= new Pronostico();
+			pron2.setCantidadPeriodosHistoricos(3);
+			pron2.setAnioAPredecir(2023);
+			pron2.setPeriodoAPredecir(11);
+			pron2.setArticulo(art1);
+			pron2.setMetodoError(errorMSE);
+
+			DemandaPronosticada demPro2PP= new DemandaPronosticada();
+			demPro2PP.setCantidadDemandadaPronostico(92.5);
+			demPro2PP.setDemandaRealAsociada(demanda1123);
+			demPro2PP.setModeloPrediccion(promedioPonderado);
+			pron2.addDemandaPronosticada(demPro2PP);
+			demandaPronosticadaRepository.save(demPro2PP);
+
+			pronosticoRepository.save(pron2);
+
+
+			Pronostico pron3= new Pronostico();
+			pron3.setCantidadPeriodosHistoricos(3);
+			pron3.setAnioAPredecir(2023);
+			pron3.setPeriodoAPredecir(12);
+			pron3.setArticulo(art1);
+			pron3.setMetodoError(errorMSE);
+
+			DemandaPronosticada demPro3PP= new DemandaPronosticada();
+			demPro3PP.setCantidadDemandadaPronostico(85.7);
+			demPro3PP.setDemandaRealAsociada(demanda1223);
+			demPro3PP.setModeloPrediccion(promedioPonderado);
+			pron3.addDemandaPronosticada(demPro3PP);
+			demandaPronosticadaRepository.save(demPro3PP);
+
+			pronosticoRepository.save(pron3);
+
+
+			Pronostico pron4= new Pronostico();
+			pron4.setCantidadPeriodosHistoricos(3);
+			pron4.setAnioAPredecir(2024);
+			pron4.setPeriodoAPredecir(1);
+			pron4.setArticulo(art1);
+			pron4.setMetodoError(errorMSE);
+
+			DemandaPronosticada demPro4PP= new DemandaPronosticada();
+			demPro4PP.setCantidadDemandadaPronostico(81.83);
+			demPro4PP.setDemandaRealAsociada(demanda124);
+			demPro4PP.setModeloPrediccion(promedioPonderado);
+			pron4.addDemandaPronosticada(demPro4PP);
+			demandaPronosticadaRepository.save(demPro4PP);
+
+			pronosticoRepository.save(pron4);
+
+
+
+
 			Venta venta=new Venta();
 			LocalDate localDate = LocalDate.of(2024, 1, 4);
 

@@ -19,16 +19,5 @@ public class DemandaPronosticadaController extends BaseControllerImpl<DemandaPro
 
     @Autowired
     private DemandaPronosticadaService demandaPronosticadaService;
-/*
-    @PostMapping("/asignarDemanda/{demandaPronosticadaId}/{demandaId}")
-    public ResponseEntity<?> asignarDemanda(@PathVariable Long demandaPronosticadaId, @PathVariable Long demandaId) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(demandaPronosticadaService.asignarDemanda(demandaPronosticadaId,demandaId));
 
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }*/
 }

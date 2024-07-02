@@ -16,5 +16,5 @@ import lombok.Setter;
 @Setter
 public class MetodoError extends Base {
     @Column(name = "nombreMetodoError")
-    private String nombreMerodoError;
+    private String nombreMetodoError;
 }

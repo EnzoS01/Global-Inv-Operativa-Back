@@ -29,6 +29,10 @@ public class Pronostico extends Base {
         @Column(name = "anioAPredecir")
         private int anioAPredecir;
 
+        @OneToOne
+        @JoinColumn(name = "demandaPronosticada_id")
+        private DemandaPronosticada demandaPronosticadaOptima;
+
         @OneToMany
         @JoinTable(name = "Pronostico_DemandaPronosticada",
                         joinColumns = @JoinColumn(name = "pronostico_id"),

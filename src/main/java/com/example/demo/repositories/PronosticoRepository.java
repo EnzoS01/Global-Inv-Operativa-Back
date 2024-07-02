@@ -1,5 +1,6 @@
 package com.example.demo.repositories;
 
+import com.example.demo.entities.Articulo;
 import com.example.demo.entities.Pronostico;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,5 +16,8 @@ public interface PronosticoRepository extends BaseRepository<Pronostico, Long> {
             value = "SELECT p FROM Pronostico p WHETE p.articulo_id LIKE %:articulo_id%",
             nativeQuery = true)
     List<Pronostico> findByArticulo(@Param("articulo_id")Long articulo_id);
+
+
+    Pronostico findByArticuloAndAnioAPredecirAndPeriodoAPredecir(Articulo articulo, int AnioAPredecir, int PeriodoAPredecir);
     
 }
