@@ -44,7 +44,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
     public OrdenCompra crearUna(OrdenCompra orden){
         OrdenCompra nueva = new OrdenCompra();
-        nueva.setTotal(orden.getTotal());
+        //nueva.setTotal(orden.getTotal());
         nueva.setEstadoOrdenCompra(orden.getEstadoOrdenCompra());
         nueva.setFechaRealizacion(orden.getFechaRealizacion());
 
@@ -53,31 +53,53 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
 
         List<DetalleOrdenCompra> nuevosdetalles = new ArrayList<>();
+        float total = 0;
+
         for (DetalleOrdenCompra detalle : detalles) {
-            //float total = 0;
+            try{
             System.out.println("Estoy dentro del for ");
             System.out.println("El articulo del detalle donde estoy parado : " + detalle.getArticulo().getNombreArticulo());
             DetalleOrdenCompra nuevoDetalle = new DetalleOrdenCompra();
-            nuevoDetalle.setSubtotal(detalle.getSubtotal());
             nuevoDetalle.setLinea(detalle.getLinea());
-            nuevoDetalle.setCantidad(detalle.getCantidad());
-           // total += detalle.getSubtotal();
-             Articulo a = detalle.getArticulo();
-             System.out.println("El articulo es: " + a.getNombreArticulo()+ "  "+ a.getId());
 
-            nuevoDetalle.setArticulo(ArticuloRepo.getReferenceById(a.getId()));
+            Articulo a = ArticuloRepo.getReferenceById(detalle.getArticulo().getId());
+            System.out.println("El articulo es: " + a.getNombreArticulo()+ "  "+ a.getId());
 
-
-            Proveedor p = detalle.getProveedor();
+            Proveedor p = proveedorRepository.findByName(detalle.getProveedor().getNombre());
             System.out.println("El proveedor es: " + p.getNombre()+ "  "+ p.getId());
 
+            //Busco el ProveedrARTICULO PARA CALCULAR EL COSTO DE PEDIDO
+            ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(p.getId(),a.getId());
 
-            nuevoDetalle.setProveedor(proveedorRepository.findByName(p.getNombre()));
+            int InventarioMaximo = a.getLoteOptimo() + a.getStockSeguridad();
+
+            if( detalle.getCantidad() + a.getCantActual() <= InventarioMaximo){
+                detalle.setCantidad(detalle.getCantidad());
+                detalle.setSubtotal(detalle.getCantidad() * PA.getCostoPedido());
+            } else {
+                int cantidadPosta = InventarioMaximo - a.getCantActual() ;
+                detalle.setCantidad(cantidadPosta);
+                detalle.setSubtotal(cantidadPosta * PA.getCostoPedido());
+            }
+            nuevoDetalle.setSubtotal(detalle.getSubtotal());
+            nuevoDetalle.setCantidad(detalle.getCantidad());
+
+            //voy actualizando el total de la OC
+            total += detalle.getSubtotal();
+
+            nuevoDetalle.setArticulo(a);
+            nuevoDetalle.setProveedor(p);
 
 
             DetalleOrdenCompra n = detalleOrdenCompraRepository.save(nuevoDetalle);
             nuevosdetalles.add(n);
             System.out.println("añadi el detalle a la lista de detalles: " + n.getId());
+
+            }
+            catch (Exception e) {
+                System.err.println("Error: el articulo no es proveido por ese proveedor: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
 
         OrdenCompra Ordennueva = ordenCompraRepository.save(nueva);
@@ -292,6 +314,9 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         OrdenCompra nueva = new OrdenCompra();
         nueva.setFechaRealizacion(Date.from(Instant.now()));
 
+        //Determino el Inventario maximo
+        int InventarioMaximo = a.getStockSeguridad() + a.getLoteOptimo();
+
 
         //creo la orden el detalle ode la orden con 1 producto en base al proveedor predeterminado
 
@@ -300,8 +325,15 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         DetalleOrdenCompra detalle = new DetalleOrdenCompra();
         detalle.setArticulo(a);
         detalle.setProveedor(a.getProveedorPredeterminado());
-        detalle.setCantidad(cantidadFaltante);
-        detalle.setSubtotal(cantidadFaltante * PA.getCostoPedido());
+        if( cantidadFaltante + a.getCantActual() <= InventarioMaximo){
+            detalle.setCantidad(cantidadFaltante);
+            detalle.setSubtotal(cantidadFaltante * PA.getCostoPedido());
+        } else {
+            int cantidadPosta = InventarioMaximo -  a.getCantActual();
+            detalle.setCantidad(cantidadPosta);
+            detalle.setSubtotal(cantidadPosta * PA.getCostoPedido());
+        }
+
         detalleOrdenCompraRepository.save(detalle);
         List<DetalleOrdenCompra> lista = new ArrayList<DetalleOrdenCompra>();
         lista.add(detalle);
@@ -320,6 +352,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         return nueva;
     }
 
+    @Transactional
     public boolean existeOrden (Long idArticulo){
         EstadoOrdenCompra estadoOrdenCompraPen = estadoOrdenRepository.findByName("Pendiente");
         // .orElseThrow(() -> new RuntimeException("Estado Orden de compra no encontrada"));

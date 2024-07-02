@@ -30,58 +30,56 @@ public class DetalleVentaServiceImpl extends BaseServiceImpl<DetalleVenta,Long> 
 
     @Transactional
     public DetalleVenta agregarArticulo(Long detalleVentaId, Long articuloId){
-        Articulo articulo = articuloRepository.findById(articuloId)
-                .orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-
-        DetalleVenta detalleVenta = detalleVentaRepository.findById(detalleVentaId)
-                .orElseThrow(() -> new RuntimeException("DetalleVenta no encontrado"));
-
-        // Validar que la cantidad actual del artículo sea suficiente
-        if (articulo.getCantActual() < detalleVenta.getCantidad()) {
-            throw new RuntimeException("Cantidad insuficiente del artículo");
-        }
-
-        articulo.setCantActual(articulo.getCantActual() - detalleVenta.getCantidad());
-        detalleVenta.setSubtotal(articulo.getPrecioVenta() * detalleVenta.getCantidad());
-
-        // Guardar los cambios en el artículo y el detalle de venta
-        articuloRepository.save(articulo);
-        detalleVenta.setArticulo(articulo);
-        detalleVentaRepository.save(detalleVenta);
-        System.out.println("ya actualice el detalle venta" + detalleVenta.getId() + "con el artiulo " + articulo.getNombreArticulo() );
-
-        //En base al modelo del articulo verifico si pido o no
-        System.out.println("Estoy por verificar si el producto necesita  una OC" );
-        Modelo m = ModeloRepo.FindByNombre("LOTE_FIJO");
         try {
-            if (articulo.getModelo().equals(m)) {
-                if (articulo.getCantActual() <= articulo.getPuntoPedido()) {
-                    // Crear orden de compra para lote fijo
-                    System.out.println("Ahora estoy por crear el de lote fijo para : " + articulo.getNombreArticulo() );
-                    OrdenCompra o = OrdenCompraService.OrdenStockFaltante(articulo.getId(), articulo.getLoteOptimo());
-                    System.out.println("Se creó una orden de compra: " + o);
-                }
-            } else {
-                // Si es intervalo fijo, verificar si existe una orden en curso
-                if (articulo.getCantActual() <= articulo.getPuntoPedido()) {
-                    if (!OrdenCompraService.existeOrden(articulo.getId())) {
-                        // Calcular cantidad necesaria
-                        System.out.println("Ahora estoy por crear el de intervalo fijo para : " + articulo.getNombreArticulo() );
-                        int nivelMaximo = articulo.getLoteOptimo() + articulo.getPuntoPedido();
-                        int cantidadNecesaria = nivelMaximo - articulo.getCantActual();
+            Articulo articulo = articuloRepository.findById(articuloId)
+                    .orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
 
-                        // Crear orden de compra para intervalo fijo
-                        OrdenCompra o = OrdenCompraService.OrdenStockFaltante(articulo.getId(), cantidadNecesaria);
-                        System.out.println("Se creó una orden de compra: " + o);
+            DetalleVenta detalleVenta = detalleVentaRepository.findById(detalleVentaId)
+                    .orElseThrow(() -> new RuntimeException("DetalleVenta no encontrado"));
+
+            articulo.setCantActual(articulo.getCantActual() - detalleVenta.getCantidad());
+
+            articuloRepository.save(articulo);
+
+            detalleVenta.setSubtotal(articulo.getPrecioVenta() * detalleVenta.getCantidad());
+            detalleVenta.setArticulo(articulo);
+
+            DetalleVenta detalleActualizado = detalleVentaRepository.save(detalleVenta);
+
+            // En base al modelo del articulo verifico si pido o no
+            Modelo m = ModeloRepo.FindByNombre("LOTE_FIJO");
+            if(!OrdenCompraService.existeOrden(articulo.getId())){
+                try {
+                    if (articulo.getModelo().equals(m)) {
+                        if (articulo.getCantActual() <= articulo.getPuntoPedido()) {
+                            // Crear orden de compra para lote fijo
+                            OrdenCompra o = OrdenCompraService.OrdenStockFaltante(articulo.getId(), articulo.getLoteOptimo());
+                        }
+                    } else {
+                        // Si es intervalo fijo, verificar si existe una orden en curso
+                        if (articulo.getCantActual() <= articulo.getPuntoPedido()) {
+                            if (!OrdenCompraService.existeOrden(articulo.getId())) {
+                                // Calcular cantidad necesaria
+                                int nivelMaximo = articulo.getLoteOptimo() + articulo.getStockSeguridad();
+                                int cantidadNecesaria = nivelMaximo - articulo.getCantActual();
+
+                                // Crear orden de compra para intervalo fijo
+                                OrdenCompra o = OrdenCompraService.OrdenStockFaltante(articulo.getId(), cantidadNecesaria);
+                            }
+                        }
                     }
+                } catch (Exception e) {
+                    System.err.println("Error al generar orden de compra: " + e.getMessage());
+                    e.printStackTrace();
                 }
+
             }
+
+            return detalleActualizado;
         } catch (Exception e) {
-
-            System.err.println("Error al generar orden de compra: " + e.getMessage());
+            System.err.println("Error en agregarArticulo: " + e.getMessage());
             e.printStackTrace();
+            throw e;
         }
-
-        return detalleVenta;
     }
 }
