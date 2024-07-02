@@ -28,6 +28,8 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     private OrdenCompraRepository ordenCompraRepository;
     @Autowired
     private ModeloPrediccionRepository modeloPrediccionRepository;
+    @Autowired
+    private MetodoErrorRepository metodoErrorRepository;
 
     public PronosticoServiceImpl(BaseRepository<Pronostico, Long> baseRepository,
                                  DemandaPronosticadaRepository demandaPronosticadaRepository) {
@@ -35,7 +37,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         this.demandaPronosticadaRepository = demandaPronosticadaRepository;
     }
 
-
+    @Override
     public Pronostico asignarArticulo(Long pronosticoId, Long articuloId) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
@@ -46,9 +48,20 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         pronosticoRepository.save(pron);
         return pron;
     }
+    @Override
+    public Pronostico asignarMetodoError(Long pronosticoId, Long metodoErrorId) {
+        Pronostico pron = pronosticoRepository.findById(pronosticoId)
+                .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
+        MetodoError metodoError = metodoErrorRepository.findById(metodoErrorId)
+                .orElseThrow(() -> new RuntimeException("Metodo Error no encontrado"));
+
+        pron.setMetodoError(metodoError);
+        pronosticoRepository.save(pron);
+        return pron;
+    }
 
 
-    public double[] calcularPonderaciones(int n, double factorPonderacion) {
+    private double[] calcularPonderaciones(int n, double factorPonderacion) {
         double[] ponderaciones = new double[n];
         double sumaPonderaciones = 0;
 
@@ -63,21 +76,9 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return ponderaciones;
     }
 
-/*
-    public int periodoActual(Pronostico pron){
-        List<Demanda> demandas = demandaRepository.findByArticuloAndAnio(pron.getArticulo(), anioActual);
-        return demandas.stream()
-                .max(Comparator.comparing(Demanda::getNumPeriodo))
-                .map(demanda -> {
-                    int nextPeriod = demanda.getNumPeriodo() + 1;
-                    return nextPeriod > 12 ? 1 : nextPeriod; //si el NumPeriodo de la demanda es 12, devuelve 1
-                })
-                .orElse(1); // Si no hay demandas, empezamos desde el periodo 1
-    }
-*/
 
 
-    public DemandaPronosticada crearDPronosticada(double pronostico, String nombreModeloPrediccion) {
+    private DemandaPronosticada crearDPronosticada(double pronostico, String nombreModeloPrediccion) {
         DemandaPronosticada demandaPronosticada = new DemandaPronosticada();
         demandaPronosticada.setCantidadDemandadaPronostico(pronostico);
         ModeloPrediccion modeloPrediccion = modeloPrediccionRepository.findBynombreModelo(nombreModeloPrediccion);
@@ -86,7 +87,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return demandaPronosticada;
     }
 
-
+    @Override
     public Pronostico promedioPonderado(Long pronosticoId, double factorPonderacion) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
@@ -149,7 +150,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return pron;
     }
 
-
+    @Override
     public Pronostico pmSuavizado(Long pronosticoId, double predecidaRaiz, double valorCoeficiente) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
@@ -179,7 +180,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return pron;
     }
 
-
+    @Override
     public Pronostico regresionLineal(Long pronosticoId) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
@@ -239,7 +240,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return pron;
     }
 
-
+    @Override
     public Pronostico pronosticoEstacionalidad(Long pronosticoId, double demandaEsperada) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
@@ -282,7 +283,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
         return pron;
     }
-
+    @Override
     public Pronostico asignarDemandaReal(Long pronosticoId){
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
@@ -298,77 +299,6 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return pron;
     }
 
-
-
-/*
-    public Pronostico calcularErrorMAD(Long pronosticoId){
-        Pronostico pron = pronosticoRepository.findById(pronosticoId)
-                .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
-        List<DemandaPronosticada> demandasPronosticadas=pron.getDemandasPronosticada();
-        ModeloPrediccion modeloPrediccionBuscar;
-        MetodoError metodoError=pron.getMetodoError();
-        double sumatoriaError = 0;
-        int cantidadPeriodosAUtilizar = pron.getCantidadPeriodosHistoricos();
-        int periodoAPredecir = pron.getPeriodoAPredecir();
-
-
-        for(DemandaPronosticada demPron: demandasPronosticadas){
-            modeloPrediccionBuscar=demPron.getModeloPrediccion();
-
-            Pronostico pronostico;
-            List<Pronostico> pronosticos = new ArrayList<>();
-
-            List<DemandaPronosticada> demandasPronEscogidas = new ArrayList<>();
-
-            //Buscar pronosticos
-            //Ordena la lista pronosticos de manera descendente en la posicion 0 está el pronostico con el numero de periodo más alto
-            if (periodoAPredecir - cantidadPeriodosAUtilizar <= 0) {
-                if (periodoAPredecir - cantidadPeriodosAUtilizar == 0) {
-                    for (int i = 1; i < cantidadPeriodosAUtilizar; i++) {
-                        pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
-                        pronosticos.add(pronostico);
-                    }
-                    pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12);
-                    pronosticos.add(pronostico);
-                }else{
-                    for (int i = 1; i < periodoAPredecir; i++) {
-                        pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
-                        pronosticos.add(pronostico);
-                    }
-
-                    for (int j = 0; j < cantidadPeriodosAUtilizar ; j++) {
-                        pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12 - j);
-                        pronosticos.add(pronostico);
-                    }
-                }
-            } else {
-                //Ordena la lista pronosticos de manera descendente en la posicion 0 está el pronostico con el numero de periodo más alto
-                for (int i=1; i <periodoAPredecir;i++){
-                    pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
-                    pronosticos.add(pronostico);
-                }
-            }
-
-            for (Pronostico pro : pronosticos) {
-                System.out.println("El numero de periodo del pronostico es: " + pro.getPeriodoAPredecir());
-                System.out.println("El año del pronostico es: " + pro.getAnioAPredecir());
-                if (pro.getMetodoError()==metodoError ){
-                    List<DemandaPronosticada> demProTemporal= pro.getDemandasPronosticada();
-                    for (DemandaPronosticada demPro: demProTemporal){
-                        if (demPro.getModeloPrediccion()==modeloPrediccionBuscar){
-                            sumatoriaError= sumatoriaError+ Math.abs(demPro.getCantidadDemandadaPronostico() - demPro.getDemandaRealAsociada().getCantTotalDemanda());
-                        }
-                    }
-
-                }
-            }
-            demPron.setValorErrorPronosticoDemandaPronosticada(sumatoriaError/cantidadPeriodosAUtilizar);
-            demandaPronosticadaRepository.save(demPron);
-        }
-        pronosticoRepository.save(pron);
-        return pron;
-    }
-*/
     private List<Pronostico> obtenerPronosticosPasados(Pronostico pron) {
         List<Pronostico> pronosticos = new ArrayList<>();
         int cantidadPeriodosAUtilizar = pron.getCantidadPeriodosHistoricos();
@@ -552,7 +482,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
         return pron;
     }
-
+    @Override
     public Pronostico calcularError(Long pronosticoId){
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));

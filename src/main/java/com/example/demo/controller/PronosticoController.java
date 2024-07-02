@@ -31,6 +31,18 @@ public class PronosticoController extends BaseControllerImpl<Pronostico, Pronost
         }
     }
 
+    @PostMapping("/asignarMetodo/{pronosticoId}/{metodoErrorId}")
+    public ResponseEntity<?> asignarMetodo(@PathVariable Long pronosticoId, @PathVariable Long metodoErrorId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(pronosticoService.asignarMetodoError(pronosticoId,metodoErrorId));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
     @PostMapping("/generarOrdenCompra/{pronosticoId}")
     public ResponseEntity<?> generarOrdenCompra(@PathVariable Long pronosticoId) {
         try {

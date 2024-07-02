@@ -721,12 +721,19 @@ public class GlobalInvOperativaApplication {
 			pron1.addDemandaPronosticada(demPro1PP);
 			demandaPronosticadaRepository.save(demPro1PP);
 
-			DemandaPronosticada demPro2SE= new DemandaPronosticada();
-			demPro2SE.setCantidadDemandadaPronostico(103);
-			demPro2SE.setDemandaRealAsociada(demanda1023);
-			demPro2SE.setModeloPrediccion(promedioPonderado);
-			pron1.addDemandaPronosticada(demPro2SE);
-			demandaPronosticadaRepository.save(demPro2SE);
+			DemandaPronosticada demPro1SE= new DemandaPronosticada();
+			demPro1SE.setCantidadDemandadaPronostico(101.4);
+			demPro1SE.setDemandaRealAsociada(demanda1023);
+			demPro1SE.setModeloPrediccion(promedioMovilSuavizado);
+			pron1.addDemandaPronosticada(demPro1SE);
+			demandaPronosticadaRepository.save(demPro1SE);
+
+			DemandaPronosticada demPro1RL= new DemandaPronosticada();
+			demPro1RL.setCantidadDemandadaPronostico(114.72);
+			demPro1RL.setDemandaRealAsociada(demanda1023);
+			demPro1RL.setModeloPrediccion(regresionLineal);
+			pron1.addDemandaPronosticada(demPro1RL);
+			demandaPronosticadaRepository.save(demPro1RL);
 
 			pronosticoRepository.save(pron1);
 
@@ -745,6 +752,22 @@ public class GlobalInvOperativaApplication {
 			pron2.addDemandaPronosticada(demPro2PP);
 			demandaPronosticadaRepository.save(demPro2PP);
 
+			DemandaPronosticada demPro2SE= new DemandaPronosticada();
+			demPro2SE.setCantidadDemandadaPronostico(91);
+			demPro2SE.setDemandaRealAsociada(demanda1123);
+			demPro2SE.setModeloPrediccion(promedioMovilSuavizado);
+			pron2.addDemandaPronosticada(demPro2SE);
+			demandaPronosticadaRepository.save(demPro2SE);
+
+			DemandaPronosticada demPro2RL= new DemandaPronosticada();
+			demPro2RL.setCantidadDemandadaPronostico(104.53);
+			demPro2RL.setDemandaRealAsociada(demanda1123);
+			demPro2RL.setModeloPrediccion(regresionLineal);
+			pron2.addDemandaPronosticada(demPro2RL);
+			demandaPronosticadaRepository.save(demPro2RL);
+
+
+
 			pronosticoRepository.save(pron2);
 
 
@@ -762,6 +785,20 @@ public class GlobalInvOperativaApplication {
 			pron3.addDemandaPronosticada(demPro3PP);
 			demandaPronosticadaRepository.save(demPro3PP);
 
+			DemandaPronosticada demPro3SE= new DemandaPronosticada();
+			demPro3SE.setCantidadDemandadaPronostico(89.4);
+			demPro3SE.setDemandaRealAsociada(demanda1223);
+			demPro3SE.setModeloPrediccion(promedioMovilSuavizado);
+			pron3.addDemandaPronosticada(demPro3SE);
+			demandaPronosticadaRepository.save(demPro3SE);
+
+			DemandaPronosticada demPro3RL= new DemandaPronosticada();
+			demPro3RL.setCantidadDemandadaPronostico(96.78);
+			demPro3RL.setDemandaRealAsociada(demanda1223);
+			demPro3RL.setModeloPrediccion(regresionLineal);
+			pron3.addDemandaPronosticada(demPro3RL);
+			demandaPronosticadaRepository.save(demPro3RL);
+
 			pronosticoRepository.save(pron3);
 
 
@@ -778,6 +815,20 @@ public class GlobalInvOperativaApplication {
 			demPro4PP.setModeloPrediccion(promedioPonderado);
 			pron4.addDemandaPronosticada(demPro4PP);
 			demandaPronosticadaRepository.save(demPro4PP);
+
+			DemandaPronosticada demPro4SE= new DemandaPronosticada();
+			demPro4SE.setCantidadDemandadaPronostico(87.52);
+			demPro4SE.setDemandaRealAsociada(demanda124);
+			demPro4SE.setModeloPrediccion(promedioMovilSuavizado);
+			pron4.addDemandaPronosticada(demPro4SE);
+			demandaPronosticadaRepository.save(demPro4SE);
+
+			DemandaPronosticada demPro4RL= new DemandaPronosticada();
+			demPro4RL.setCantidadDemandadaPronostico(108.83);
+			demPro4RL.setDemandaRealAsociada(demanda124);
+			demPro4RL.setModeloPrediccion(regresionLineal);
+			pron4.addDemandaPronosticada(demPro4RL);
+			demandaPronosticadaRepository.save(demPro4RL);
 
 			pronosticoRepository.save(pron4);
 
