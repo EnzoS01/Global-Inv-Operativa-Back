@@ -93,62 +93,73 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     public Pronostico promedioPonderado(Long pronosticoId, double factorPonderacion) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
+        boolean bandera= true;
+        ModeloPrediccion modeloPrediccion=modeloPrediccionRepository.findBynombreModelo("Promedio_Ponderado");
+        List<DemandaPronosticada> demandasPronosticada=pron.getDemandasPronosticada();
+        for (DemandaPronosticada d: demandasPronosticada){
+            if (d.getModeloPrediccion().equals(modeloPrediccion)) {
+                bandera = false;
+                break;
+            }
+        }
+        if (bandera) {
+            int cantidadPeriodosAUtilizar = pron.getCantidadPeriodosHistoricos();
+            int periodoAPredecir = pron.getPeriodoAPredecir();
+            double[] ponderaciones = calcularPonderaciones(cantidadPeriodosAUtilizar, factorPonderacion);
 
-        int cantidadPeriodosAUtilizar = pron.getCantidadPeriodosHistoricos();
-        int periodoAPredecir = pron.getPeriodoAPredecir();
-        double[] ponderaciones = calcularPonderaciones(cantidadPeriodosAUtilizar, factorPonderacion);
+            List<Demanda> demandas = new ArrayList<>();
+            Demanda demanda;
 
-        List<Demanda> demandas = new ArrayList<>();
-        Demanda demanda;
-
-        //Buscar demandas
-        //Ordena la lista demandas de manera descendente en la posicion 0 está la demanda con el numero de periodo más alto
-        if (periodoAPredecir - cantidadPeriodosAUtilizar <= 0) {
-            if (periodoAPredecir - cantidadPeriodosAUtilizar == 0) {
-                for (int i = 1; i < cantidadPeriodosAUtilizar; i++) {
-                    demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
+            //Buscar demandas
+            //Ordena la lista demandas de manera descendente en la posicion 0 está la demanda con el numero de periodo más alto
+            if (periodoAPredecir - cantidadPeriodosAUtilizar <= 0) {
+                if (periodoAPredecir - cantidadPeriodosAUtilizar == 0) {
+                    for (int i = 1; i < cantidadPeriodosAUtilizar; i++) {
+                        demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
+                        demandas.add(demanda);
+                    }
+                    demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12);
                     demandas.add(demanda);
+                } else {
+                    for (int i = 1; i < periodoAPredecir; i++) {
+                        demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
+                        demandas.add(demanda);
+                    }
+
+                    for (int j = 0; j < cantidadPeriodosAUtilizar; j++) {
+                        demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12 - j);
+                        demandas.add(demanda);
+                    }
                 }
-                demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12);
-                demandas.add(demanda);
-            }else{
+
+
+            } else {
+                //Ordena la lista demandas de manera descendente en la posicion 0 está la demanda con el numero de periodo más alto
                 for (int i = 1; i < periodoAPredecir; i++) {
                     demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
                     demandas.add(demanda);
                 }
+            }
 
-                for (int j = 0; j < cantidadPeriodosAUtilizar ; j++) {
-                    demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12 - j);
-                    demandas.add(demanda);
-                }
+            for (Demanda dem : demandas) {
+                System.out.println("El numero de periodo de la demanda es: " + dem.getNumPeriodo());
+                System.out.println("El año de la demanda es: " + dem.getAnio());
             }
 
 
-        } else {
-            //Ordena la lista demandas de manera descendente en la posicion 0 está la demanda con el numero de periodo más alto
-            for (int i=1; i <periodoAPredecir;i++){
-                demanda = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
-                demandas.add(demanda);
+            double promedio = 0;
+            for (int i = 0; i < cantidadPeriodosAUtilizar; i++) {
+                promedio += demandas.get(i).getCantTotalDemanda() * ponderaciones[i];
+
+                System.out.println("El promedio es: " + promedio);
             }
+
+            DemandaPronosticada demandaPronosticada = crearDPronosticada(promedio, "Promedio_Ponderado");
+            demandaPronosticadaRepository.save(demandaPronosticada);
+            pron.addDemandaPronosticada(demandaPronosticada);
+            pronosticoRepository.save(pron);
+
         }
-
-        for (Demanda dem : demandas) {
-            System.out.println("El numero de periodo de la demanda es: " + dem.getNumPeriodo());
-            System.out.println("El año de la demanda es: " + dem.getAnio());
-        }
-
-
-        double promedio = 0;
-        for (int i = 0; i < cantidadPeriodosAUtilizar; i++) {
-            promedio += demandas.get(i).getCantTotalDemanda() * ponderaciones[i];
-
-            System.out.println("El promedio es: "+ promedio);
-        }
-
-        DemandaPronosticada demandaPronosticada = crearDPronosticada(promedio, "Promedio_Ponderado");
-        demandaPronosticadaRepository.save(demandaPronosticada);
-        pron.addDemandaPronosticada(demandaPronosticada);
-        pronosticoRepository.save(pron);
         return pron;
     }
 
@@ -156,29 +167,39 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     public Pronostico pmSuavizado(Long pronosticoId, double predecidaRaiz, double valorCoeficiente) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
-        int periodoAPredecir = pron.getPeriodoAPredecir();
-        int periodoAnterior;
-        int anioAPredecir;
-        if (periodoAPredecir == 1) {
-            periodoAnterior = 12;
-            anioAPredecir=pron.getAnioAPredecir()-1;
-
-        } else {
-            periodoAnterior = periodoAPredecir - 1;
-            anioAPredecir=pron.getAnioAPredecir();
+        boolean bandera= true;
+        ModeloPrediccion modeloPrediccion=modeloPrediccionRepository.findBynombreModelo("PM_Suavizado");
+        List<DemandaPronosticada> demandasPronosticada=pron.getDemandasPronosticada();
+        for (DemandaPronosticada d: demandasPronosticada){
+            if (d.getModeloPrediccion().equals(modeloPrediccion)) {
+                bandera = false;
+                break;
+            }
         }
+        if (bandera) {
+            int periodoAPredecir = pron.getPeriodoAPredecir();
+            int periodoAnterior;
+            int anioAPredecir;
+            if (periodoAPredecir == 1) {
+                periodoAnterior = 12;
+                anioAPredecir = pron.getAnioAPredecir() - 1;
 
-        //Buscar la demanda asociada al mismo articulo que el pronóstico con el año correspondiente y el periodo anterior
-        Demanda demandaReal = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), anioAPredecir, periodoAnterior);
+            } else {
+                periodoAnterior = periodoAPredecir - 1;
+                anioAPredecir = pron.getAnioAPredecir();
+            }
 
-        //Se hace la cuenta
-        double pronostico = predecidaRaiz + valorCoeficiente * (demandaReal.getCantTotalDemanda() - predecidaRaiz);
+            //Buscar la demanda asociada al mismo articulo que el pronóstico con el año correspondiente y el periodo anterior
+            Demanda demandaReal = demandaRepository.findByArticuloAndAnioAndNumPeriodo(pron.getArticulo(), anioAPredecir, periodoAnterior);
 
-        DemandaPronosticada demandaPronosticada = crearDPronosticada(pronostico, "PM_Suavizado");
-        demandaPronosticadaRepository.save(demandaPronosticada);
-        pron.addDemandaPronosticada(demandaPronosticada);
-        pronosticoRepository.save(pron);
+            //Se hace la cuenta
+            double pronostico = predecidaRaiz + valorCoeficiente * (demandaReal.getCantTotalDemanda() - predecidaRaiz);
 
+            DemandaPronosticada demandaPronosticada = crearDPronosticada(pronostico, "PM_Suavizado");
+            demandaPronosticadaRepository.save(demandaPronosticada);
+            pron.addDemandaPronosticada(demandaPronosticada);
+            pronosticoRepository.save(pron);
+        }
         return pron;
     }
 
@@ -186,59 +207,69 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     public Pronostico regresionLineal(Long pronosticoId) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
-        int periodoAPredecir = pron.getPeriodoAPredecir();
-        int periodoAnterior;
-        int anioBuscar;
-        if (periodoAPredecir == 1) {
-            periodoAnterior = 12;
-            anioBuscar = pron.getAnioAPredecir() - 1;
-        } else {
-            periodoAnterior = periodoAPredecir - 1;
-            anioBuscar = pron.getAnioAPredecir();
+        boolean bandera= true;
+        ModeloPrediccion modeloPrediccion=modeloPrediccionRepository.findBynombreModelo("Regresion_Lineal");
+        List<DemandaPronosticada> demandasPronosticada=pron.getDemandasPronosticada();
+        for (DemandaPronosticada d: demandasPronosticada){
+            if (d.getModeloPrediccion().equals(modeloPrediccion)) {
+                bandera = false;
+                break;
+            }
         }
+        if (bandera) {
+            int periodoAPredecir = pron.getPeriodoAPredecir();
+            int periodoAnterior;
+            int anioBuscar;
+            if (periodoAPredecir == 1) {
+                periodoAnterior = 12;
+                anioBuscar = pron.getAnioAPredecir() - 1;
+            } else {
+                periodoAnterior = periodoAPredecir - 1;
+                anioBuscar = pron.getAnioAPredecir();
+            }
 
-        //Ordena la lista demandas de manera ascendente en la posicion 0 está la demanda con el numero de periodo más bajo
-        List<Demanda> demandasReales = demandaRepository.findByArticuloAndAnio(pron.getArticulo(), anioBuscar);
-        demandasReales.sort(Comparator.comparingInt(Demanda::getNumPeriodo));
+            //Ordena la lista demandas de manera ascendente en la posicion 0 está la demanda con el numero de periodo más bajo
+            List<Demanda> demandasReales = demandaRepository.findByArticuloAndAnio(pron.getArticulo(), anioBuscar);
+            demandasReales.sort(Comparator.comparingInt(Demanda::getNumPeriodo));
 
-        double sumatoriaX = 0;
-        double sumatoriaY = 0;
-        double sumatoriaXCuadrado = 0;
-        double sumatoriaMultiplicacionXY = 0;
+            double sumatoriaX = 0;
+            double sumatoriaY = 0;
+            double sumatoriaXCuadrado = 0;
+            double sumatoriaMultiplicacionXY = 0;
 
-        for (int i = 0; i < periodoAnterior; i++) {
-            System.out.println("NumeroPeriodo: " + demandasReales.get(i).getNumPeriodo());
-            sumatoriaX += demandasReales.get(i).getNumPeriodo();
-            System.out.println("sumatoriaX: " + sumatoriaX);
-            sumatoriaY += demandasReales.get(i).getCantTotalDemanda();
-            System.out.println("sumatoriaY: " + sumatoriaY);
+            for (int i = 0; i < periodoAnterior; i++) {
+                System.out.println("NumeroPeriodo: " + demandasReales.get(i).getNumPeriodo());
+                sumatoriaX += demandasReales.get(i).getNumPeriodo();
+                System.out.println("sumatoriaX: " + sumatoriaX);
+                sumatoriaY += demandasReales.get(i).getCantTotalDemanda();
+                System.out.println("sumatoriaY: " + sumatoriaY);
 
-            sumatoriaXCuadrado += demandasReales.get(i).getNumPeriodo() * demandasReales.get(i).getNumPeriodo();
-            System.out.println("SumatoriaXcuadrado: " + sumatoriaXCuadrado);
-            sumatoriaMultiplicacionXY += demandasReales.get(i).getNumPeriodo() * demandasReales.get(i).getCantTotalDemanda();
-            System.out.println("sumatoriaMultiplicacionXY: " + sumatoriaMultiplicacionXY);
+                sumatoriaXCuadrado += demandasReales.get(i).getNumPeriodo() * demandasReales.get(i).getNumPeriodo();
+                System.out.println("SumatoriaXcuadrado: " + sumatoriaXCuadrado);
+                sumatoriaMultiplicacionXY += demandasReales.get(i).getNumPeriodo() * demandasReales.get(i).getCantTotalDemanda();
+                System.out.println("sumatoriaMultiplicacionXY: " + sumatoriaMultiplicacionXY);
+            }
+            double promedioX = sumatoriaX / (periodoAnterior);
+            double promedioY = sumatoriaY / (periodoAnterior);
+
+            System.out.println("promedioX " + promedioX);
+            System.out.println("PromedioY " + promedioY);
+
+            double parteArribaB = sumatoriaMultiplicacionXY - (periodoAnterior) * (promedioX * promedioY);
+            double parteAbajoB = sumatoriaXCuadrado - (periodoAnterior) * (promedioX * promedioX);
+
+            double b = parteArribaB / parteAbajoB;
+            System.out.println("b " + b);
+            double a = promedioY - (b * promedioX);
+            System.out.println("a " + a);
+
+            double pronostico = a + b * periodoAPredecir;
+
+            DemandaPronosticada demandaPronosticada = crearDPronosticada(pronostico, "Regresion_Lineal");
+            demandaPronosticadaRepository.save(demandaPronosticada);
+            pron.addDemandaPronosticada(demandaPronosticada);
+            pronosticoRepository.save(pron);
         }
-        double promedioX = sumatoriaX / (periodoAnterior);
-        double promedioY = sumatoriaY / (periodoAnterior);
-
-        System.out.println("promedioX " + promedioX);
-        System.out.println("PromedioY " + promedioY);
-
-        double parteArribaB = sumatoriaMultiplicacionXY - (periodoAnterior) * (promedioX * promedioY);
-        double parteAbajoB = sumatoriaXCuadrado - (periodoAnterior) * (promedioX * promedioX);
-
-        double b = parteArribaB / parteAbajoB;
-        System.out.println("b " + b);
-        double a = promedioY - (b * promedioX);
-        System.out.println("a " + a);
-
-        double pronostico = a + b * periodoAPredecir;
-
-        DemandaPronosticada demandaPronosticada = crearDPronosticada(pronostico, "Regresion_Lineal");
-        demandaPronosticadaRepository.save(demandaPronosticada);
-        pron.addDemandaPronosticada(demandaPronosticada);
-        pronosticoRepository.save(pron);
-
         return pron;
     }
 
@@ -246,43 +277,53 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
     public Pronostico pronosticoEstacionalidad(Long pronosticoId, double demandaEsperada) {
         Pronostico pron = pronosticoRepository.findById(pronosticoId)
                 .orElseThrow(() -> new RuntimeException("pronostico no encontrado"));
-        int cantidadAniosUsar = pron.getCantidadPeriodosHistoricos();
-
-        List<List<Demanda>> listaDemandasAnio = new ArrayList<>();
-        int periodoAPredecir = pron.getPeriodoAPredecir();
-
-
-        double demandaPromedioAnual;
-        double indiceEstacional;
-        double contadorPromedioMensual = 0;
-        double demandaPromedioMensual;
-        int cantidadPeriodosContador = 0;
-        double contadorPromedioAnual = 0;
-        double pronostico;
-
-        for (int i = 1; i < cantidadAniosUsar + 1; i++) {
-            listaDemandasAnio.add(demandaRepository.findByArticuloAndAnio(pron.getArticulo(), pron.getAnioAPredecir() - i)); //van de forma descendente por ejemplo: en la posicion 0 se guardan las demandas de 2023, en la posicion 1 las demandas de 2022,etc
-            listaDemandasAnio.get(i - 1).sort(Comparator.comparingInt(Demanda::getNumPeriodo));
-
-            for (Demanda demanda : listaDemandasAnio.get(i - 1)) {
-                contadorPromedioMensual += demanda.getCantTotalDemanda();
+        boolean bandera= true;
+        ModeloPrediccion modeloPrediccion=modeloPrediccionRepository.findBynombreModelo("Pronostico_Estacionalidad");
+        List<DemandaPronosticada> demandasPronosticada=pron.getDemandasPronosticada();
+        for (DemandaPronosticada d: demandasPronosticada){
+            if (d.getModeloPrediccion().equals(modeloPrediccion)) {
+                bandera = false;
+                break;
             }
-            cantidadPeriodosContador += listaDemandasAnio.get(i - 1).size();
-
-            contadorPromedioAnual += listaDemandasAnio.get(i - 1).get(periodoAPredecir - 1).getCantTotalDemanda();
-
         }
+        if (bandera) {
+            int cantidadAniosUsar = pron.getCantidadPeriodosHistoricos();
 
-        demandaPromedioMensual = contadorPromedioMensual / cantidadPeriodosContador;
-        demandaPromedioAnual = contadorPromedioAnual / cantidadAniosUsar;
-        indiceEstacional = demandaPromedioAnual / demandaPromedioMensual;
-        pronostico = (demandaEsperada / 12) * indiceEstacional;
+            List<List<Demanda>> listaDemandasAnio = new ArrayList<>();
+            int periodoAPredecir = pron.getPeriodoAPredecir();
 
-        DemandaPronosticada demandaPronosticada = crearDPronosticada(pronostico,"Pronostico_Estacionalidad");
-        demandaPronosticadaRepository.save(demandaPronosticada);
-        pron.addDemandaPronosticada(demandaPronosticada);
-        pronosticoRepository.save(pron);
 
+            double demandaPromedioAnual;
+            double indiceEstacional;
+            double contadorPromedioMensual = 0;
+            double demandaPromedioMensual;
+            int cantidadPeriodosContador = 0;
+            double contadorPromedioAnual = 0;
+            double pronostico;
+
+            for (int i = 1; i < cantidadAniosUsar + 1; i++) {
+                listaDemandasAnio.add(demandaRepository.findByArticuloAndAnio(pron.getArticulo(), pron.getAnioAPredecir() - i)); //van de forma descendente por ejemplo: en la posicion 0 se guardan las demandas de 2023, en la posicion 1 las demandas de 2022,etc
+                listaDemandasAnio.get(i - 1).sort(Comparator.comparingInt(Demanda::getNumPeriodo));
+
+                for (Demanda demanda : listaDemandasAnio.get(i - 1)) {
+                    contadorPromedioMensual += demanda.getCantTotalDemanda();
+                }
+                cantidadPeriodosContador += listaDemandasAnio.get(i - 1).size();
+
+                contadorPromedioAnual += listaDemandasAnio.get(i - 1).get(periodoAPredecir - 1).getCantTotalDemanda();
+
+            }
+
+            demandaPromedioMensual = contadorPromedioMensual / cantidadPeriodosContador;
+            demandaPromedioAnual = contadorPromedioAnual / cantidadAniosUsar;
+            indiceEstacional = demandaPromedioAnual / demandaPromedioMensual;
+            pronostico = (demandaEsperada / 12) * indiceEstacional;
+
+            DemandaPronosticada demandaPronosticada = crearDPronosticada(pronostico, "Pronostico_Estacionalidad");
+            demandaPronosticadaRepository.save(demandaPronosticada);
+            pron.addDemandaPronosticada(demandaPronosticada);
+            pronosticoRepository.save(pron);
+        }
         return pron;
     }
     @Override
@@ -301,7 +342,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
         return pron;
     }
 
-    private List<Pronostico> obtenerPronosticosPasados(Pronostico pron) {
+    private List<Pronostico> obtenerPronosticosPasados(Pronostico pron,MetodoError metodoError) {
         List<Pronostico> pronosticos = new ArrayList<>();
         int cantidadPeriodosAUtilizar = pron.getCantidadPeriodosHistoricos();
         int periodoAPredecir = pron.getPeriodoAPredecir();
@@ -314,7 +355,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             if (periodoAPredecir - cantidadPeriodosAUtilizar == 0) {
                 for (int i = 1; i < cantidadPeriodosAUtilizar; i++) {
                     pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
-                    if (pronostico != null) {
+                    if (pronostico != null && pronostico.getMetodoError().equals(metodoError)) {
                         pronosticos.add(pronostico);
                         System.out.println("Pronostico encontrado: Año " + pron.getAnioAPredecir() + ", Periodo " + (periodoAPredecir - i));  // Depuración
                     } else {
@@ -322,7 +363,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
                     }
                 }
                 pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12);
-                if (pronostico != null) {
+                if (pronostico != null && pronostico.getMetodoError().equals(metodoError)){
                     pronosticos.add(pronostico);
                     System.out.println("Pronostico encontrado: Año " + pron.getAnioAPredecir() + ", Periodo " + (periodoAPredecir - 1));  // Depuración
                 } else {
@@ -331,7 +372,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             }else{
                 for (int i = 1; i < periodoAPredecir; i++) {
                     pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
-                    if (pronostico != null) {
+                    if (pronostico != null && pronostico.getMetodoError().equals(metodoError)) {
                         pronosticos.add(pronostico);
                         System.out.println("Pronostico encontrado: Año " + pron.getAnioAPredecir() + ", Periodo " + (periodoAPredecir - i));  // Depuración
                     } else {
@@ -341,7 +382,7 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
 
                 for (int j = 0; j < cantidadPeriodosAUtilizar ; j++) {
                     pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir() - 1, 12 - j);
-                    if (pronostico != null) {
+                    if (pronostico != null && pronostico.getMetodoError().equals(metodoError)) {
                         pronosticos.add(pronostico);
                         System.out.println("Pronostico encontrado: Año " + (pron.getAnioAPredecir()-1) + ", Periodo " + (12 - j));  // Depuración
                     } else {
@@ -351,9 +392,9 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             }
         } else {
             //Ordena la lista pronosticos de manera descendente en la posicion 0 está el pronostico con el numero de periodo más alto
-            for (int i=1; i <periodoAPredecir;i++){
+            for (int i=1; i <cantidadPeriodosAUtilizar+1;i++){
                 pronostico = pronosticoRepository.findByArticuloAndAnioAPredecirAndPeriodoAPredecir(pron.getArticulo(), pron.getAnioAPredecir(), periodoAPredecir - i);
-                if (pronostico != null) {
+                if (pronostico != null && pronostico.getMetodoError().equals(metodoError)) {
                     pronosticos.add(pronostico);
                     System.out.println("Pronostico encontrado: Año " + pron.getAnioAPredecir() + ", Periodo " + (periodoAPredecir - i));  // Depuración
                 } else {
@@ -381,26 +422,29 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             ModeloPrediccion modeloPrediccionBuscar = demPron.getModeloPrediccion();
             System.out.println("El nombre del modelo de prediccion es: "+demPron.getModeloPrediccion().getNombreModelo());
 
-            List<Pronostico> pronosticos = obtenerPronosticosPasados(pron);
+            List<Pronostico> pronosticos = obtenerPronosticosPasados(pron,metodoError);
 
-            for (Pronostico pro : pronosticos) {
-                System.out.println("(antes de la verificacion)El nombre del método error es: "+pro.getMetodoError().getNombreMetodoError());
-                if (pro.getMetodoError().equals(metodoError)){
-                    System.out.println("El nombre del método error es: "+pro.getMetodoError().getNombreMetodoError());
-
-                    for (DemandaPronosticada demPro : pro.getDemandasPronosticada()) {
-                        if (demPro.getModeloPrediccion().equals(modeloPrediccionBuscar)){
-                            sumatoriaError += Math.abs(demPro.getCantidadDemandadaPronostico() - demPro.getDemandaRealAsociada().getCantTotalDemanda());
-                            System.out.println("La sumatoria de los errores es: "+sumatoriaError);
+            if (pronosticos.size() == cantidadPeriodosAUtilizar) {
+                for (Pronostico pro : pronosticos) {
+                    System.out.println("(antes de la verificacion)El nombre del método error es: " + pro.getMetodoError().getNombreMetodoError());
+                    if (pro.getMetodoError().equals(metodoError)) {
+                        System.out.println("El nombre del método error es: " + pro.getMetodoError().getNombreMetodoError());
+                        for (DemandaPronosticada demPro : pro.getDemandasPronosticada()) {
+                            if (demPro.getModeloPrediccion().equals(modeloPrediccionBuscar)) {
+                                sumatoriaError += Math.abs(demPro.getCantidadDemandadaPronostico() - demPro.getDemandaRealAsociada().getCantTotalDemanda());
+                                System.out.println("La sumatoria de los errores es: " + sumatoriaError);
+                            }
                         }
                     }
                 }
+                double valorError = sumatoriaError / cantidadPeriodosAUtilizar;
+                System.out.println("Actualizando valorErrorPronosticoDemandaPronosticada a: " + valorError);
+                demPron.setValorErrorPronosticoDemandaPronosticada(valorError);
+                demandaPronosticadaRepository.save(demPron);
+                System.out.println("Valor actualizado y guardado: " + demPron.getValorErrorPronosticoDemandaPronosticada());
+            }else{
+                System.out.println("No se puede calcular el error porque la cantidad de pronosticos encontrados no es suficiente");
             }
-            double valorError = sumatoriaError / cantidadPeriodosAUtilizar;
-            System.out.println("Actualizando valorErrorPronosticoDemandaPronosticada a: " + valorError);
-            demPron.setValorErrorPronosticoDemandaPronosticada(valorError);
-            demandaPronosticadaRepository.save(demPron);
-            System.out.println("Valor actualizado y guardado: " + demPron.getValorErrorPronosticoDemandaPronosticada());
         }
 
         return pron;
@@ -422,26 +466,29 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             ModeloPrediccion modeloPrediccionBuscar = demPron.getModeloPrediccion();
             System.out.println("El nombre del modelo de prediccion es: "+demPron.getModeloPrediccion().getNombreModelo());
 
-            List<Pronostico> pronosticos = obtenerPronosticosPasados(pron);
+            List<Pronostico> pronosticos = obtenerPronosticosPasados(pron,metodoError);
+            if (pronosticos.size() == cantidadPeriodosAUtilizar) {
+                for (Pronostico pro : pronosticos) {
+                    System.out.println("(antes de la verificacion)El nombre del método error es: " + pro.getMetodoError().getNombreMetodoError());
+                    if (pro.getMetodoError().equals(metodoError)) {
+                        System.out.println("El nombre del método error es: " + pro.getMetodoError().getNombreMetodoError());
 
-            for (Pronostico pro : pronosticos) {
-                System.out.println("(antes de la verificacion)El nombre del método error es: "+pro.getMetodoError().getNombreMetodoError());
-                if (pro.getMetodoError().equals(metodoError)){
-                    System.out.println("El nombre del método error es: "+pro.getMetodoError().getNombreMetodoError());
-
-                    for (DemandaPronosticada demPro : pro.getDemandasPronosticada()) {
-                        if (demPro.getModeloPrediccion().equals(modeloPrediccionBuscar)){
-                            sumatoriaError += Math.pow(demPro.getCantidadDemandadaPronostico() - demPro.getDemandaRealAsociada().getCantTotalDemanda(),2);
-                            System.out.println("La sumatoria de los errores es: "+sumatoriaError);
+                        for (DemandaPronosticada demPro : pro.getDemandasPronosticada()) {
+                            if (demPro.getModeloPrediccion().equals(modeloPrediccionBuscar)) {
+                                sumatoriaError += Math.pow(demPro.getCantidadDemandadaPronostico() - demPro.getDemandaRealAsociada().getCantTotalDemanda(), 2);
+                                System.out.println("La sumatoria de los errores es: " + sumatoriaError);
+                            }
                         }
                     }
                 }
+                double valorError = sumatoriaError / cantidadPeriodosAUtilizar;
+                System.out.println("Actualizando valorErrorPronosticoDemandaPronosticada a: " + valorError);
+                demPron.setValorErrorPronosticoDemandaPronosticada(valorError);
+                demandaPronosticadaRepository.save(demPron);
+                System.out.println("Valor actualizado y guardado: " + demPron.getValorErrorPronosticoDemandaPronosticada());
+            }else{
+                System.out.println("No se puede calcular el error porque la cantidad de pronosticos encontrados no es suficiente");
             }
-            double valorError = sumatoriaError / cantidadPeriodosAUtilizar;
-            System.out.println("Actualizando valorErrorPronosticoDemandaPronosticada a: " + valorError);
-            demPron.setValorErrorPronosticoDemandaPronosticada(valorError);
-            demandaPronosticadaRepository.save(demPron);
-            System.out.println("Valor actualizado y guardado: " + demPron.getValorErrorPronosticoDemandaPronosticada());
         }
 
         return pron;
@@ -461,27 +508,29 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
             ModeloPrediccion modeloPrediccionBuscar = demPron.getModeloPrediccion();
             System.out.println("El nombre del modelo de prediccion es: "+demPron.getModeloPrediccion().getNombreModelo());
 
-            List<Pronostico> pronosticos = obtenerPronosticosPasados(pron);
-
-            for (Pronostico pro : pronosticos) {
-                System.out.println("(antes de la verificacion)El nombre del método error es: "+pro.getMetodoError().getNombreMetodoError());
-                if (pro.getMetodoError().equals(metodoError)){
-                    System.out.println("El nombre del método error es: "+pro.getMetodoError().getNombreMetodoError());
-                    for (DemandaPronosticada demPro : pro.getDemandasPronosticada()) {
-                        if (demPro.getModeloPrediccion().equals(modeloPrediccionBuscar)){
-                            sumatoriaError += ((100*(Math.abs(demPro.getCantidadDemandadaPronostico() - demPro.getDemandaRealAsociada().getCantTotalDemanda())))/ demPro.getDemandaRealAsociada().getCantTotalDemanda());
-                            System.out.println("La sumatoria de los errores es: "+sumatoriaError);
+            List<Pronostico> pronosticos = obtenerPronosticosPasados(pron,metodoError);
+            if (pronosticos.size() == cantidadPeriodosAUtilizar) {
+                for (Pronostico pro : pronosticos) {
+                    System.out.println("(antes de la verificacion)El nombre del método error es: " + pro.getMetodoError().getNombreMetodoError());
+                    if (pro.getMetodoError().equals(metodoError)) {
+                        System.out.println("El nombre del método error es: " + pro.getMetodoError().getNombreMetodoError());
+                        for (DemandaPronosticada demPro : pro.getDemandasPronosticada()) {
+                            if (demPro.getModeloPrediccion().equals(modeloPrediccionBuscar)) {
+                                sumatoriaError += ((100 * (Math.abs(demPro.getCantidadDemandadaPronostico() - demPro.getDemandaRealAsociada().getCantTotalDemanda()))) / demPro.getDemandaRealAsociada().getCantTotalDemanda());
+                                System.out.println("La sumatoria de los errores es: " + sumatoriaError);
+                            }
                         }
                     }
                 }
+                double valorError = sumatoriaError / cantidadPeriodosAUtilizar;
+                System.out.println("Actualizando valorErrorPronosticoDemandaPronosticada a: " + valorError);
+                demPron.setValorErrorPronosticoDemandaPronosticada(valorError);
+                demandaPronosticadaRepository.save(demPron);
+                System.out.println("Valor actualizado y guardado: " + demPron.getValorErrorPronosticoDemandaPronosticada());
+            }else{
+                System.out.println("No se puede calcular el error porque la cantidad de pronosticos encontrados no es suficiente");
             }
-            double valorError = sumatoriaError / cantidadPeriodosAUtilizar;
-            System.out.println("Actualizando valorErrorPronosticoDemandaPronosticada a: " + valorError);
-            demPron.setValorErrorPronosticoDemandaPronosticada(valorError);
-            demandaPronosticadaRepository.save(demPron);
-            System.out.println("Valor actualizado y guardado: " + demPron.getValorErrorPronosticoDemandaPronosticada());
         }
-
         return pron;
     }
     @Override
@@ -501,13 +550,13 @@ public class PronosticoServiceImpl extends BaseServiceImpl<Pronostico, Long> imp
                 calcularErrorMAPE(pron.getId());
                 break;
         }
-        // Suponiendo que tienes una lista de DemandaPronosticada
+
         List<DemandaPronosticada> demandasPronosticadas = pron.getDemandasPronosticada();
         // Encontrar la instancia con el valor más bajo
         Optional<DemandaPronosticada> demandaConMenorError = demandasPronosticadas.stream()
                 .min(Comparator.comparing(DemandaPronosticada::getValorErrorPronosticoDemandaPronosticada));
 
-        if (demandaConMenorError.isPresent()) {
+        if (demandaConMenorError.isPresent() && demandaConMenorError.get().getValorErrorPronosticoDemandaPronosticada()!=0) {
             DemandaPronosticada demandaME = demandaConMenorError.get();
             pron.setDemandaPronosticadaOptima(demandaME);
             System.out.println("Demanda con menor error: " + demandaME.getValorErrorPronosticoDemandaPronosticada());
