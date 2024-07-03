@@ -190,10 +190,11 @@ public class GlobalInvOperativaApplication {
 			Articulo art1= new Articulo();
 			art1.setNombreArticulo("Hamburguesa");
 			art1.setDetalle("queso,jamon,huevo");
-			art1.setCantActual(1000);
+			art1.setCantActual(1500);
 			art1.setLoteOptimo(500);
-			art1.setPuntoPedido(980);
+			art1.setPuntoPedido(600);
 			art1.setPrecioVenta(2000);
+			art1.setStockSeguridad(1000);
 			art1.setModelo(loteFijo);
 			art1.setProveedorPredeterminado(proveedor1);
 			articuloRepository.save(art1);
@@ -413,7 +414,7 @@ public class GlobalInvOperativaApplication {
 			PA11.setCostoPedido(345);
 			PA11.setCostoAlmacenamiento(567);
 			PA11.setCostoProducto(789);
-			PA11.setTiempoPedido(20);
+			PA11.setTiempoPedido(10);
 			ProveedorArticuloRepo.save(PA11);
 
 			ProveedorArticulo PA12 = new ProveedorArticulo();
@@ -423,7 +424,7 @@ public class GlobalInvOperativaApplication {
 			PA12.setCostoPedido(469);
 			PA12.setCostoAlmacenamiento(800);
 			PA12.setCostoProducto(789);
-			PA12.setTiempoPedido(28);
+			PA12.setTiempoPedido(25);
 			ProveedorArticuloRepo.save(PA12);
 
 			ProveedorArticulo PA13 = new ProveedorArticulo();
@@ -433,8 +434,28 @@ public class GlobalInvOperativaApplication {
 			PA13.setCostoPedido(469);
 			PA13.setCostoAlmacenamiento(800);
 			PA13.setCostoProducto(789);
-			PA13.setTiempoPedido(28);
+			PA13.setTiempoPedido(21);
 			ProveedorArticuloRepo.save(PA13);
+
+			ProveedorArticulo PA14 = new ProveedorArticulo();
+			PA14.setArticulo(papasGrandesConCheddarYBacon);
+			PA14.setFechaAlta(LocalDate.now());
+			PA14.setProveedor(proveedor2);
+			PA14.setCostoPedido(200);
+			PA14.setCostoAlmacenamiento(800);
+			PA14.setCostoProducto(789);
+			PA14.setTiempoPedido(14);
+			ProveedorArticuloRepo.save(PA14);
+
+			ProveedorArticulo PA15 = new ProveedorArticulo();
+			PA15.setArticulo(papasGrandesConCheddarYBacon);
+			PA15.setFechaAlta(LocalDate.now());
+			PA15.setProveedor(proveedor1);
+			PA15.setCostoPedido(469);
+			PA15.setCostoAlmacenamiento(800);
+			PA15.setCostoProducto(789);
+			PA15.setTiempoPedido(21);
+			ProveedorArticuloRepo.save(PA15);
 
 
 			//Demandas AÑO 2020

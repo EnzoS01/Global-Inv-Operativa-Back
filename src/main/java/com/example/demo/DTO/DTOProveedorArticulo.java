@@ -16,6 +16,7 @@ public class DTOProveedorArticulo {
     public String nombreArticulo;
     public String detalle;
     public int loteOptimo;
+    public int StockSeguridad;
     public DTOProveedor ProveedorPredeterminado;
     public List<DTOProveedor> listaproveedores = new ArrayList<>();
 

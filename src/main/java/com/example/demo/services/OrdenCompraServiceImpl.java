@@ -72,14 +72,19 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
             ProveedorArticulo PA = ProveedorArticuloRepo.findByArticuloAndProveedor(p.getId(),a.getId());
 
             int InventarioMaximo = a.getLoteOptimo() + a.getStockSeguridad();
+            System.out.println("el stock de seguridad para  " + a.getNombreArticulo() + " es " + a.getStockSeguridad());
+            System.out.println("el lote optimo para " + a.getNombreArticulo() + " es " + a.getLoteOptimo());
+            System.out.println("el inventario maximo para " + a.getNombreArticulo() + " es " + InventarioMaximo);
 
             if( detalle.getCantidad() + a.getCantActual() <= InventarioMaximo){
                 detalle.setCantidad(detalle.getCantidad());
                 detalle.setSubtotal(detalle.getCantidad() * PA.getCostoPedido());
             } else {
                 int cantidadPosta = InventarioMaximo - a.getCantActual() ;
+                System.out.println("La cantidad posta es: " + cantidadPosta);
                 detalle.setCantidad(cantidadPosta);
                 detalle.setSubtotal(cantidadPosta * PA.getCostoPedido());
+                System.out.println("el subtotal es: "+ detalle.getSubtotal());
             }
             nuevoDetalle.setSubtotal(detalle.getSubtotal());
             nuevoDetalle.setCantidad(detalle.getCantidad());
@@ -101,6 +106,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                 e.printStackTrace();
             }
         }
+        nueva.setTotal(total);
 
         OrdenCompra Ordennueva = ordenCompraRepository.save(nueva);
         Ordennueva.setDetallesOrdenCompra(nuevosdetalles);
@@ -282,6 +288,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                     .detalle(articulo.getDetalle())
                     .nombreArticulo(articulo.getNombreArticulo())
                     .loteOptimo(articulo.getLoteOptimo())
+                    .StockSeguridad(articulo.getStockSeguridad())
                     .listaproveedores(proveedores)
                     .ProveedorPredeterminado(Pre) // puede ser null si no se encuentra el PA
                     .build();
@@ -316,7 +323,9 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
 
         //Determino el Inventario maximo
         int InventarioMaximo = a.getStockSeguridad() + a.getLoteOptimo();
-
+        System.out.println("el stock de seguridad para  " + a.getNombreArticulo() + " es " + a.getStockSeguridad());
+        System.out.println("el lote optimo para " + a.getNombreArticulo() + " es " + a.getLoteOptimo());
+        System.out.println("el inventario maximo para " + a.getNombreArticulo() + " es " + InventarioMaximo);
 
         //creo la orden el detalle ode la orden con 1 producto en base al proveedor predeterminado
 
@@ -326,10 +335,12 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
         detalle.setArticulo(a);
         detalle.setProveedor(a.getProveedorPredeterminado());
         if( cantidadFaltante + a.getCantActual() <= InventarioMaximo){
+            System.out.println("La cantidad faltante es: " + cantidadFaltante);
             detalle.setCantidad(cantidadFaltante);
             detalle.setSubtotal(cantidadFaltante * PA.getCostoPedido());
         } else {
             int cantidadPosta = InventarioMaximo -  a.getCantActual();
+            System.out.println("La cantidad posta es: " + cantidadPosta);
             detalle.setCantidad(cantidadPosta);
             detalle.setSubtotal(cantidadPosta * PA.getCostoPedido());
         }
