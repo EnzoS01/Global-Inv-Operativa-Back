@@ -437,6 +437,91 @@ public class GlobalInvOperativaApplication {
 			ProveedorArticuloRepo.save(PA13);
 
 
+			//Demandas AÑO 2020
+			Demanda demanda120=new Demanda();
+			demanda120.setCantTotalDemanda(80);
+			demanda120.setArticulo(art1);
+			demanda120.setNumPeriodo(1);
+			demanda120.setAnio(2020);
+
+			Demanda demanda220=new Demanda();
+			demanda220.setCantTotalDemanda(70);
+			demanda220.setArticulo(art1);
+			demanda220.setNumPeriodo(2);
+			demanda220.setAnio(2020);
+
+			Demanda demanda320=new Demanda();
+			demanda320.setCantTotalDemanda(80);
+			demanda320.setArticulo(art1);
+			demanda320.setNumPeriodo(3);
+			demanda320.setAnio(2020);
+
+			Demanda demanda420=new Demanda();
+			demanda420.setCantTotalDemanda(90);
+			demanda420.setArticulo(art1);
+			demanda420.setNumPeriodo(4);
+			demanda420.setAnio(2020);
+
+			Demanda demanda520=new Demanda();
+			demanda520.setCantTotalDemanda(113);
+			demanda520.setArticulo(art1);
+			demanda520.setNumPeriodo(5);
+			demanda520.setAnio(2020);
+
+			Demanda demanda620=new Demanda();
+			demanda620.setCantTotalDemanda(110);
+			demanda620.setArticulo(art1);
+			demanda620.setNumPeriodo(6);
+			demanda620.setAnio(2020);
+
+			Demanda demanda720=new Demanda();
+			demanda720.setCantTotalDemanda(100);
+			demanda720.setArticulo(art1);
+			demanda720.setNumPeriodo(7);
+			demanda720.setAnio(2020);
+
+			Demanda demanda820=new Demanda();
+			demanda820.setCantTotalDemanda(88);
+			demanda820.setArticulo(art1);
+			demanda820.setNumPeriodo(8);
+			demanda820.setAnio(2020);
+
+			Demanda demanda920=new Demanda();
+			demanda920.setCantTotalDemanda(85);
+			demanda920.setArticulo(art1);
+			demanda920.setNumPeriodo(9);
+			demanda920.setAnio(2020);
+
+			Demanda demanda1020=new Demanda();
+			demanda1020.setCantTotalDemanda(77);
+			demanda1020.setArticulo(art1);
+			demanda1020.setNumPeriodo(10);
+			demanda1020.setAnio(2020);
+
+			Demanda demanda1120=new Demanda();
+			demanda1120.setCantTotalDemanda(75);
+			demanda1120.setArticulo(art1);
+			demanda1120.setNumPeriodo(11);
+			demanda1120.setAnio(2020);
+
+			Demanda demanda1220=new Demanda();
+			demanda1220.setCantTotalDemanda(82);
+			demanda1220.setArticulo(art1);
+			demanda1220.setNumPeriodo(12);
+			demanda1220.setAnio(2020);
+
+			demandaRepository.save(demanda120);
+			demandaRepository.save(demanda220);
+			demandaRepository.save(demanda320);
+			demandaRepository.save(demanda420);
+			demandaRepository.save(demanda520);
+			demandaRepository.save(demanda620);
+			demandaRepository.save(demanda720);
+			demandaRepository.save(demanda820);
+			demandaRepository.save(demanda920);
+			demandaRepository.save(demanda1020);
+			demandaRepository.save(demanda1120);
+			demandaRepository.save(demanda1220);
 
 
 			//Demandas AÑO 2021
