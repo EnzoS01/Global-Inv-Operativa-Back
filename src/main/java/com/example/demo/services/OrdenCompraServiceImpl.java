@@ -36,6 +36,9 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
     @Autowired
     private ArticuloRepository ArticuloRepo;
 
+    @Autowired
+    private ModeloRepository ModeloRepo;
+
 
     public OrdenCompraServiceImpl(BaseRepository<OrdenCompra, Long> baseRepository, OrdenCompraRepository ordenCompraRepository) {
         super(baseRepository);
@@ -287,12 +290,23 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra,Long> im
                     .IdArticulo(articulo.getId())
                     .detalle(articulo.getDetalle())
                     .nombreArticulo(articulo.getNombreArticulo())
-                    .loteOptimo(articulo.getLoteOptimo())
                     .StockSeguridad(articulo.getStockSeguridad())
                     .listaproveedores(proveedores)
                     .ProveedorPredeterminado(Pre) // puede ser null si no se encuentra el PA
                     .build();
+            Modelo m = ModeloRepo.FindByNombre("LOTE_FIJO");
+            if (articulo.getModelo().equals(m)) {
+                art.setLoteOptimo(articulo.getLoteOptimo());
+                System.out.println("el lote optimo para LOTE FIJO es: " + art.getLoteOptimo());
+            } else {
+                int InventarioMaximo = articulo.getStockSeguridad() + articulo.getLoteOptimo();
+                int faltante = InventarioMaximo - articulo.getCantActual();
+                art.setLoteOptimo(faltante);
+                System.out.println("el lote optimo para intervalo fijo es: " + art.getLoteOptimo());
+            }
+
             System.out.println("Arme el DTOProveedorArticulo " + art.getIdArticulo());
+            System.out.println("el lote optimo es: " + art.getLoteOptimo());
             articulos.add(art);
         }
         System.out.println("Termine de armar la lista de articulos: " + articulos.size());

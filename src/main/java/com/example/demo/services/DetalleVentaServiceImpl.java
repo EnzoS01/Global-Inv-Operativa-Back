@@ -12,6 +12,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+
 @Service
 public class DetalleVentaServiceImpl extends BaseServiceImpl<DetalleVenta,Long> implements DetalleVentaService {
     @Autowired
@@ -56,8 +59,14 @@ public class DetalleVentaServiceImpl extends BaseServiceImpl<DetalleVenta,Long> 
                             OrdenCompra o = OrdenCompraService.OrdenStockFaltante(articulo.getId(), articulo.getLoteOptimo());
                         }
                     } else {
-                        // Si es intervalo fijo, verificar si existe una orden en curso
-                        if (articulo.getCantActual() <= articulo.getPuntoPedido()) {
+                        // si es intervalo fijo, verifico la feha de reposiscion y luego verifico si existe una orden en curso
+                        LocalDate fechaActual = LocalDate.now();
+                        LocalDate proximaFechaReposicion = fechaActual.withDayOfMonth(4); //with(TemporalAdjusters.firstDayOfMonth());
+                        //si quiero cambiar el dia de la reposicion debo hacer: LocalDate proximaFechaReposicion = fechaActual.withDayOfMonth(4);
+                        System.out.println("La fecha actual es: " + fechaActual);
+                        System.out.println("La fecha de la reposicion es: " + proximaFechaReposicion);
+
+                        if (fechaActual.isEqual(proximaFechaReposicion)) {
                             if (!OrdenCompraService.existeOrden(articulo.getId())) {
                                 // Calcular cantidad necesaria
                                 int nivelMaximo = articulo.getLoteOptimo() + articulo.getStockSeguridad();
